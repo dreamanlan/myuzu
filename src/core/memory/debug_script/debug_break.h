@@ -7,7 +7,7 @@ extern "C" {
 #endif
 
 #if defined(_WIN64) && _WIN64
-    __declspec(dllimport) BOOL __stdcall IsDebuggerPresent();
+    __declspec(dllimport) long __stdcall IsDebuggerPresent();
 #else
     __declspec(dllimport) int __stdcall IsDebuggerPresent();
 #endif
