@@ -11,7 +11,7 @@ namespace BraceScriptInterpreter
     class CastExp final : public Brace::AbstractBraceApi
     {
     public:
-        CastExp(Brace::BraceScript& interpreter) :Brace::AbstractBraceApi(interpreter), m_AssignPtr(nullptr), m_ResultInfo()
+        CastExp(Brace::BraceCodeStructure& interpreter) :Brace::AbstractBraceApi(interpreter), m_AssignPtr(nullptr), m_ResultInfo()
         {
         }
     protected:
@@ -54,10 +54,10 @@ namespace BraceScriptInterpreter
             return false;
         }
     private:
-        int Execute(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
+        int Execute(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
         {
             if (!m_Exp.isNull())
-                m_Exp(gvars, lvars);
+                m_Exp(runtime, gvars, lvars);
             (*m_AssignPtr)((m_ResultInfo.IsGlobal ? gvars : lvars), m_ResultInfo.VarIndex, (m_ExpInfo.IsGlobal ? gvars : lvars), m_ExpInfo.VarIndex);
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
@@ -70,7 +70,7 @@ namespace BraceScriptInterpreter
     class TypeTagExp final : public Brace::AbstractBraceApi
     {
     public:
-        TypeTagExp(Brace::BraceScript& interpreter) :Brace::AbstractBraceApi(interpreter)
+        TypeTagExp(Brace::BraceCodeStructure& interpreter) :Brace::AbstractBraceApi(interpreter)
         {
         }
     protected:
@@ -104,7 +104,7 @@ namespace BraceScriptInterpreter
     class TypeIdExp final : public Brace::AbstractBraceApi
     {
     public:
-        TypeIdExp(Brace::BraceScript& interpreter) :Brace::AbstractBraceApi(interpreter)
+        TypeIdExp(Brace::BraceCodeStructure& interpreter) :Brace::AbstractBraceApi(interpreter)
         {
         }
     protected:
@@ -154,7 +154,7 @@ namespace BraceScriptInterpreter
     class ObjTypeIdExp final : public Brace::AbstractBraceApi
     {
     public:
-        ObjTypeIdExp(Brace::BraceScript& interpreter) :Brace::AbstractBraceApi(interpreter)
+        ObjTypeIdExp(Brace::BraceCodeStructure& interpreter) :Brace::AbstractBraceApi(interpreter)
         {
         }
     protected:
@@ -204,7 +204,7 @@ namespace BraceScriptInterpreter
     class GetObjTypeNameExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        GetObjTypeNameExp(Brace::BraceScript& interpreter) :Brace::SimpleBraceApiBase(interpreter)
+        GetObjTypeNameExp(Brace::BraceCodeStructure& interpreter) :Brace::SimpleBraceApiBase(interpreter)
         {
         }
     protected:
@@ -236,7 +236,7 @@ namespace BraceScriptInterpreter
     class GetObjCategoryExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        GetObjCategoryExp(Brace::BraceScript& interpreter) :Brace::SimpleBraceApiBase(interpreter)
+        GetObjCategoryExp(Brace::BraceCodeStructure& interpreter) :Brace::SimpleBraceApiBase(interpreter)
         {
         }
     protected:
@@ -268,7 +268,7 @@ namespace BraceScriptInterpreter
     class GetTypeParamCountExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        GetTypeParamCountExp(Brace::BraceScript& interpreter) :Brace::SimpleBraceApiBase(interpreter)
+        GetTypeParamCountExp(Brace::BraceCodeStructure& interpreter) :Brace::SimpleBraceApiBase(interpreter)
         {
         }
     protected:
@@ -300,7 +300,7 @@ namespace BraceScriptInterpreter
     class GetTypeParamTypeExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        GetTypeParamTypeExp(Brace::BraceScript& interpreter) :Brace::SimpleBraceApiBase(interpreter)
+        GetTypeParamTypeExp(Brace::BraceCodeStructure& interpreter) :Brace::SimpleBraceApiBase(interpreter)
         {
         }
     protected:
@@ -335,7 +335,7 @@ namespace BraceScriptInterpreter
     class GetTypeParamObjTypeIdExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        GetTypeParamObjTypeIdExp(Brace::BraceScript& interpreter) :Brace::SimpleBraceApiBase(interpreter)
+        GetTypeParamObjTypeIdExp(Brace::BraceCodeStructure& interpreter) :Brace::SimpleBraceApiBase(interpreter)
         {
         }
     protected:
@@ -370,7 +370,7 @@ namespace BraceScriptInterpreter
     class SwapExp final : public Brace::AbstractBraceApi
     {
     public:
-        SwapExp(Brace::BraceScript& interpreter) :Brace::AbstractBraceApi(interpreter), m_Var1Info(), m_Var2Info()
+        SwapExp(Brace::BraceCodeStructure& interpreter) :Brace::AbstractBraceApi(interpreter), m_Var1Info(), m_Var2Info()
         {
         }
     protected:
@@ -447,7 +447,7 @@ namespace BraceScriptInterpreter
             return true;
         }
     private:
-        int Execute(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int Execute(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             //todo:split by tuple (var, global/local vars, type) for performance, maybe 104 functions, a lot of work..
             auto& vars1 = (m_Var1Info.IsGlobal ? gvars : lvars);
@@ -594,10 +594,10 @@ namespace BraceScriptInterpreter
             }
         }
     private:
-        int ExecuteMemModifyInfoToString(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
+        int ExecuteMemModifyInfoToString(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             auto& ptr = Brace::VarGetObject((m_ObjInfo.IsGlobal ? gvars : lvars), m_ObjInfo.VarIndex);
             auto* pObj = static_cast<Core::Memory::MemoryModifyInfo*>(ptr.get());
             Brace::VarSetString((m_ResultInfo.IsGlobal ? gvars : lvars), m_ResultInfo.VarIndex, "");
@@ -632,7 +632,7 @@ namespace BraceScriptInterpreter
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
     protected:
-        CppObjectMemberCallProvider(Brace::BraceScript& interpreter) :AbstractMemberCallApiProvider(interpreter), m_ObjInfo(), m_Obj(), m_ArgInfos(), m_Args(), m_ArgObjInfos(), m_ResultInfo(), m_ResultObjInfo(nullptr), m_Member(), m_ArgIteratorIndex(INVALID_INDEX)
+        CppObjectMemberCallProvider(Brace::BraceCodeStructure& interpreter) :AbstractMemberCallApiProvider(interpreter), m_ObjInfo(), m_Obj(), m_ArgInfos(), m_Args(), m_ArgObjInfos(), m_ResultInfo(), m_ResultObjInfo(nullptr), m_Member(), m_ArgIteratorIndex(INVALID_INDEX)
         {}
     protected:
         Brace::OperandRuntimeInfo m_ObjInfo;
@@ -788,12 +788,12 @@ namespace BraceScriptInterpreter
             }
         }
     private:
-        int ExecuteSetMemModifyInfoAddr(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
+        int ExecuteSetMemModifyInfoAddr(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             if (!m_Arg.isNull())
-                m_Arg(gvars, lvars);
+                m_Arg(runtime, gvars, lvars);
             auto& ptr = Brace::VarGetObject((m_ObjInfo.IsGlobal ? gvars : lvars), m_ObjInfo.VarIndex);
             auto* pObj = static_cast<Core::Memory::MemoryModifyInfo*>(ptr.get());
             if (nullptr != pObj) {
@@ -802,12 +802,12 @@ namespace BraceScriptInterpreter
             }
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteSetMemModifyInfoType(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
+        int ExecuteSetMemModifyInfoType(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             if (!m_Arg.isNull())
-                m_Arg(gvars, lvars);
+                m_Arg(runtime, gvars, lvars);
             auto& ptr = Brace::VarGetObject((m_ObjInfo.IsGlobal ? gvars : lvars), m_ObjInfo.VarIndex);
             auto* pObj = static_cast<Core::Memory::MemoryModifyInfo*>(ptr.get());
             if (nullptr != pObj) {
@@ -816,12 +816,12 @@ namespace BraceScriptInterpreter
             }
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteSetMemModifyInfoVal(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
+        int ExecuteSetMemModifyInfoVal(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             if (!m_Arg.isNull())
-                m_Arg(gvars, lvars);
+                m_Arg(runtime, gvars, lvars);
             auto& ptr = Brace::VarGetObject((m_ObjInfo.IsGlobal ? gvars : lvars), m_ObjInfo.VarIndex);
             auto* pObj = static_cast<Core::Memory::MemoryModifyInfo*>(ptr.get());
             if (nullptr != pObj) {
@@ -830,12 +830,12 @@ namespace BraceScriptInterpreter
             }
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteSetMemModifyInfoOldVal(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
+        int ExecuteSetMemModifyInfoOldVal(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             if (!m_Arg.isNull())
-                m_Arg(gvars, lvars);
+                m_Arg(runtime, gvars, lvars);
             auto& ptr = Brace::VarGetObject((m_ObjInfo.IsGlobal ? gvars : lvars), m_ObjInfo.VarIndex);
             auto* pObj = static_cast<Core::Memory::MemoryModifyInfo*>(ptr.get());
             if (nullptr != pObj) {
@@ -844,12 +844,12 @@ namespace BraceScriptInterpreter
             }
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteSetMemModifyInfoSize(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
+        int ExecuteSetMemModifyInfoSize(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             if (!m_Arg.isNull())
-                m_Arg(gvars, lvars);
+                m_Arg(runtime, gvars, lvars);
             auto& ptr = Brace::VarGetObject((m_ObjInfo.IsGlobal ? gvars : lvars), m_ObjInfo.VarIndex);
             auto* pObj = static_cast<Core::Memory::MemoryModifyInfo*>(ptr.get());
             if (nullptr != pObj) {
@@ -858,11 +858,11 @@ namespace BraceScriptInterpreter
             }
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteSetMemModifyInfoPid(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars) {
+        int ExecuteSetMemModifyInfoPid(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars) {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             if (!m_Arg.isNull())
-                m_Arg(gvars, lvars);
+                m_Arg(runtime, gvars, lvars);
             auto& ptr =
                 Brace::VarGetObject((m_ObjInfo.IsGlobal ? gvars : lvars), m_ObjInfo.VarIndex);
             auto* pObj = static_cast<Core::Memory::MemoryModifyInfo*>(ptr.get());
@@ -874,7 +874,7 @@ namespace BraceScriptInterpreter
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
     protected:
-        CppObjectMemberSetProvider(Brace::BraceScript& interpreter) :AbstractMemberSetApiProvider(interpreter), m_ObjInfo(), m_Obj(), m_ArgInfo(), m_Arg(), m_ArgIsStruct(false), m_Member()
+        CppObjectMemberSetProvider(Brace::BraceCodeStructure& interpreter) :AbstractMemberSetApiProvider(interpreter), m_ObjInfo(), m_Obj(), m_ArgInfo(), m_Arg(), m_ArgIsStruct(false), m_Member()
         {}
     protected:
         Brace::OperandRuntimeInfo m_ObjInfo;
@@ -1008,10 +1008,10 @@ namespace BraceScriptInterpreter
             }
         }
     private:
-        int ExecuteGetMemModifyInfoAddr(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
+        int ExecuteGetMemModifyInfoAddr(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             auto& ptr = Brace::VarGetObject((m_ObjInfo.IsGlobal ? gvars : lvars), m_ObjInfo.VarIndex);
             auto* pObj = static_cast<Core::Memory::MemoryModifyInfo*>(ptr.get());
             Brace::VarSetUInt64((m_ResultInfo.IsGlobal ? gvars : lvars), m_ResultInfo.VarIndex, 0);
@@ -1020,10 +1020,10 @@ namespace BraceScriptInterpreter
             }
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteGetMemModifyInfoType(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
+        int ExecuteGetMemModifyInfoType(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             auto& ptr = Brace::VarGetObject((m_ObjInfo.IsGlobal ? gvars : lvars), m_ObjInfo.VarIndex);
             auto* pObj = static_cast<Core::Memory::MemoryModifyInfo*>(ptr.get());
             Brace::VarSetInt32((m_ResultInfo.IsGlobal ? gvars : lvars), m_ResultInfo.VarIndex, 0);
@@ -1032,10 +1032,10 @@ namespace BraceScriptInterpreter
             }
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteGetMemModifyInfoVal(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
+        int ExecuteGetMemModifyInfoVal(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             auto& ptr = Brace::VarGetObject((m_ObjInfo.IsGlobal ? gvars : lvars), m_ObjInfo.VarIndex);
             auto* pObj = static_cast<Core::Memory::MemoryModifyInfo*>(ptr.get());
             Brace::VarSetUInt64((m_ResultInfo.IsGlobal ? gvars : lvars), m_ResultInfo.VarIndex, 0);
@@ -1059,10 +1059,10 @@ namespace BraceScriptInterpreter
             }
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteGetMemModifyInfoOldVal(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
+        int ExecuteGetMemModifyInfoOldVal(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             auto& ptr = Brace::VarGetObject((m_ObjInfo.IsGlobal ? gvars : lvars), m_ObjInfo.VarIndex);
             auto* pObj = static_cast<Core::Memory::MemoryModifyInfo*>(ptr.get());
             Brace::VarSetUInt64((m_ResultInfo.IsGlobal ? gvars : lvars), m_ResultInfo.VarIndex, 0);
@@ -1086,10 +1086,10 @@ namespace BraceScriptInterpreter
             }
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteGetMemModifyInfoSize(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
+        int ExecuteGetMemModifyInfoSize(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             auto& ptr = Brace::VarGetObject((m_ObjInfo.IsGlobal ? gvars : lvars), m_ObjInfo.VarIndex);
             auto* pObj = static_cast<Core::Memory::MemoryModifyInfo*>(ptr.get());
             Brace::VarSetUInt64((m_ResultInfo.IsGlobal ? gvars : lvars), m_ResultInfo.VarIndex, 0);
@@ -1098,9 +1098,9 @@ namespace BraceScriptInterpreter
             }
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteGetMemModifyInfoPid(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars) {
+        int ExecuteGetMemModifyInfoPid(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars) {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             auto& ptr =
                 Brace::VarGetObject((m_ObjInfo.IsGlobal ? gvars : lvars), m_ObjInfo.VarIndex);
             auto* pObj = static_cast<Core::Memory::MemoryModifyInfo*>(ptr.get());
@@ -1112,7 +1112,7 @@ namespace BraceScriptInterpreter
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
     protected:
-        CppObjectMemberGetProvider(Brace::BraceScript& interpreter) :AbstractMemberGetApiProvider(interpreter), m_ObjInfo(), m_Obj(), m_ResultInfo(), m_ResultObjInfo(nullptr), m_Member()
+        CppObjectMemberGetProvider(Brace::BraceCodeStructure& interpreter) :AbstractMemberGetApiProvider(interpreter), m_ObjInfo(), m_Obj(), m_ResultInfo(), m_ResultObjInfo(nullptr), m_Member()
         {}
     protected:
         Brace::OperandRuntimeInfo m_ObjInfo;
@@ -1131,7 +1131,7 @@ namespace BraceScriptInterpreter
             return false;
         }
     protected:
-        StructMemberCallProvider(Brace::BraceScript& interpreter) :AbstractMemberCallApiProvider(interpreter), m_ObjInfo(), m_Obj(), m_ArgInfos(), m_Args(), m_ResultInfo(), m_Member()
+        StructMemberCallProvider(Brace::BraceCodeStructure& interpreter) :AbstractMemberCallApiProvider(interpreter), m_ObjInfo(), m_Obj(), m_ArgInfos(), m_Args(), m_ResultInfo(), m_Member()
         {}
     protected:
         Brace::OperandRuntimeInfo m_ObjInfo;
@@ -1168,12 +1168,12 @@ namespace BraceScriptInterpreter
             return false;
         }
     private:
-        int Execute(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int Execute(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             if (!m_Arg.isNull())
-                m_Arg(gvars, lvars);
+                m_Arg(runtime, gvars, lvars);
             auto& optr = Brace::VarGetObject((m_ObjInfo.IsGlobal ? gvars : lvars), m_ObjInfo.VarIndex);
             auto* pObj = static_cast<StructObj*>(optr.get());
             if (nullptr != pObj) {
@@ -1273,7 +1273,7 @@ namespace BraceScriptInterpreter
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
     protected:
-        StructMemberSetProvider(Brace::BraceScript& interpreter) :AbstractMemberSetApiProvider(interpreter), m_ObjInfo(), m_Obj(), m_ArgInfo(), m_Arg(), m_FieldInfo()
+        StructMemberSetProvider(Brace::BraceCodeStructure& interpreter) :AbstractMemberSetApiProvider(interpreter), m_ObjInfo(), m_Obj(), m_ArgInfo(), m_Arg(), m_FieldInfo()
         {}
     protected:
         Brace::OperandRuntimeInfo m_ObjInfo;
@@ -1341,10 +1341,10 @@ namespace BraceScriptInterpreter
             return false;
         }
     private:
-        int ExecuteGetStructName(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
+        int ExecuteGetStructName(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             auto& ptr = Brace::VarGetObject((m_ObjInfo.IsGlobal ? gvars : lvars), m_ObjInfo.VarIndex);
             auto* pObj = static_cast<StructObj*>(ptr.get());
             if (nullptr != pObj) {
@@ -1355,10 +1355,10 @@ namespace BraceScriptInterpreter
             }
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteGetMemoryAddr(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
+        int ExecuteGetMemoryAddr(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             auto& ptr = Brace::VarGetObject((m_ObjInfo.IsGlobal ? gvars : lvars), m_ObjInfo.VarIndex);
             auto* pObj = static_cast<StructObj*>(ptr.get());
             if (nullptr != pObj) {
@@ -1366,10 +1366,10 @@ namespace BraceScriptInterpreter
             }
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int Execute(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int Execute(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             auto& optr = Brace::VarGetObject((m_ObjInfo.IsGlobal ? gvars : lvars), m_ObjInfo.VarIndex);
             auto* pObj = static_cast<StructObj*>(optr.get());
             if (nullptr != pObj) {
@@ -1466,7 +1466,7 @@ namespace BraceScriptInterpreter
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
     protected:
-        StructMemberGetProvider(Brace::BraceScript& interpreter) :AbstractMemberGetApiProvider(interpreter), m_ObjInfo(), m_Obj(), m_ResultInfo(), m_FieldInfo()
+        StructMemberGetProvider(Brace::BraceCodeStructure& interpreter) :AbstractMemberGetApiProvider(interpreter), m_ObjInfo(), m_Obj(), m_ResultInfo(), m_FieldInfo()
         {}
     protected:
         Brace::OperandRuntimeInfo m_ObjInfo;
@@ -1478,7 +1478,7 @@ namespace BraceScriptInterpreter
     class StructExp final : public Brace::AbstractBraceApi
     {
     public:
-        StructExp(Brace::BraceScript& interpreter) :Brace::AbstractBraceApi(interpreter)
+        StructExp(Brace::BraceCodeStructure& interpreter) :Brace::AbstractBraceApi(interpreter)
         {
         }
     protected:
@@ -1561,7 +1561,7 @@ namespace BraceScriptInterpreter
     class NewStructExp final : public Brace::AbstractBraceApi
     {
     public:
-        NewStructExp(Brace::BraceScript& interpreter) :Brace::AbstractBraceApi(interpreter), m_pObjectInfo(nullptr)
+        NewStructExp(Brace::BraceCodeStructure& interpreter) :Brace::AbstractBraceApi(interpreter), m_pObjectInfo(nullptr)
         {
         }
     protected:
@@ -1590,7 +1590,7 @@ namespace BraceScriptInterpreter
             return false;
         }
     private:
-        int Execute(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int Execute(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             auto* pObj = new StructObj();
             pObj->AllocMemory(m_pObjectInfo);
@@ -1604,7 +1604,7 @@ namespace BraceScriptInterpreter
     class ReInterpretAsExp final : public Brace::AbstractBraceApi
     {
     public:
-        ReInterpretAsExp(Brace::BraceScript& interpreter) :Brace::AbstractBraceApi(interpreter), m_pObjectInfo(nullptr)
+        ReInterpretAsExp(Brace::BraceCodeStructure& interpreter) :Brace::AbstractBraceApi(interpreter), m_pObjectInfo(nullptr)
         {
         }
     protected:
@@ -1638,10 +1638,10 @@ namespace BraceScriptInterpreter
             return false;
         }
     private:
-        int Execute(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int Execute(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_Arg.isNull())
-                m_Arg(gvars, lvars);
+                m_Arg(runtime, gvars, lvars);
             uint64_t v = Brace::VarGetU64((m_ArgInfo.IsGlobal ? gvars : lvars), m_ArgInfo.Type, m_ArgInfo.VarIndex);
             auto* pObj = new StructObj();
             pObj->SetMemory(m_pObjectInfo, reinterpret_cast<void*>(v));
@@ -1950,13 +1950,13 @@ namespace BraceScriptInterpreter
             return false;
         }
     private:
-        int ExecuteArrayResize(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteArrayResize(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             for (auto&& _arg : m_Args) {
                 if (!_arg.isNull())
-                    _arg(gvars, lvars);
+                    _arg(runtime, gvars, lvars);
             }
             auto& arr = m_ObjInfo;
             auto& arg = m_ArgInfos[0];
@@ -2005,13 +2005,13 @@ namespace BraceScriptInterpreter
             }
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteArrayPush(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteArrayPush(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             for (auto&& _arg : m_Args) {
                 if (!_arg.isNull())
-                    _arg(gvars, lvars);
+                    _arg(runtime, gvars, lvars);
             }
             auto& arr = m_ObjInfo;
             auto& arg = m_ArgInfos[0];
@@ -2060,10 +2060,10 @@ namespace BraceScriptInterpreter
             }
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteArrayPop(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteArrayPop(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             auto& arr = m_ObjInfo;
             const std::shared_ptr<void>& p = Brace::VarGetObject((arr.IsGlobal ? gvars : lvars), arr.VarIndex);
             switch (arr.ObjectTypeId) {
@@ -2115,13 +2115,13 @@ namespace BraceScriptInterpreter
             }
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteArrayInsert(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteArrayInsert(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             for (auto&& _arg : m_Args) {
                 if (!_arg.isNull())
-                    _arg(gvars, lvars);
+                    _arg(runtime, gvars, lvars);
             }
             auto& arr = m_ObjInfo;
             auto& arg = m_ArgInfos[0];
@@ -2176,13 +2176,13 @@ namespace BraceScriptInterpreter
             }
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteArrayRemove(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteArrayRemove(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             for (auto&& _arg : m_Args) {
                 if (!_arg.isNull())
-                    _arg(gvars, lvars);
+                    _arg(runtime, gvars, lvars);
             }
             auto& arr = m_ObjInfo;
             auto& arg = m_ArgInfos[0];
@@ -2231,10 +2231,10 @@ namespace BraceScriptInterpreter
             }
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteArrayClear(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteArrayClear(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             auto& arr = m_ObjInfo;
             const std::shared_ptr<void>& p = Brace::VarGetObject((arr.IsGlobal ? gvars : lvars), arr.VarIndex);
             switch (arr.ObjectTypeId) {
@@ -2276,13 +2276,13 @@ namespace BraceScriptInterpreter
             }
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteHashtableContains(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteHashtableContains(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             for (auto&& _arg : m_Args) {
                 if (!_arg.isNull())
-                    _arg(gvars, lvars);
+                    _arg(runtime, gvars, lvars);
             }
             auto& hash = m_ObjInfo;
             auto& ix = m_ArgInfos[0];
@@ -2387,13 +2387,13 @@ namespace BraceScriptInterpreter
             }
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteHashtableAdd(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteHashtableAdd(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             for (auto&& _arg : m_Args) {
                 if (!_arg.isNull())
-                    _arg(gvars, lvars);
+                    _arg(runtime, gvars, lvars);
             }
             auto& hash = m_ObjInfo;
             auto& ix = m_ArgInfos[0];
@@ -2499,13 +2499,13 @@ namespace BraceScriptInterpreter
             }
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteHashtableRemove(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteHashtableRemove(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             for (auto&& _arg : m_Args) {
                 if (!_arg.isNull())
-                    _arg(gvars, lvars);
+                    _arg(runtime, gvars, lvars);
             }
             auto& hash = m_ObjInfo;
             auto& ix = m_ArgInfos[0];
@@ -2600,10 +2600,10 @@ namespace BraceScriptInterpreter
             }
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteHashtableClear(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteHashtableClear(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             auto& hash = m_ObjInfo;
             const std::shared_ptr<void>& p = Brace::VarGetObject((hash.IsGlobal ? gvars : lvars), hash.VarIndex);
             int objTypeId = hash.ObjectTypeId;
@@ -2687,7 +2687,7 @@ namespace BraceScriptInterpreter
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
     private:
-        ArrayHashtableMemberCallProvider(Brace::BraceScript& interpreter) :AbstractMemberCallApiProvider(interpreter), m_Obj(), m_ObjInfo(), m_Member(), m_Args(), m_ArgInfos(), m_ResultInfo()
+        ArrayHashtableMemberCallProvider(Brace::BraceCodeStructure& interpreter) :AbstractMemberCallApiProvider(interpreter), m_Obj(), m_ObjInfo(), m_Member(), m_Args(), m_ArgInfos(), m_ResultInfo()
         {
         }
     private:
@@ -2742,7 +2742,7 @@ namespace BraceScriptInterpreter
             return false;
         }
     private:
-        ArrayHashtableMemberSetProvider(Brace::BraceScript& interpreter) :AbstractMemberSetApiProvider(interpreter)
+        ArrayHashtableMemberSetProvider(Brace::BraceCodeStructure& interpreter) :AbstractMemberSetApiProvider(interpreter)
         {
         }
     };
@@ -2816,10 +2816,10 @@ namespace BraceScriptInterpreter
             return false;
         }
     private:
-        int ExecuteArrayLength(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteArrayLength(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             const std::shared_ptr<void>& p = Brace::VarGetObject((m_ObjInfo.IsGlobal ? gvars : lvars), m_ObjInfo.VarIndex);
             int objTypeId = m_ObjInfo.ObjectTypeId;
             switch (objTypeId) {
@@ -2866,10 +2866,10 @@ namespace BraceScriptInterpreter
             }
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteHashtableCount(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteHashtableCount(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             const std::shared_ptr<void>& p = Brace::VarGetObject((m_ObjInfo.IsGlobal ? gvars : lvars), m_ObjInfo.VarIndex);
             int objTypeId = m_ObjInfo.ObjectTypeId;
             switch (objTypeId) {
@@ -2959,7 +2959,7 @@ namespace BraceScriptInterpreter
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
     private:
-        ArrayHashtableMemberGetProvider(Brace::BraceScript& interpreter) :AbstractMemberGetApiProvider(interpreter), m_Obj(), m_ObjInfo(), m_Member(), m_ResultInfo()
+        ArrayHashtableMemberGetProvider(Brace::BraceCodeStructure& interpreter) :AbstractMemberGetApiProvider(interpreter), m_Obj(), m_ObjInfo(), m_Member(), m_ResultInfo()
         {
         }
     private:
@@ -2980,7 +2980,7 @@ namespace BraceScriptInterpreter
         {
         }
     private:
-        ArrayHashtableCollectionCallProvider(Brace::BraceScript& interpreter) :AbstractCollectionCallApiProvider(interpreter)
+        ArrayHashtableCollectionCallProvider(Brace::BraceCodeStructure& interpreter) :AbstractCollectionCallApiProvider(interpreter)
         {}
     };
     class ArrayHashtableCollectionSetProvider final : public AbstractCollectionSetApiProvider
@@ -3255,7 +3255,7 @@ namespace BraceScriptInterpreter
             }
         }
     private:
-        ArrayHashtableCollectionSetProvider(Brace::BraceScript& interpreter) :AbstractCollectionSetApiProvider(interpreter)
+        ArrayHashtableCollectionSetProvider(Brace::BraceCodeStructure& interpreter) :AbstractCollectionSetApiProvider(interpreter)
         {}
     };
     class ArrayHashtableCollectionGetProvider final : public AbstractCollectionGetApiProvider
@@ -3520,7 +3520,7 @@ namespace BraceScriptInterpreter
             }
         }
     private:
-        ArrayHashtableCollectionGetProvider(Brace::BraceScript& interpreter) :AbstractCollectionGetApiProvider(interpreter)
+        ArrayHashtableCollectionGetProvider(Brace::BraceCodeStructure& interpreter) :AbstractCollectionGetApiProvider(interpreter)
         {}
     };
     class ArrayHashtableLoopListProvider final : public AbstractLoopListApiProvider
@@ -3539,7 +3539,7 @@ namespace BraceScriptInterpreter
             m_ObjVars = objVars;
         }
     private:
-        ArrayHashtableLoopListProvider(Brace::BraceScript& interpreter) :AbstractLoopListApiProvider(interpreter), m_IteratorIndex(INVALID_INDEX), m_IteratorIndexV(INVALID_INDEX), m_List(), m_ListInfo(), m_Statements(), m_ObjVars()
+        ArrayHashtableLoopListProvider(Brace::BraceCodeStructure& interpreter) :AbstractLoopListApiProvider(interpreter), m_IteratorIndex(INVALID_INDEX), m_IteratorIndexV(INVALID_INDEX), m_List(), m_ListInfo(), m_Statements(), m_ObjVars()
         {}
     private:
         bool TypeInference(const Brace::OperandLoadtimeInfo& listInfo, Brace::BraceApiExecutor& executor)
@@ -3639,10 +3639,10 @@ namespace BraceScriptInterpreter
             return false;
         }
     private:
-        int ExecuteBoolArray(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteBoolArray(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_List.isNull())
-                m_List(gvars, lvars);
+                m_List(runtime, gvars, lvars);
             auto& obj = Brace::VarGetObject((m_ListInfo.IsGlobal ? gvars : lvars), m_ListInfo.VarIndex);
             if (nullptr != obj) {
                 auto* ptr = obj.get();
@@ -3651,8 +3651,8 @@ namespace BraceScriptInterpreter
                     for (auto val : (*pArr)) {
                         Brace::VarSetBool(lvars, m_IteratorIndex, val);
                         for (auto&& statement : m_Statements) {
-                            int v = statement(gvars, lvars);
-                            if (IsForceQuit()) {
+                            int v = statement(runtime, gvars, lvars);
+                            if (runtime.IsForceQuit()) {
                                 FreeObjVars(lvars, m_ObjVars);
                                 return v;
                             }
@@ -3672,10 +3672,10 @@ namespace BraceScriptInterpreter
             FreeObjVars(lvars, m_ObjVars);
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteIntArray(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteIntArray(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_List.isNull())
-                m_List(gvars, lvars);
+                m_List(runtime, gvars, lvars);
             auto& obj = Brace::VarGetObject((m_ListInfo.IsGlobal ? gvars : lvars), m_ListInfo.VarIndex);
             if (nullptr != obj) {
                 auto* ptr = obj.get();
@@ -3684,8 +3684,8 @@ namespace BraceScriptInterpreter
                     for (auto val : (*pArr)) {
                         Brace::VarSetInt64(lvars, m_IteratorIndex, val);
                         for (auto&& statement : m_Statements) {
-                            int v = statement(gvars, lvars);
-                            if (IsForceQuit()) {
+                            int v = statement(runtime, gvars, lvars);
+                            if (runtime.IsForceQuit()) {
                                 FreeObjVars(lvars, m_ObjVars);
                                 return v;
                             }
@@ -3705,10 +3705,10 @@ namespace BraceScriptInterpreter
             FreeObjVars(lvars, m_ObjVars);
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteFloatArray(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteFloatArray(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_List.isNull())
-                m_List(gvars, lvars);
+                m_List(runtime, gvars, lvars);
             auto& obj = Brace::VarGetObject((m_ListInfo.IsGlobal ? gvars : lvars), m_ListInfo.VarIndex);
             if (nullptr != obj) {
                 auto* ptr = obj.get();
@@ -3717,8 +3717,8 @@ namespace BraceScriptInterpreter
                     for (auto val : (*pArr)) {
                         Brace::VarSetDouble(lvars, m_IteratorIndex, val);
                         for (auto&& statement : m_Statements) {
-                            int v = statement(gvars, lvars);
-                            if (IsForceQuit()) {
+                            int v = statement(runtime, gvars, lvars);
+                            if (runtime.IsForceQuit()) {
                                 FreeObjVars(lvars, m_ObjVars);
                                 return v;
                             }
@@ -3738,10 +3738,10 @@ namespace BraceScriptInterpreter
             FreeObjVars(lvars, m_ObjVars);
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteStringArray(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteStringArray(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_List.isNull())
-                m_List(gvars, lvars);
+                m_List(runtime, gvars, lvars);
             auto& obj = Brace::VarGetObject((m_ListInfo.IsGlobal ? gvars : lvars), m_ListInfo.VarIndex);
             if (nullptr != obj) {
                 auto* ptr = obj.get();
@@ -3750,8 +3750,8 @@ namespace BraceScriptInterpreter
                     for (auto&& val : (*pArr)) {
                         Brace::VarSetString(lvars, m_IteratorIndex, val);
                         for (auto&& statement : m_Statements) {
-                            int v = statement(gvars, lvars);
-                            if (IsForceQuit()) {
+                            int v = statement(runtime, gvars, lvars);
+                            if (runtime.IsForceQuit()) {
                                 FreeObjVars(lvars, m_ObjVars);
                                 return v;
                             }
@@ -3771,10 +3771,10 @@ namespace BraceScriptInterpreter
             FreeObjVars(lvars, m_ObjVars);
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteObjectArray(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteObjectArray(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_List.isNull())
-                m_List(gvars, lvars);
+                m_List(runtime, gvars, lvars);
             auto& obj = Brace::VarGetObject((m_ListInfo.IsGlobal ? gvars : lvars), m_ListInfo.VarIndex);
             if (nullptr != obj) {
                 auto* ptr = obj.get();
@@ -3783,8 +3783,8 @@ namespace BraceScriptInterpreter
                     for (auto&& val : (*pArr)) {
                         Brace::VarSetObject(lvars, m_IteratorIndex, val);
                         for (auto&& statement : m_Statements) {
-                            int v = statement(gvars, lvars);
-                            if (IsForceQuit()) {
+                            int v = statement(runtime, gvars, lvars);
+                            if (runtime.IsForceQuit()) {
                                 FreeObjVars(lvars, m_ObjVars);
                                 return v;
                             }
@@ -3804,10 +3804,10 @@ namespace BraceScriptInterpreter
             FreeObjVars(lvars, m_ObjVars);
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteIntBoolHashtable(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteIntBoolHashtable(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_List.isNull())
-                m_List(gvars, lvars);
+                m_List(runtime, gvars, lvars);
             auto& obj = Brace::VarGetObject((m_ListInfo.IsGlobal ? gvars : lvars), m_ListInfo.VarIndex);
             if (nullptr != obj) {
                 auto* ptr = obj.get();
@@ -3817,8 +3817,8 @@ namespace BraceScriptInterpreter
                         Brace::VarSetInt64(lvars, m_IteratorIndex, val.first);
                         Brace::VarSetBool(lvars, m_IteratorIndexV, val.second);
                         for (auto&& statement : m_Statements) {
-                            int v = statement(gvars, lvars);
-                            if (IsForceQuit()) {
+                            int v = statement(runtime, gvars, lvars);
+                            if (runtime.IsForceQuit()) {
                                 FreeObjVars(lvars, m_ObjVars);
                                 return v;
                             }
@@ -3838,10 +3838,10 @@ namespace BraceScriptInterpreter
             FreeObjVars(lvars, m_ObjVars);
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteIntIntHashtable(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteIntIntHashtable(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_List.isNull())
-                m_List(gvars, lvars);
+                m_List(runtime, gvars, lvars);
             auto& obj = Brace::VarGetObject((m_ListInfo.IsGlobal ? gvars : lvars), m_ListInfo.VarIndex);
             if (nullptr != obj) {
                 auto* ptr = obj.get();
@@ -3851,8 +3851,8 @@ namespace BraceScriptInterpreter
                         Brace::VarSetInt64(lvars, m_IteratorIndex, val.first);
                         Brace::VarSetInt64(lvars, m_IteratorIndexV, val.second);
                         for (auto&& statement : m_Statements) {
-                            int v = statement(gvars, lvars);
-                            if (IsForceQuit()) {
+                            int v = statement(runtime, gvars, lvars);
+                            if (runtime.IsForceQuit()) {
                                 FreeObjVars(lvars, m_ObjVars);
                                 return v;
                             }
@@ -3872,10 +3872,10 @@ namespace BraceScriptInterpreter
             FreeObjVars(lvars, m_ObjVars);
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteIntFloatHashtable(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteIntFloatHashtable(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_List.isNull())
-                m_List(gvars, lvars);
+                m_List(runtime, gvars, lvars);
             auto& obj = Brace::VarGetObject((m_ListInfo.IsGlobal ? gvars : lvars), m_ListInfo.VarIndex);
             if (nullptr != obj) {
                 auto* ptr = obj.get();
@@ -3885,8 +3885,8 @@ namespace BraceScriptInterpreter
                         Brace::VarSetInt64(lvars, m_IteratorIndex, val.first);
                         Brace::VarSetDouble(lvars, m_IteratorIndexV, val.second);
                         for (auto&& statement : m_Statements) {
-                            int v = statement(gvars, lvars);
-                            if (IsForceQuit()) {
+                            int v = statement(runtime, gvars, lvars);
+                            if (runtime.IsForceQuit()) {
                                 FreeObjVars(lvars, m_ObjVars);
                                 return v;
                             }
@@ -3906,10 +3906,10 @@ namespace BraceScriptInterpreter
             FreeObjVars(lvars, m_ObjVars);
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteIntStrHashtable(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteIntStrHashtable(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_List.isNull())
-                m_List(gvars, lvars);
+                m_List(runtime, gvars, lvars);
             auto& obj = Brace::VarGetObject((m_ListInfo.IsGlobal ? gvars : lvars), m_ListInfo.VarIndex);
             if (nullptr != obj) {
                 auto* ptr = obj.get();
@@ -3919,8 +3919,8 @@ namespace BraceScriptInterpreter
                         Brace::VarSetInt64(lvars, m_IteratorIndex, val.first);
                         Brace::VarSetString(lvars, m_IteratorIndexV, val.second);
                         for (auto&& statement : m_Statements) {
-                            int v = statement(gvars, lvars);
-                            if (IsForceQuit()) {
+                            int v = statement(runtime, gvars, lvars);
+                            if (runtime.IsForceQuit()) {
                                 FreeObjVars(lvars, m_ObjVars);
                                 return v;
                             }
@@ -3940,10 +3940,10 @@ namespace BraceScriptInterpreter
             FreeObjVars(lvars, m_ObjVars);
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteIntObjHashtable(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteIntObjHashtable(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_List.isNull())
-                m_List(gvars, lvars);
+                m_List(runtime, gvars, lvars);
             auto& obj = Brace::VarGetObject((m_ListInfo.IsGlobal ? gvars : lvars), m_ListInfo.VarIndex);
             if (nullptr != obj) {
                 auto* ptr = obj.get();
@@ -3953,8 +3953,8 @@ namespace BraceScriptInterpreter
                         Brace::VarSetInt64(lvars, m_IteratorIndex, val.first);
                         Brace::VarSetObject(lvars, m_IteratorIndexV, val.second);
                         for (auto&& statement : m_Statements) {
-                            int v = statement(gvars, lvars);
-                            if (IsForceQuit()) {
+                            int v = statement(runtime, gvars, lvars);
+                            if (runtime.IsForceQuit()) {
                                 FreeObjVars(lvars, m_ObjVars);
                                 return v;
                             }
@@ -3974,10 +3974,10 @@ namespace BraceScriptInterpreter
             FreeObjVars(lvars, m_ObjVars);
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteStrBoolHashtable(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteStrBoolHashtable(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_List.isNull())
-                m_List(gvars, lvars);
+                m_List(runtime, gvars, lvars);
             auto& obj = Brace::VarGetObject((m_ListInfo.IsGlobal ? gvars : lvars), m_ListInfo.VarIndex);
             if (nullptr != obj) {
                 auto* ptr = obj.get();
@@ -3987,8 +3987,8 @@ namespace BraceScriptInterpreter
                         Brace::VarSetString(lvars, m_IteratorIndex, val.first);
                         Brace::VarSetBool(lvars, m_IteratorIndexV, val.second);
                         for (auto&& statement : m_Statements) {
-                            int v = statement(gvars, lvars);
-                            if (IsForceQuit()) {
+                            int v = statement(runtime, gvars, lvars);
+                            if (runtime.IsForceQuit()) {
                                 FreeObjVars(lvars, m_ObjVars);
                                 return v;
                             }
@@ -4008,10 +4008,10 @@ namespace BraceScriptInterpreter
             FreeObjVars(lvars, m_ObjVars);
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteStrIntHashtable(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteStrIntHashtable(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_List.isNull())
-                m_List(gvars, lvars);
+                m_List(runtime, gvars, lvars);
             auto& obj = Brace::VarGetObject((m_ListInfo.IsGlobal ? gvars : lvars), m_ListInfo.VarIndex);
             if (nullptr != obj) {
                 auto* ptr = obj.get();
@@ -4021,8 +4021,8 @@ namespace BraceScriptInterpreter
                         Brace::VarSetString(lvars, m_IteratorIndex, val.first);
                         Brace::VarSetInt64(lvars, m_IteratorIndexV, val.second);
                         for (auto&& statement : m_Statements) {
-                            int v = statement(gvars, lvars);
-                            if (IsForceQuit()) {
+                            int v = statement(runtime, gvars, lvars);
+                            if (runtime.IsForceQuit()) {
                                 FreeObjVars(lvars, m_ObjVars);
                                 return v;
                             }
@@ -4042,10 +4042,10 @@ namespace BraceScriptInterpreter
             FreeObjVars(lvars, m_ObjVars);
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteStrFloatHashtable(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteStrFloatHashtable(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_List.isNull())
-                m_List(gvars, lvars);
+                m_List(runtime, gvars, lvars);
             auto& obj = Brace::VarGetObject((m_ListInfo.IsGlobal ? gvars : lvars), m_ListInfo.VarIndex);
             if (nullptr != obj) {
                 auto* ptr = obj.get();
@@ -4055,8 +4055,8 @@ namespace BraceScriptInterpreter
                         Brace::VarSetString(lvars, m_IteratorIndex, val.first);
                         Brace::VarSetDouble(lvars, m_IteratorIndexV, val.second);
                         for (auto&& statement : m_Statements) {
-                            int v = statement(gvars, lvars);
-                            if (IsForceQuit()) {
+                            int v = statement(runtime, gvars, lvars);
+                            if (runtime.IsForceQuit()) {
                                 FreeObjVars(lvars, m_ObjVars);
                                 return v;
                             }
@@ -4076,10 +4076,10 @@ namespace BraceScriptInterpreter
             FreeObjVars(lvars, m_ObjVars);
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteStrStrHashtable(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteStrStrHashtable(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_List.isNull())
-                m_List(gvars, lvars);
+                m_List(runtime, gvars, lvars);
             auto& obj = Brace::VarGetObject((m_ListInfo.IsGlobal ? gvars : lvars), m_ListInfo.VarIndex);
             if (nullptr != obj) {
                 auto* ptr = obj.get();
@@ -4089,8 +4089,8 @@ namespace BraceScriptInterpreter
                         Brace::VarSetString(lvars, m_IteratorIndex, val.first);
                         Brace::VarSetString(lvars, m_IteratorIndexV, val.second);
                         for (auto&& statement : m_Statements) {
-                            int v = statement(gvars, lvars);
-                            if (IsForceQuit()) {
+                            int v = statement(runtime, gvars, lvars);
+                            if (runtime.IsForceQuit()) {
                                 FreeObjVars(lvars, m_ObjVars);
                                 return v;
                             }
@@ -4110,10 +4110,10 @@ namespace BraceScriptInterpreter
             FreeObjVars(lvars, m_ObjVars);
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteStrObjHashtable(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteStrObjHashtable(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_List.isNull())
-                m_List(gvars, lvars);
+                m_List(runtime, gvars, lvars);
             auto& obj = Brace::VarGetObject((m_ListInfo.IsGlobal ? gvars : lvars), m_ListInfo.VarIndex);
             if (nullptr != obj) {
                 auto* ptr = obj.get();
@@ -4123,8 +4123,8 @@ namespace BraceScriptInterpreter
                         Brace::VarSetString(lvars, m_IteratorIndex, val.first);
                         Brace::VarSetObject(lvars, m_IteratorIndexV, val.second);
                         for (auto&& statement : m_Statements) {
-                            int v = statement(gvars, lvars);
-                            if (IsForceQuit()) {
+                            int v = statement(runtime, gvars, lvars);
+                            if (runtime.IsForceQuit()) {
                                 FreeObjVars(lvars, m_ObjVars);
                                 return v;
                             }
@@ -4202,13 +4202,13 @@ namespace BraceScriptInterpreter
             return true;
         }
     private:
-        ArrayHashtableLinqProvider(Brace::BraceScript& interpreter) :AbstractLinqApiProvider(interpreter), m_Operation(OPERATION_UNKNOWN), m_IteratorIndex(INVALID_INDEX), m_List(), m_ListInfo(), m_ArgInfos(), m_Args(), m_ResultInfo(), m_ObjVars()
+        ArrayHashtableLinqProvider(Brace::BraceCodeStructure& interpreter) :AbstractLinqApiProvider(interpreter), m_Operation(OPERATION_UNKNOWN), m_IteratorIndex(INVALID_INDEX), m_List(), m_ListInfo(), m_ArgInfos(), m_Args(), m_ResultInfo(), m_ObjVars()
         {}
     private:
-        int ExecuteObjectArray(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteObjectArray(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_List.isNull())
-                m_List(gvars, lvars);
+                m_List(runtime, gvars, lvars);
             auto& obj = Brace::VarGetObject((m_ListInfo.IsGlobal ? gvars : lvars), m_ListInfo.VarIndex);
             if (nullptr != obj) {
                 auto* ptr = obj.get();
@@ -4220,13 +4220,13 @@ namespace BraceScriptInterpreter
                     switch (m_Operation) {
                     case OPERATION_ORDERBY:
                     case OPERATION_ORDERBYDESC:
-                        ExecuteOrderBy(gvars, lvars, pArr, pNewArr, m_Operation == OPERATION_ORDERBY);
+                        ExecuteOrderBy(runtime, gvars, lvars, pArr, pNewArr, m_Operation == OPERATION_ORDERBY);
                         break;
                     case OPERATION_TOP:
-                        ExecuteTop(gvars, lvars, pArr, pNewArr);
+                        ExecuteTop(runtime, gvars, lvars, pArr, pNewArr);
                         break;
                     case OPERATION_WHERE:
-                        ExecuteWhere(gvars, lvars, pArr, pNewArr);
+                        ExecuteWhere(runtime, gvars, lvars, pArr, pNewArr);
                         break;
                     default:
                         break;
@@ -4235,7 +4235,7 @@ namespace BraceScriptInterpreter
             }
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        void ExecuteOrderBy(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars, const ObjectArray* pArr, ObjectArray* pNewArr, bool asc)const
+        void ExecuteOrderBy(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars, const ObjectArray* pArr, ObjectArray* pNewArr, bool asc)const
         {
             for (auto&& val : (*pArr)) {
                 pNewArr->push_back(val);
@@ -4245,7 +4245,7 @@ namespace BraceScriptInterpreter
                 Brace::VarSetObject(lvars, m_IteratorIndex, e1);
                 for (auto&& arg : m_Args) {
                     if (!arg.isNull())
-                        arg(gvars, lvars);
+                        arg(runtime, gvars, lvars);
                 }
                 sortVals.clear();
                 for (auto&& argInfo : m_ArgInfos) {
@@ -4259,7 +4259,7 @@ namespace BraceScriptInterpreter
                 Brace::VarSetObject(lvars, m_IteratorIndex, e2);
                 for (auto&& arg : m_Args) {
                     if (!arg.isNull())
-                        arg(gvars, lvars);
+                        arg(runtime, gvars, lvars);
                 }
                 int ix = 0;
                 for (auto&& argInfo : m_ArgInfos) {
@@ -4299,11 +4299,11 @@ namespace BraceScriptInterpreter
             });
             FreeObjVars(lvars, m_ObjVars);
         }
-        void ExecuteTop(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars, const ObjectArray* pArr, ObjectArray* pNewArr)const
+        void ExecuteTop(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars, const ObjectArray* pArr, ObjectArray* pNewArr)const
         {
             for (auto&& arg : m_Args) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             auto& argInfo = m_ArgInfos[0];
             int64_t n = Brace::VarGetI64((argInfo.IsGlobal ? gvars : lvars), argInfo.Type, argInfo.VarIndex);
@@ -4316,13 +4316,13 @@ namespace BraceScriptInterpreter
             }
             FreeObjVars(lvars, m_ObjVars);
         }
-        void ExecuteWhere(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars, const ObjectArray* pArr, ObjectArray* pNewArr)const
+        void ExecuteWhere(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars, const ObjectArray* pArr, ObjectArray* pNewArr)const
         {
             for (auto&& val : (*pArr)) {
                 Brace::VarSetObject(lvars, m_IteratorIndex, val);
                 for (auto&& arg : m_Args) {
                     if (!arg.isNull())
-                        arg(gvars, lvars);
+                        arg(runtime, gvars, lvars);
                 }
                 auto& argInfo = m_ArgInfos[0];
                 bool v = Brace::VarGetBoolean((argInfo.IsGlobal ? gvars : lvars), argInfo.Type, argInfo.VarIndex);
@@ -4432,7 +4432,7 @@ namespace BraceScriptInterpreter
             std::swap(m_ObjVars, objVars);
         }
     private:
-        ArrayHashtableSelectProvider(Brace::BraceScript& interpreter) :AbstractSelectApiProvider(interpreter)
+        ArrayHashtableSelectProvider(Brace::BraceCodeStructure& interpreter) :AbstractSelectApiProvider(interpreter)
             , m_Type()
             , m_List()
             , m_ListInfo()
@@ -4465,10 +4465,10 @@ namespace BraceScriptInterpreter
             , m_ObjVars()
         {}
     private:
-        int ExecuteObjectArray(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteObjectArray(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_List.isNull())
-                m_List(gvars, lvars);
+                m_List(runtime, gvars, lvars);
             ObjectArray* pArr = nullptr;
             std::shared_ptr<void> arrFromType;
             if (!m_Type.empty()) {
@@ -4489,17 +4489,17 @@ namespace BraceScriptInterpreter
             auto* pNewArr = new ObjectArray();
             std::shared_ptr<void> newArr(pNewArr);
             // where
-            ExecuteWhere(gvars, lvars, pArr, pNewArr);
+            ExecuteWhere(runtime, gvars, lvars, pArr, pNewArr);
             // orderby
-            ExecuteOrderBy(gvars, lvars, pNewArr);
+            ExecuteOrderBy(runtime, gvars, lvars, pNewArr);
             // groupby
             if (m_GroupIteratorIndex != INVALID_INDEX) {
                 std::vector<ObjectArray> groups{};
-                ExecuteGroupBy(gvars, lvars, pNewArr, groups);
-                return ExecuteGroupSelect(gvars, lvars, groups);
+                ExecuteGroupBy(runtime, gvars, lvars, pNewArr, groups);
+                return ExecuteGroupSelect(runtime, gvars, lvars, groups);
             }
             else {
-                return ExecuteSelect(gvars, lvars, pNewArr);
+                return ExecuteSelect(runtime, gvars, lvars, pNewArr);
             }
         }
         ObjectArray* BuildObjectArray(const std::string& className)const
@@ -4528,13 +4528,13 @@ namespace BraceScriptInterpreter
             }
             return nullptr;
         }
-        void ExecuteWhere(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars, const ObjectArray* pArr, ObjectArray* pNewArr)const
+        void ExecuteWhere(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars, const ObjectArray* pArr, ObjectArray* pNewArr)const
         {
             if (m_WhereIteratorIndex != INVALID_INDEX) {
                 for (auto&& val : (*pArr)) {
                     Brace::VarSetObject(lvars, m_WhereIteratorIndex, val);
                     if (!m_WhereArg.isNull())
-                        m_WhereArg(gvars, lvars);
+                        m_WhereArg(runtime, gvars, lvars);
                     bool v = Brace::VarGetBoolean((m_WhereArgInfo.IsGlobal ? gvars : lvars), m_WhereArgInfo.Type, m_WhereArgInfo.VarIndex);
                     if (v)
                         pNewArr->push_back(val);
@@ -4547,7 +4547,7 @@ namespace BraceScriptInterpreter
                 }
             }
         }
-        void ExecuteOrderBy(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars, ObjectArray* pNewArr)const
+        void ExecuteOrderBy(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars, ObjectArray* pNewArr)const
         {
             if (m_OrderIteratorIndex != INVALID_INDEX) {
                 std::vector<CmpVal> sortVals{};
@@ -4555,7 +4555,7 @@ namespace BraceScriptInterpreter
                     Brace::VarSetObject(lvars, m_OrderIteratorIndex, e1);
                     for (auto&& arg : m_OrderArgs) {
                         if (!arg.isNull())
-                            arg(gvars, lvars);
+                            arg(runtime, gvars, lvars);
                     }
                     sortVals.clear();
                     for (auto&& argInfo : m_OrderArgInfos) {
@@ -4569,7 +4569,7 @@ namespace BraceScriptInterpreter
                     Brace::VarSetObject(lvars, m_OrderIteratorIndex, e2);
                     for (auto&& arg : m_OrderArgs) {
                         if (!arg.isNull())
-                            arg(gvars, lvars);
+                            arg(runtime, gvars, lvars);
                     }
                     int ix = 0;
                     for (auto&& argInfo : m_OrderArgInfos) {
@@ -4611,7 +4611,7 @@ namespace BraceScriptInterpreter
                 FreeObjVars(lvars, m_OrderObjVars);
             }
         }
-        void ExecuteGroupBy(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars, ObjectArray* pNewArr, std::vector<ObjectArray>& groups)const
+        void ExecuteGroupBy(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars, ObjectArray* pNewArr, std::vector<ObjectArray>& groups)const
         {
             std::vector<CmpVal> groupVals{};
             auto& arr = *pNewArr;
@@ -4619,7 +4619,7 @@ namespace BraceScriptInterpreter
                 Brace::VarSetObject(lvars, m_GroupIteratorIndex, optr);
                 for (auto&& arg : m_GroupArgs) {
                     if (!arg.isNull())
-                        arg(gvars, lvars);
+                        arg(runtime, gvars, lvars);
                 }
                 bool newGroup = false;
                 if (groupVals.empty()) {
@@ -4664,13 +4664,13 @@ namespace BraceScriptInterpreter
             }
             FreeObjVars(lvars, m_GroupObjVars);
         }
-        int ExecuteGroupSelect(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars, const std::vector<ObjectArray>& groups)const
+        int ExecuteGroupSelect(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars, const std::vector<ObjectArray>& groups)const
         {
             // top
             int64_t topn = -1;
             if (m_TopArgInfo.VarIndex != INVALID_INDEX) {
                 if (!m_TopArg.isNull())
-                    m_TopArg(gvars, lvars);
+                    m_TopArg(runtime, gvars, lvars);
                 topn = Brace::VarGetI64((m_TopArgInfo.IsGlobal ? gvars : lvars), m_TopArgInfo.Type, m_TopArgInfo.VarIndex);
                 FreeObjVars(lvars, m_TopObjVars);
             }
@@ -4680,12 +4680,12 @@ namespace BraceScriptInterpreter
                     std::vector<CmpVal> selectVals{};
                     int64_t resultCount = 0;
                     for (auto&& group : groups) {
-                        if (!ExecuteGroupStatAndHaving(gvars, lvars, group, selectVals)) {
+                        if (!ExecuteGroupStatAndHaving(runtime, gvars, lvars, group, selectVals)) {
                             continue;
                         }
                         for (auto&& statement : m_Statements) {
-                            int v = statement(gvars, lvars);
-                            if (IsForceQuit()) {
+                            int v = statement(runtime, gvars, lvars);
+                            if (runtime.IsForceQuit()) {
                                 FreeObjVars(lvars, m_ObjVars);
                                 return v;
                             }
@@ -4712,7 +4712,7 @@ namespace BraceScriptInterpreter
                     std::stringstream ss;
                     int64_t resultCount = 0;
                     for (auto&& group : groups) {
-                        if (!ExecuteGroupStatAndHaving(gvars, lvars, group, selectVals)) {
+                        if (!ExecuteGroupStatAndHaving(runtime, gvars, lvars, group, selectVals)) {
                             continue;
                         }
                         ss.str(std::string());
@@ -4753,7 +4753,7 @@ namespace BraceScriptInterpreter
             }
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        bool ExecuteGroupStatAndHaving(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars, const ObjectArray& group, std::vector<CmpVal>& selectVals)const
+        bool ExecuteGroupStatAndHaving(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars, const ObjectArray& group, std::vector<CmpVal>& selectVals)const
         {
             selectVals.clear();
             bool first = true;
@@ -4761,7 +4761,7 @@ namespace BraceScriptInterpreter
                 Brace::VarSetObject(lvars, m_SelectIteratorIndex, optr);
                 for (auto&& arg : m_SelectArgs) {
                     if (!arg.isNull())
-                        arg(gvars, lvars);
+                        arg(runtime, gvars, lvars);
                 }
                 bool update = false;
                 int six = 0;
@@ -4924,7 +4924,7 @@ namespace BraceScriptInterpreter
             }
             if (m_HavingArgInfo.VarIndex != INVALID_INDEX) {
                 if (!m_HavingArg.isNull())
-                    m_HavingArg(gvars, lvars);
+                    m_HavingArg(runtime, gvars, lvars);
                 bool v = Brace::VarGetBoolean((m_HavingArgInfo.IsGlobal ? gvars : lvars), m_HavingArgInfo.Type, m_HavingArgInfo.VarIndex);
                 if (!v) {
                     FreeObjVars(lvars, m_SelectObjVars);
@@ -4933,12 +4933,12 @@ namespace BraceScriptInterpreter
             }
             return true;
         }
-        int ExecuteSelect(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars, ObjectArray* pNewArr)const
+        int ExecuteSelect(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars, ObjectArray* pNewArr)const
         {
             // top
             if (m_TopArgInfo.VarIndex != INVALID_INDEX) {
                 if (!m_TopArg.isNull())
-                    m_TopArg(gvars, lvars);
+                    m_TopArg(runtime, gvars, lvars);
                 int64_t n = Brace::VarGetI64((m_TopArgInfo.IsGlobal ? gvars : lvars), m_TopArgInfo.Type, m_TopArgInfo.VarIndex);
                 auto& arr = *pNewArr;
                 if (static_cast<int64_t>(arr.size()) > n) {
@@ -4956,7 +4956,7 @@ namespace BraceScriptInterpreter
                         Brace::VarSetObject(lvars, m_SelectIteratorIndex, optr);
                         for (auto&& arg : m_SelectArgs) {
                             if (!arg.isNull())
-                                arg(gvars, lvars);
+                                arg(runtime, gvars, lvars);
                         }
                         int itIndex = 0;
                         for (auto&& argInfo : m_SelectArgInfos) {
@@ -4965,8 +4965,8 @@ namespace BraceScriptInterpreter
                             (*fptr)(lvars, vix, lvars, argInfo.VarIndex);
                         }
                         for (auto&& statement : m_Statements) {
-                            int v = statement(gvars, lvars);
-                            if (IsForceQuit()) {
+                            int v = statement(runtime, gvars, lvars);
+                            if (runtime.IsForceQuit()) {
                                 FreeObjVars(lvars, m_SelectObjVars);
                                 FreeObjVars(lvars, m_ObjVars);
                                 return v;
@@ -4993,7 +4993,7 @@ namespace BraceScriptInterpreter
                         Brace::VarSetObject(lvars, m_SelectIteratorIndex, optr);
                         for (auto&& arg : m_SelectArgs) {
                             if (!arg.isNull())
-                                arg(gvars, lvars);
+                                arg(runtime, gvars, lvars);
                         }
                         std::stringstream ss;
                         bool first = true;
@@ -5126,13 +5126,13 @@ namespace BraceScriptInterpreter
             return false;
         }
     private:
-        int ExecuteReplaceAll(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteReplaceAll(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_Obj.isNull())
-                m_Obj(gvars, lvars);
+                m_Obj(runtime, gvars, lvars);
             for (auto&& _arg : m_Args) {
                 if (!_arg.isNull())
-                    _arg(gvars, lvars);
+                    _arg(runtime, gvars, lvars);
             }
             auto& strInfo = m_ObjInfo;
             auto& strInfo1 = m_ArgInfos[0];
@@ -5146,7 +5146,7 @@ namespace BraceScriptInterpreter
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
     private:
-        StringMemberCallProvider(Brace::BraceScript& interpreter) :AbstractMemberCallApiProvider(interpreter), m_Obj(), m_ObjInfo(), m_Member(), m_Args(), m_ArgInfos(), m_ResultInfo()
+        StringMemberCallProvider(Brace::BraceCodeStructure& interpreter) :AbstractMemberCallApiProvider(interpreter), m_Obj(), m_ObjInfo(), m_Member(), m_Args(), m_ArgInfos(), m_ResultInfo()
         {
         }
     private:
@@ -5166,7 +5166,7 @@ namespace BraceScriptInterpreter
             return false;
         }
     private:
-        StringMemberSetProvider(Brace::BraceScript& interpreter) :AbstractMemberSetApiProvider(interpreter)
+        StringMemberSetProvider(Brace::BraceCodeStructure& interpreter) :AbstractMemberSetApiProvider(interpreter)
         {}
     };
     class StringMemberGetProvider final : public AbstractMemberGetApiProvider
@@ -5178,7 +5178,7 @@ namespace BraceScriptInterpreter
             return false;
         }
     private:
-        StringMemberGetProvider(Brace::BraceScript& interpreter) :AbstractMemberGetApiProvider(interpreter)
+        StringMemberGetProvider(Brace::BraceCodeStructure& interpreter) :AbstractMemberGetApiProvider(interpreter)
         {}
     };
     class StringCollectionCallProvider final : public AbstractCollectionCallApiProvider
@@ -5193,7 +5193,7 @@ namespace BraceScriptInterpreter
         {
         }
     private:
-        StringCollectionCallProvider(Brace::BraceScript& interpreter) :AbstractCollectionCallApiProvider(interpreter)
+        StringCollectionCallProvider(Brace::BraceCodeStructure& interpreter) :AbstractCollectionCallApiProvider(interpreter)
         {}
     };
     class StringCollectionSetProvider final : public AbstractCollectionSetApiProvider
@@ -5227,7 +5227,7 @@ namespace BraceScriptInterpreter
             }
         }
     private:
-        StringCollectionSetProvider(Brace::BraceScript& interpreter) :AbstractCollectionSetApiProvider(interpreter)
+        StringCollectionSetProvider(Brace::BraceCodeStructure& interpreter) :AbstractCollectionSetApiProvider(interpreter)
         {}
     };
     class StringCollectionGetProvider final : public AbstractCollectionGetApiProvider
@@ -5259,7 +5259,7 @@ namespace BraceScriptInterpreter
             Brace::VarSetUInt8((resultInfo.IsGlobal ? gvars : lvars), resultInfo.VarIndex, static_cast<uint8_t>(v));
         }
     private:
-        StringCollectionGetProvider(Brace::BraceScript& interpreter) :AbstractCollectionGetApiProvider(interpreter)
+        StringCollectionGetProvider(Brace::BraceCodeStructure& interpreter) :AbstractCollectionGetApiProvider(interpreter)
         {}
     };
     class StringLoopListProvider final : public AbstractLoopListApiProvider
@@ -5278,7 +5278,7 @@ namespace BraceScriptInterpreter
             m_ObjVars = objVars;
         }
     private:
-        StringLoopListProvider(Brace::BraceScript& interpreter) :AbstractLoopListApiProvider(interpreter), m_IteratorIndex(INVALID_INDEX), m_List(), m_ListInfo(), m_Statements(), m_ObjVars()
+        StringLoopListProvider(Brace::BraceCodeStructure& interpreter) :AbstractLoopListApiProvider(interpreter), m_IteratorIndex(INVALID_INDEX), m_List(), m_ListInfo(), m_Statements(), m_ObjVars()
         {}
     private:
         bool TypeInference(const Brace::OperandLoadtimeInfo& listInfo, Brace::BraceApiExecutor& executor)
@@ -5290,16 +5290,16 @@ namespace BraceScriptInterpreter
             }
             return false;
         }
-        int Execute(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int Execute(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             if (!m_List.isNull())
-                m_List(gvars, lvars);
+                m_List(runtime, gvars, lvars);
             auto& str = Brace::VarGetString((m_ListInfo.IsGlobal ? gvars : lvars), m_ListInfo.VarIndex);
             for (char val : str) {
                 Brace::VarSetUInt8(lvars, m_IteratorIndex, static_cast<uint8_t>(val));
                 for (auto&& statement : m_Statements) {
-                    int v = statement(gvars, lvars);
-                    if (IsForceQuit()) {
+                    int v = statement(runtime, gvars, lvars);
+                    if (runtime.IsForceQuit()) {
                         FreeObjVars(lvars, m_ObjVars);
                         return v;
                     }
@@ -5328,7 +5328,7 @@ namespace BraceScriptInterpreter
     class MemberCallExp final : public Brace::AbstractBraceApi
     {
     public:
-        MemberCallExp(Brace::BraceScript& interpreter) :Brace::AbstractBraceApi(interpreter), m_ApiProvider()
+        MemberCallExp(Brace::BraceCodeStructure& interpreter) :Brace::AbstractBraceApi(interpreter), m_ApiProvider()
         {
         }
     protected:
@@ -5360,13 +5360,13 @@ namespace BraceScriptInterpreter
                     AbstractMemberCallApiProvider* pProvider = nullptr;
                     switch (pInfo->ObjectCategory) {
                     case BRACE_OBJECT_CATEGORY_SPECIAL:
-                        pProvider = new CppObjectMemberCallProvider(GetInterpreter());
+                        pProvider = new CppObjectMemberCallProvider(GetCodeStructure());
                         break;
                     case BRACE_OBJECT_CATEGORY_STRUCT:
-                        pProvider = new StructMemberCallProvider(GetInterpreter());
+                        pProvider = new StructMemberCallProvider(GetCodeStructure());
                         break;
                     default:
-                        pProvider = new ArrayHashtableMemberCallProvider(GetInterpreter());
+                        pProvider = new ArrayHashtableMemberCallProvider(GetCodeStructure());
                         break;
                     }
                     if (pProvider) {
@@ -5378,7 +5378,7 @@ namespace BraceScriptInterpreter
             else if (objInfo.Type == Brace::BRACE_DATA_TYPE_STRING) {
                 auto* pInfo = ObjectInfoMgr().GetBraceObjectInfo(CUSTOM_BRACE_OBJECT_TYPE_STRING);
                 if (nullptr != pInfo) {
-                    AbstractMemberCallApiProvider* pProvider = new StringMemberCallProvider(GetInterpreter());
+                    AbstractMemberCallApiProvider* pProvider = new StringMemberCallProvider(GetCodeStructure());
                     if (pProvider) {
                         m_ApiProvider.reset(pProvider);
                         return pProvider->LoadMemberCall(func, data, *pInfo, std::move(objInfo), std::move(obj), std::move(member), std::move(argInfos), std::move(args), resultInfo, executor);
@@ -5397,7 +5397,7 @@ namespace BraceScriptInterpreter
     class MemberSetExp final : public Brace::AbstractBraceApi
     {
     public:
-        MemberSetExp(Brace::BraceScript& interpreter) :Brace::AbstractBraceApi(interpreter), m_ApiProvider()
+        MemberSetExp(Brace::BraceCodeStructure& interpreter) :Brace::AbstractBraceApi(interpreter), m_ApiProvider()
         {
         }
     protected:
@@ -5419,13 +5419,13 @@ namespace BraceScriptInterpreter
                     AbstractMemberSetApiProvider* pProvider = nullptr;
                     switch (pInfo->ObjectCategory) {
                     case BRACE_OBJECT_CATEGORY_SPECIAL:
-                        pProvider = new CppObjectMemberSetProvider(GetInterpreter());
+                        pProvider = new CppObjectMemberSetProvider(GetCodeStructure());
                         break;
                     case BRACE_OBJECT_CATEGORY_STRUCT:
-                        pProvider = new StructMemberSetProvider(GetInterpreter());
+                        pProvider = new StructMemberSetProvider(GetCodeStructure());
                         break;
                     default:
-                        pProvider = new ArrayHashtableMemberSetProvider(GetInterpreter());
+                        pProvider = new ArrayHashtableMemberSetProvider(GetCodeStructure());
                         break;
                     }
                     if (pProvider) {
@@ -5437,7 +5437,7 @@ namespace BraceScriptInterpreter
             else if (objInfo.Type == Brace::BRACE_DATA_TYPE_STRING) {
                 auto* pInfo = ObjectInfoMgr().GetBraceObjectInfo(CUSTOM_BRACE_OBJECT_TYPE_STRING);
                 if (nullptr != pInfo) {
-                    AbstractMemberSetApiProvider* pProvider = new StringMemberSetProvider(GetInterpreter());
+                    AbstractMemberSetApiProvider* pProvider = new StringMemberSetProvider(GetCodeStructure());
                     if (pProvider) {
                         m_ApiProvider.reset(pProvider);
                         return pProvider->LoadMemberSet(func, data, *pInfo, std::move(objInfo), std::move(obj), std::move(member), std::move(argLoadInfo), std::move(p), resultInfo, executor);
@@ -5453,7 +5453,7 @@ namespace BraceScriptInterpreter
     class MemberGetExp final : public Brace::AbstractBraceApi
     {
     public:
-        MemberGetExp(Brace::BraceScript& interpreter) :Brace::AbstractBraceApi(interpreter), m_ApiProvider()
+        MemberGetExp(Brace::BraceCodeStructure& interpreter) :Brace::AbstractBraceApi(interpreter), m_ApiProvider()
         {
         }
     protected:
@@ -5472,13 +5472,13 @@ namespace BraceScriptInterpreter
                     AbstractMemberGetApiProvider* pProvider = nullptr;
                     switch (pInfo->ObjectCategory) {
                     case BRACE_OBJECT_CATEGORY_SPECIAL:
-                        pProvider = new CppObjectMemberGetProvider(GetInterpreter());
+                        pProvider = new CppObjectMemberGetProvider(GetCodeStructure());
                         break;
                     case BRACE_OBJECT_CATEGORY_STRUCT:
-                        pProvider = new StructMemberGetProvider(GetInterpreter());
+                        pProvider = new StructMemberGetProvider(GetCodeStructure());
                         break;
                     default:
-                        pProvider = new ArrayHashtableMemberGetProvider(GetInterpreter());
+                        pProvider = new ArrayHashtableMemberGetProvider(GetCodeStructure());
                         break;
                     }
                     if (pProvider) {
@@ -5490,7 +5490,7 @@ namespace BraceScriptInterpreter
             else if (objInfo.Type == Brace::BRACE_DATA_TYPE_STRING) {
                 auto* pInfo = ObjectInfoMgr().GetBraceObjectInfo(CUSTOM_BRACE_OBJECT_TYPE_STRING);
                 if (nullptr != pInfo) {
-                    AbstractMemberGetApiProvider* pProvider = new StringMemberGetProvider(GetInterpreter());
+                    AbstractMemberGetApiProvider* pProvider = new StringMemberGetProvider(GetCodeStructure());
                     if (pProvider) {
                         m_ApiProvider.reset(pProvider);
                         return pProvider->LoadMemberGet(func, data, *pInfo, std::move(objInfo), std::move(obj), std::move(member), resultInfo, executor);
@@ -5508,7 +5508,7 @@ namespace BraceScriptInterpreter
     class CollectionCallExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        CollectionCallExp(Brace::BraceScript& interpreter) :Brace::SimpleBraceApiBase(interpreter), m_ApiProvider()
+        CollectionCallExp(Brace::BraceCodeStructure& interpreter) :Brace::SimpleBraceApiBase(interpreter), m_ApiProvider()
         {
         }
     protected:
@@ -5525,7 +5525,7 @@ namespace BraceScriptInterpreter
                     switch (pInfo->ObjectCategory) {
                     case BRACE_OBJECT_CATEGORY_SPECIAL:
                     default:
-                        pProvider = new ArrayHashtableCollectionCallProvider(GetInterpreter());
+                        pProvider = new ArrayHashtableCollectionCallProvider(GetCodeStructure());
                         break;
                     }
                     if (pProvider) {
@@ -5537,7 +5537,7 @@ namespace BraceScriptInterpreter
             else if (arr.Type == Brace::BRACE_DATA_TYPE_STRING) {
                 auto* pInfo = ObjectInfoMgr().GetBraceObjectInfo(CUSTOM_BRACE_OBJECT_TYPE_STRING);
                 if (nullptr != pInfo) {
-                    AbstractCollectionCallApiProvider* pProvider = new StringCollectionCallProvider(GetInterpreter());
+                    AbstractCollectionCallApiProvider* pProvider = new StringCollectionCallProvider(GetCodeStructure());
                     if (pProvider) {
                         m_ApiProvider.reset(pProvider);
                         return pProvider->TypeInference(func, data, *pInfo, argInfos, resultInfo);
@@ -5557,7 +5557,7 @@ namespace BraceScriptInterpreter
     class CollectionSetExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        CollectionSetExp(Brace::BraceScript& interpreter) :Brace::SimpleBraceApiBase(interpreter), m_ApiProvider()
+        CollectionSetExp(Brace::BraceCodeStructure& interpreter) :Brace::SimpleBraceApiBase(interpreter), m_ApiProvider()
         {
         }
     protected:
@@ -5575,7 +5575,7 @@ namespace BraceScriptInterpreter
                     switch (pInfo->ObjectCategory) {
                     case BRACE_OBJECT_CATEGORY_SPECIAL:
                     default:
-                        pProvider = new ArrayHashtableCollectionSetProvider(GetInterpreter());
+                        pProvider = new ArrayHashtableCollectionSetProvider(GetCodeStructure());
                         break;
                     }
                     if (pProvider) {
@@ -5587,7 +5587,7 @@ namespace BraceScriptInterpreter
             else if (arr.Type == Brace::BRACE_DATA_TYPE_STRING) {
                 auto* pInfo = ObjectInfoMgr().GetBraceObjectInfo(CUSTOM_BRACE_OBJECT_TYPE_STRING);
                 if (nullptr != pInfo) {
-                    AbstractCollectionSetApiProvider* pProvider = new StringCollectionSetProvider(GetInterpreter());
+                    AbstractCollectionSetApiProvider* pProvider = new StringCollectionSetProvider(GetCodeStructure());
                     if (pProvider) {
                         m_ApiProvider.reset(pProvider);
                         return pProvider->TypeInference(func, data, *pInfo, arr, ix, val, resultInfo);
@@ -5612,7 +5612,7 @@ namespace BraceScriptInterpreter
     class CollectionGetExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        CollectionGetExp(Brace::BraceScript& interpreter) :Brace::SimpleBraceApiBase(interpreter), m_ApiProvider()
+        CollectionGetExp(Brace::BraceCodeStructure& interpreter) :Brace::SimpleBraceApiBase(interpreter), m_ApiProvider()
         {
         }
     protected:
@@ -5629,7 +5629,7 @@ namespace BraceScriptInterpreter
                     switch (pInfo->ObjectCategory) {
                     case BRACE_OBJECT_CATEGORY_SPECIAL:
                     default:
-                        pProvider = new ArrayHashtableCollectionGetProvider(GetInterpreter());
+                        pProvider = new ArrayHashtableCollectionGetProvider(GetCodeStructure());
                         break;
                     }
                     if (pProvider) {
@@ -5641,7 +5641,7 @@ namespace BraceScriptInterpreter
             else if (arr.Type == Brace::BRACE_DATA_TYPE_STRING) {
                 auto* pInfo = ObjectInfoMgr().GetBraceObjectInfo(CUSTOM_BRACE_OBJECT_TYPE_STRING);
                 if (nullptr != pInfo) {
-                    AbstractCollectionGetApiProvider* pProvider = new StringCollectionGetProvider(GetInterpreter());
+                    AbstractCollectionGetApiProvider* pProvider = new StringCollectionGetProvider(GetCodeStructure());
                     if (pProvider) {
                         m_ApiProvider.reset(pProvider);
                         return pProvider->TypeInference(func, data, *pInfo, arr, ix, resultInfo);
@@ -5665,7 +5665,7 @@ namespace BraceScriptInterpreter
     class LambdaExp final : public Brace::AbstractBraceApi
     {
     public:
-        LambdaExp(Brace::BraceScript& interpreter) :Brace::AbstractBraceApi(interpreter)
+        LambdaExp(Brace::BraceCodeStructure& interpreter) :Brace::AbstractBraceApi(interpreter)
         {
         }
     protected:
@@ -5684,7 +5684,7 @@ namespace BraceScriptInterpreter
     class LinqExp final : public Brace::AbstractBraceApi
     {
     public:
-        LinqExp(Brace::BraceScript& interpreter) :Brace::AbstractBraceApi(interpreter)
+        LinqExp(Brace::BraceCodeStructure& interpreter) :Brace::AbstractBraceApi(interpreter)
         {
         }
     protected:
@@ -5704,7 +5704,7 @@ namespace BraceScriptInterpreter
                 if (listInfo.Type == Brace::BRACE_DATA_TYPE_OBJECT) {
                     pInfo = ObjectInfoMgr().GetBraceObjectInfo(listInfo.ObjectTypeId);
                     if (nullptr != pInfo && pInfo->ObjectCategory == BRACE_OBJECT_CATEGORY_OBJ_ARRAY) {
-                        pProvider = new ArrayHashtableLinqProvider(GetInterpreter());
+                        pProvider = new ArrayHashtableLinqProvider(GetCodeStructure());
                     }
                 }
                 if (nullptr != pInfo && nullptr != pProvider) {
@@ -5741,7 +5741,7 @@ namespace BraceScriptInterpreter
     class SelectExp final : public Brace::AbstractBraceApi
     {
     public:
-        SelectExp(Brace::BraceScript& interpreter) :Brace::AbstractBraceApi(interpreter)
+        SelectExp(Brace::BraceCodeStructure& interpreter) :Brace::AbstractBraceApi(interpreter)
         {
         }
     protected:
@@ -5753,7 +5753,7 @@ namespace BraceScriptInterpreter
 
             int fnum = statementData.GetFunctionNum();
             BraceObjectInfo* pInfo = nullptr;
-            AbstractSelectApiProvider* pProvider = new ArrayHashtableSelectProvider(GetInterpreter());
+            AbstractSelectApiProvider* pProvider = new ArrayHashtableSelectProvider(GetCodeStructure());
             for (int ix = 0; ix < fnum; ++ix) {
                 DslData::FunctionData* pFuncData = statementData.GetFunction(ix)->AsFunction();
                 if (nullptr != pFuncData) {
@@ -5994,7 +5994,7 @@ namespace BraceScriptInterpreter
             ARRAY_OBJ
         };
     public:
-        ArrayExp(Brace::BraceScript& interpreter) :Brace::AbstractBraceApi(interpreter), m_ObjectTypeId(Brace::PREDEFINED_BRACE_OBJECT_TYPE_NOTOBJ), m_Args(), m_ArgInfos(), m_ResultInfo()
+        ArrayExp(Brace::BraceCodeStructure& interpreter) :Brace::AbstractBraceApi(interpreter), m_ObjectTypeId(Brace::PREDEFINED_BRACE_OBJECT_TYPE_NOTOBJ), m_Args(), m_ArgInfos(), m_ResultInfo()
         {
         }
     protected:
@@ -6189,11 +6189,11 @@ namespace BraceScriptInterpreter
             }
         }
     private:
-        int ExecuteBool(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteBool(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             for (auto&& arg : m_Args) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             using BoolArrayObj = ArrayT<bool>;
             auto* p = new BoolArrayObj();
@@ -6204,11 +6204,11 @@ namespace BraceScriptInterpreter
             Brace::VarSetObject((m_ResultInfo.IsGlobal ? gvars : lvars), m_ResultInfo.VarIndex, std::shared_ptr<void>(p));
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteInt(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteInt(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             for (auto&& arg : m_Args) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             using IntArrayObj = ArrayT<int64_t>;
             auto* p = new IntArrayObj();
@@ -6219,11 +6219,11 @@ namespace BraceScriptInterpreter
             Brace::VarSetObject((m_ResultInfo.IsGlobal ? gvars : lvars), m_ResultInfo.VarIndex, std::shared_ptr<void>(p));
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteFloat(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteFloat(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             for (auto&& arg : m_Args) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             using FloatArrayObj = ArrayT<double>;
             auto* p = new FloatArrayObj();
@@ -6234,11 +6234,11 @@ namespace BraceScriptInterpreter
             Brace::VarSetObject((m_ResultInfo.IsGlobal ? gvars : lvars), m_ResultInfo.VarIndex, std::shared_ptr<void>(p));
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteString(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteString(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             for (auto&& arg : m_Args) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             using StrArrayObj = ArrayT<std::string>;
             auto* p = new StrArrayObj();
@@ -6249,11 +6249,11 @@ namespace BraceScriptInterpreter
             Brace::VarSetObject((m_ResultInfo.IsGlobal ? gvars : lvars), m_ResultInfo.VarIndex, std::shared_ptr<void>(p));
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteObject(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteObject(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             for (auto&& arg : m_Args) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             auto* p = new ObjectArray();
             for (auto&& ai : m_ArgInfos) {
@@ -6286,7 +6286,7 @@ namespace BraceScriptInterpreter
             HASHTABLE_INT_OBJ
         };
     public:
-        HashtableExp(Brace::BraceScript& interpreter) :Brace::AbstractBraceApi(interpreter)
+        HashtableExp(Brace::BraceCodeStructure& interpreter) :Brace::AbstractBraceApi(interpreter)
         {
         }
     protected:
@@ -6794,15 +6794,15 @@ namespace BraceScriptInterpreter
             }
         }
     private:
-        int ExecuteIntStr(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteIntStr(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             for (auto&& arg : m_ArgKeys) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             for (auto&& arg : m_ArgVals) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             using HashtableObj = HashtableT<int64_t, std::string>;
             auto* p = new HashtableObj();
@@ -6816,15 +6816,15 @@ namespace BraceScriptInterpreter
             Brace::VarSetObject((m_ResultInfo.IsGlobal ? gvars : lvars), m_ResultInfo.VarIndex, std::shared_ptr<void>(p));
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteIntInt(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteIntInt(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             for (auto&& arg : m_ArgKeys) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             for (auto&& arg : m_ArgVals) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             using HashtableObj = HashtableT<int64_t, int64_t>;
             auto* p = new HashtableObj();
@@ -6838,15 +6838,15 @@ namespace BraceScriptInterpreter
             Brace::VarSetObject((m_ResultInfo.IsGlobal ? gvars : lvars), m_ResultInfo.VarIndex, std::shared_ptr<void>(p));
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteIntFloat(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteIntFloat(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             for (auto&& arg : m_ArgKeys) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             for (auto&& arg : m_ArgVals) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             using HashtableObj = HashtableT<int64_t, double>;
             auto* p = new HashtableObj();
@@ -6860,15 +6860,15 @@ namespace BraceScriptInterpreter
             Brace::VarSetObject((m_ResultInfo.IsGlobal ? gvars : lvars), m_ResultInfo.VarIndex, std::shared_ptr<void>(p));
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteIntBool(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteIntBool(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             for (auto&& arg : m_ArgKeys) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             for (auto&& arg : m_ArgVals) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             using HashtableObj = HashtableT<int64_t, bool>;
             auto* p = new HashtableObj();
@@ -6882,15 +6882,15 @@ namespace BraceScriptInterpreter
             Brace::VarSetObject((m_ResultInfo.IsGlobal ? gvars : lvars), m_ResultInfo.VarIndex, std::shared_ptr<void>(p));
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteIntObj(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteIntObj(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             for (auto&& arg : m_ArgKeys) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             for (auto&& arg : m_ArgVals) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             auto* p = new IntObjHashtable();
             for (int ix = 0; ix < static_cast<int>(m_ArgKeyInfos.size()) && ix < static_cast<int>(m_ArgValInfos.size()); ++ix) {
@@ -6903,15 +6903,15 @@ namespace BraceScriptInterpreter
             Brace::VarSetObject((m_ResultInfo.IsGlobal ? gvars : lvars), m_ResultInfo.VarIndex, std::shared_ptr<void>(p));
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteStrStr(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteStrStr(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             for (auto&& arg : m_ArgKeys) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             for (auto&& arg : m_ArgVals) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             using HashtableObj = HashtableT<std::string, std::string>;
             auto* p = new HashtableObj();
@@ -6925,15 +6925,15 @@ namespace BraceScriptInterpreter
             Brace::VarSetObject((m_ResultInfo.IsGlobal ? gvars : lvars), m_ResultInfo.VarIndex, std::shared_ptr<void>(p));
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteStrInt(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteStrInt(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             for (auto&& arg : m_ArgKeys) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             for (auto&& arg : m_ArgVals) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             using HashtableObj = HashtableT<std::string, int64_t>;
             auto* p = new HashtableObj();
@@ -6947,15 +6947,15 @@ namespace BraceScriptInterpreter
             Brace::VarSetObject((m_ResultInfo.IsGlobal ? gvars : lvars), m_ResultInfo.VarIndex, std::shared_ptr<void>(p));
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteStrFloat(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteStrFloat(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             for (auto&& arg : m_ArgKeys) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             for (auto&& arg : m_ArgVals) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             using HashtableObj = HashtableT<std::string, double>;
             auto* p = new HashtableObj();
@@ -6969,15 +6969,15 @@ namespace BraceScriptInterpreter
             Brace::VarSetObject((m_ResultInfo.IsGlobal ? gvars : lvars), m_ResultInfo.VarIndex, std::shared_ptr<void>(p));
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteStrBool(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteStrBool(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             for (auto&& arg : m_ArgKeys) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             for (auto&& arg : m_ArgVals) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             using HashtableObj = HashtableT<std::string, bool>;
             auto* p = new HashtableObj();
@@ -6991,15 +6991,15 @@ namespace BraceScriptInterpreter
             Brace::VarSetObject((m_ResultInfo.IsGlobal ? gvars : lvars), m_ResultInfo.VarIndex, std::shared_ptr<void>(p));
             return Brace::BRACE_FLOW_CONTROL_NORMAL;
         }
-        int ExecuteStrObj(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
+        int ExecuteStrObj(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars)const
         {
             for (auto&& arg : m_ArgKeys) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             for (auto&& arg : m_ArgVals) {
                 if (!arg.isNull())
-                    arg(gvars, lvars);
+                    arg(runtime, gvars, lvars);
             }
             auto* p = new StrObjHashtable();
             for (int ix = 0; ix < static_cast<int>(m_ArgKeyInfos.size()) && ix < static_cast<int>(m_ArgValInfos.size()); ++ix) {
@@ -7022,7 +7022,7 @@ namespace BraceScriptInterpreter
     class LoopListExp final : public Brace::AbstractBraceApi
     {
     public:
-        LoopListExp(Brace::BraceScript& interpreter) :Brace::AbstractBraceApi(interpreter), m_ApiProvider()
+        LoopListExp(Brace::BraceCodeStructure& interpreter) :Brace::AbstractBraceApi(interpreter), m_ApiProvider()
         {
         }
     protected:
@@ -7043,7 +7043,7 @@ namespace BraceScriptInterpreter
                         switch (pInfo->ObjectCategory) {
                         case BRACE_OBJECT_CATEGORY_SPECIAL:
                         default:
-                            pProvider = new ArrayHashtableLoopListProvider(GetInterpreter());
+                            pProvider = new ArrayHashtableLoopListProvider(GetCodeStructure());
                             break;
                         }
                     }
@@ -7051,7 +7051,7 @@ namespace BraceScriptInterpreter
                 else if (listInfo.Type == Brace::BRACE_DATA_TYPE_STRING) {
                     pInfo = ObjectInfoMgr().GetBraceObjectInfo(CUSTOM_BRACE_OBJECT_TYPE_STRING);
                     if (nullptr != pInfo) {
-                        pProvider = new StringLoopListProvider(GetInterpreter());
+                        pProvider = new StringLoopListProvider(GetCodeStructure());
                     }
                 }
                 if (pProvider) {
@@ -7104,7 +7104,7 @@ namespace BraceScriptInterpreter
                                     switch (pInfo->ObjectCategory) {
                                     case BRACE_OBJECT_CATEGORY_SPECIAL:
                                     default:
-                                        pProvider = new ArrayHashtableLoopListProvider(GetInterpreter());
+                                        pProvider = new ArrayHashtableLoopListProvider(GetCodeStructure());
                                         break;
                                     }
                                     if (pProvider) {

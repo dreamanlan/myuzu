@@ -172,7 +172,7 @@ namespace BraceScriptInterpreter
     protected:
         virtual bool LoadMemberCall(const Brace::FuncInfo& func, const DslData::FunctionData& data, const BraceObjectInfo& braceObjInfo, Brace::OperandLoadtimeInfo&& objInfo, Brace::BraceApiExecutor&& obj, std::string&& member, std::vector<Brace::OperandLoadtimeInfo>&& argInfos, std::vector<Brace::BraceApiExecutor>&& args, Brace::OperandLoadtimeInfo& resultInfo, Brace::BraceApiExecutor& executor) = 0;
     protected:
-        AbstractMemberCallApiProvider(Brace::BraceScript& interpreter) :Brace::BraceApiImplHelper(interpreter)
+        AbstractMemberCallApiProvider(Brace::BraceCodeStructure& interpreter) :Brace::BraceApiImplHelper(interpreter)
         {}
     };
     class AbstractMemberSetApiProvider : public Brace::BraceApiImplHelper
@@ -181,7 +181,7 @@ namespace BraceScriptInterpreter
     protected:
         virtual bool LoadMemberSet(const Brace::FuncInfo& func, const DslData::FunctionData& data, const BraceObjectInfo& braceObjInfo, Brace::OperandLoadtimeInfo&& objInfo, Brace::BraceApiExecutor&& obj, std::string&& member, Brace::OperandLoadtimeInfo&& argInfo, Brace::BraceApiExecutor&& arg, Brace::OperandLoadtimeInfo& resultInfo, Brace::BraceApiExecutor& executor) = 0;
     protected:
-        AbstractMemberSetApiProvider(Brace::BraceScript& interpreter) :Brace::BraceApiImplHelper(interpreter)
+        AbstractMemberSetApiProvider(Brace::BraceCodeStructure& interpreter) :Brace::BraceApiImplHelper(interpreter)
         {}
     };
     class AbstractMemberGetApiProvider : public Brace::BraceApiImplHelper
@@ -190,7 +190,7 @@ namespace BraceScriptInterpreter
     protected:
         virtual bool LoadMemberGet(const Brace::FuncInfo& func, const DslData::FunctionData& data, const BraceObjectInfo& braceObjInfo, Brace::OperandLoadtimeInfo&& objInfo, Brace::BraceApiExecutor&& obj, std::string&& member, Brace::OperandLoadtimeInfo& resultInfo, Brace::BraceApiExecutor& executor) = 0;
     protected:
-        AbstractMemberGetApiProvider(Brace::BraceScript& interpreter) :Brace::BraceApiImplHelper(interpreter)
+        AbstractMemberGetApiProvider(Brace::BraceCodeStructure& interpreter) :Brace::BraceApiImplHelper(interpreter)
         {}
     };
     class AbstractCollectionCallApiProvider : public Brace::BraceApiImplHelper
@@ -200,7 +200,7 @@ namespace BraceScriptInterpreter
         virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data, const BraceObjectInfo& braceObjInfo, const std::vector<Brace::OperandLoadtimeInfo>& argInfos, Brace::OperandLoadtimeInfo& resultInfo) const = 0;
         virtual void Execute(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars, const std::vector<Brace::OperandRuntimeInfo>& argInfos, const Brace::OperandRuntimeInfo& resultInfo) const = 0;
     protected:
-        AbstractCollectionCallApiProvider(Brace::BraceScript& interpreter) :Brace::BraceApiImplHelper(interpreter)
+        AbstractCollectionCallApiProvider(Brace::BraceCodeStructure& interpreter) :Brace::BraceApiImplHelper(interpreter)
         {}
     };
     class AbstractCollectionSetApiProvider : public Brace::BraceApiImplHelper
@@ -210,7 +210,7 @@ namespace BraceScriptInterpreter
         virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data, const BraceObjectInfo& braceObjInfo, const Brace::OperandLoadtimeInfo& arr, const Brace::OperandLoadtimeInfo& ix, const Brace::OperandLoadtimeInfo& val, Brace::OperandLoadtimeInfo& resultInfo) const = 0;
         virtual void Execute(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars, const Brace::OperandRuntimeInfo& arr, const Brace::OperandRuntimeInfo& ix, const Brace::OperandRuntimeInfo& val, const Brace::OperandRuntimeInfo& resultInfo) const = 0;
     protected:
-        AbstractCollectionSetApiProvider(Brace::BraceScript& interpreter) :Brace::BraceApiImplHelper(interpreter)
+        AbstractCollectionSetApiProvider(Brace::BraceCodeStructure& interpreter) :Brace::BraceApiImplHelper(interpreter)
         {}
     };
     class AbstractCollectionGetApiProvider : public Brace::BraceApiImplHelper
@@ -220,7 +220,7 @@ namespace BraceScriptInterpreter
         virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data, const BraceObjectInfo& braceObjInfo, const Brace::OperandLoadtimeInfo& arr, const Brace::OperandLoadtimeInfo& ix, Brace::OperandLoadtimeInfo& resultInfo) const = 0;
         virtual void Execute(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars, const Brace::OperandRuntimeInfo& arr, const Brace::OperandRuntimeInfo& ix, const Brace::OperandRuntimeInfo& resultInfo) const = 0;
     protected:
-        AbstractCollectionGetApiProvider(Brace::BraceScript& interpreter) :Brace::BraceApiImplHelper(interpreter)
+        AbstractCollectionGetApiProvider(Brace::BraceCodeStructure& interpreter) :Brace::BraceApiImplHelper(interpreter)
         {}
     };
     class AbstractLoopListApiProvider : public Brace::BraceApiImplHelper
@@ -230,7 +230,7 @@ namespace BraceScriptInterpreter
         virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::ISyntaxComponent& data, const BraceObjectInfo& braceObjInfo, const Brace::OperandLoadtimeInfo& listInfo, Brace::BraceApiExecutor& executor) = 0;
         virtual void StoreRuntimeInfo(Brace::OperandRuntimeInfo&& listInfo, Brace::BraceApiExecutor&& list, std::vector<Brace::BraceApiExecutor>&& statements, const std::vector<int>& objVars) = 0;
     protected:
-        AbstractLoopListApiProvider(Brace::BraceScript& interpreter) :Brace::BraceApiImplHelper(interpreter)
+        AbstractLoopListApiProvider(Brace::BraceCodeStructure& interpreter) :Brace::BraceApiImplHelper(interpreter)
         {}
     };
     class AbstractLinqApiProvider : public Brace::BraceApiImplHelper
@@ -239,7 +239,7 @@ namespace BraceScriptInterpreter
     protected:
         virtual bool LoadLinqCall(const Brace::FuncInfo& func, const DslData::FunctionData& data, const BraceObjectInfo& braceObjInfo, int iteratorIndex, Brace::OperandLoadtimeInfo&& listInfo, Brace::BraceApiExecutor&& list, std::string&& member, std::vector<Brace::OperandLoadtimeInfo>&& argInfos, std::vector<Brace::BraceApiExecutor>&& args, std::vector<int>&& objVars, Brace::OperandLoadtimeInfo& resultInfo, Brace::BraceApiExecutor& executor) = 0;
     protected:
-        AbstractLinqApiProvider(Brace::BraceScript& interpreter) :Brace::BraceApiImplHelper(interpreter)
+        AbstractLinqApiProvider(Brace::BraceCodeStructure& interpreter) :Brace::BraceApiImplHelper(interpreter)
         {}
     };
     class AbstractSelectApiProvider : public Brace::BraceApiImplHelper
@@ -268,7 +268,7 @@ namespace BraceScriptInterpreter
         virtual bool LoadStatements(const Brace::FuncInfo& func, const DslData::FunctionData& data, std::vector<Brace::BraceApiExecutor>&& statements, Brace::OperandLoadtimeInfo& resultInfo, Brace::BraceApiExecutor& executor) = 0;
         virtual void LoadResultIterator(std::vector<Brace::OperandLoadtimeInfo>&& iterators, std::vector<int>&& objVars) = 0;
     protected:
-        AbstractSelectApiProvider(Brace::BraceScript& interpreter) :Brace::BraceApiImplHelper(interpreter)
+        AbstractSelectApiProvider(Brace::BraceCodeStructure& interpreter) :Brace::BraceApiImplHelper(interpreter)
         {}
     };
     /// <summary>

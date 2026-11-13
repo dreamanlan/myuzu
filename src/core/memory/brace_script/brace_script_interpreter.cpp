@@ -393,7 +393,7 @@ private:
             }
             it->second.pop();
 
-            exer->Run(*m_pBraceScript->GlobalVariables(), *m_pBraceScript->GlobalVariables());
+            exer->Run(*m_pBraceScript->GetRuntime(), *m_pBraceScript->GlobalVariables(), *m_pBraceScript->GlobalVariables());
         }
     }
 
@@ -416,7 +416,7 @@ private:
         }
     }
     void AddCallbackHandlerImpl(const std::string& id) {
-        auto exer = std::make_shared<Brace::FunctionExecutor>(*m_pCallbackBraceScript);
+        auto exer = std::make_shared<Brace::FunctionExecutor>(*m_pCallbackBraceScript->GetCodeStructure());
         exer->Build(id);
         m_CallbackExers.insert(std::make_pair(id, std::move(exer)));
     }
@@ -457,8 +457,8 @@ private:
                 ++argIx;
             }
 
-            exer->Run(*m_pCallbackBraceScript->GlobalVariables(),
-                      *m_pCallbackBraceScript->GlobalVariables());
+            exer->Run(*m_pCallbackBraceScript->GetRuntime(),
+                      *m_pCallbackBraceScript->GlobalVariables(), *m_pCallbackBraceScript->GlobalVariables());
             ret = true;
         }
         return ret;
@@ -541,7 +541,7 @@ private:
             m_MessageQueues.insert(std::make_pair(id, MessageQueue()));
         }
         for (int i = 0; i < pool_num; ++i) {
-            auto exer = std::make_shared<Brace::FunctionExecutor>(*m_pBraceScript);
+            auto exer = std::make_shared<Brace::FunctionExecutor>(*m_pBraceScript->GetCodeStructure());
             exer->Build(id);
             auto coro = std::make_shared<BraceScriptCoroutine>();
             coro->SetMsgId(id);
@@ -614,7 +614,7 @@ private:
     void SetQuittingImpl(bool val) {
         m_IsQuitting = val;
         if (nullptr != m_pBraceScript) {
-            m_pBraceScript->SetForceQuit(true);
+            m_pBraceScript->GetRuntime()->SetForceQuit(true);
         }
     }
     const std::queue<std::string>& GetScriptQueue() const {
@@ -843,7 +843,7 @@ namespace BraceScriptInterpreter {
 
 class CallbackHandlerExp final : public Brace::AbstractBraceApi {
 public:
-    CallbackHandlerExp(Brace::BraceScript& interpreter) : Brace::AbstractBraceApi(interpreter) {}
+    CallbackHandlerExp(Brace::BraceCodeStructure& interpreter) : Brace::AbstractBraceApi(interpreter) {}
 
 protected:
     virtual bool LoadFunction(const Brace::FuncInfo& outerFunc,
@@ -946,7 +946,7 @@ class MessageHandlerExp final : public Brace::AbstractBraceApi {
     static const int c_def_pool_num = 8;
 
 public:
-    MessageHandlerExp(Brace::BraceScript& interpreter) : Brace::AbstractBraceApi(interpreter) {}
+    MessageHandlerExp(Brace::BraceCodeStructure& interpreter) : Brace::AbstractBraceApi(interpreter) {}
 
 protected:
     virtual bool LoadFunction(const Brace::FuncInfo& outerFunc,
@@ -1055,7 +1055,7 @@ protected:
 };
 class ClearMessagesExp final : public Brace::SimpleBraceApiBase {
 public:
-    ClearMessagesExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    ClearMessagesExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -1072,7 +1072,7 @@ protected:
 };
 class QCmdExp final : public Brace::SimpleBraceApiBase {
 public:
-    QCmdExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    QCmdExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -1101,7 +1101,7 @@ protected:
 };
 class CmdExp final : public Brace::SimpleBraceApiBase {
 public:
-    CmdExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    CmdExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -1134,7 +1134,7 @@ protected:
 };
 class WaitExp final : public Brace::SimpleBraceApiBase {
 public:
-    WaitExp(Brace::BraceScript& interpreter, bool forCallback)
+    WaitExp(Brace::BraceCodeStructure& interpreter, bool forCallback)
         : Brace::SimpleBraceApiBase(interpreter), m_ForCallback(forCallback) {}
 
 protected:
@@ -1152,7 +1152,8 @@ protected:
         resultInfo = Brace::OperandLoadtimeInfo();
         return true;
     }
-    virtual void Execute(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars,
+    virtual void Execute(Brace::VariableInfo&, Brace::VariableInfo&, const std::vector<Brace::OperandRuntimeInfo>&, const Brace::OperandRuntimeInfo&) const override {}
+    virtual void Execute(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars,
                          const std::vector<Brace::OperandRuntimeInfo>& argInfos,
                          const Brace::OperandRuntimeInfo& resultInfo) const override {
         using namespace std::chrono_literals;
@@ -1167,7 +1168,7 @@ protected:
                     while (
                         std::chrono::duration_cast<std::chrono::milliseconds>(ccv - lcv).count() <
                         static_cast<long long>(v)) {
-                        if (IsForceQuit())
+                        if (runtime.IsForceQuit())
                             break;
 
                         if (m_ForCallback)
@@ -1188,7 +1189,7 @@ private:
 };
 class WaitUntilQuitExp final : public Brace::SimpleBraceApiBase {
 public:
-    WaitUntilQuitExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    WaitUntilQuitExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -1197,10 +1198,11 @@ protected:
         resultInfo = Brace::OperandLoadtimeInfo();
         return true;
     }
-    virtual void Execute(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars,
+    virtual void Execute(Brace::VariableInfo&, Brace::VariableInfo&, const std::vector<Brace::OperandRuntimeInfo>&, const Brace::OperandRuntimeInfo&) const override {}
+    virtual void Execute(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars,
                          const std::vector<Brace::OperandRuntimeInfo>& argInfos,
                          const Brace::OperandRuntimeInfo& resultInfo) const override {
-        while (!IsForceQuit()) {
+        while (!runtime.IsForceQuit()) {
             BraceScriptManager::Schedule();
         }
         printf("wait for quit.");
@@ -1208,7 +1210,7 @@ protected:
 };
 class TimeExp final : public Brace::SimpleBraceApiBase {
 public:
-    TimeExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    TimeExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -1230,7 +1232,7 @@ protected:
 };
 class BaseTypeCastExp final : public Brace::SimpleBraceApiBase {
 public:
-    BaseTypeCastExp(Brace::BraceScript& interpreter, int type)
+    BaseTypeCastExp(Brace::BraceCodeStructure& interpreter, int type)
         : Brace::SimpleBraceApiBase(interpreter), m_Type(type) {}
 
 protected:
@@ -1325,7 +1327,7 @@ private:
 };
 class FtoiExp final : public Brace::SimpleBraceApiBase {
 public:
-    FtoiExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    FtoiExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -1360,7 +1362,7 @@ protected:
 };
 class ItofExp final : public Brace::SimpleBraceApiBase {
 public:
-    ItofExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    ItofExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -1396,7 +1398,7 @@ protected:
 };
 class FtouExp final : public Brace::SimpleBraceApiBase {
 public:
-    FtouExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    FtouExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -1432,7 +1434,7 @@ protected:
 };
 class UtofExp final : public Brace::SimpleBraceApiBase {
 public:
-    UtofExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    UtofExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -1468,7 +1470,7 @@ protected:
 };
 class DtolExp final : public Brace::SimpleBraceApiBase {
 public:
-    DtolExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    DtolExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -1503,7 +1505,7 @@ protected:
 };
 class LtodExp final : public Brace::SimpleBraceApiBase {
 public:
-    LtodExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    LtodExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -1538,7 +1540,7 @@ protected:
 };
 class DtouExp final : public Brace::SimpleBraceApiBase {
 public:
-    DtouExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    DtouExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -1573,7 +1575,7 @@ protected:
 };
 class UtodExp final : public Brace::SimpleBraceApiBase {
 public:
-    UtodExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    UtodExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -1608,7 +1610,7 @@ protected:
 };
 class Int2CharExp final : public Brace::SimpleBraceApiBase {
 public:
-    Int2CharExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    Int2CharExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -1643,7 +1645,7 @@ protected:
 };
 class Char2IntExp final : public Brace::SimpleBraceApiBase {
 public:
-    Char2IntExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    Char2IntExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -1680,7 +1682,7 @@ protected:
 };
 class Int2HexExp final : public Brace::SimpleBraceApiBase {
 public:
-    Int2HexExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    Int2HexExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -1716,7 +1718,7 @@ protected:
 };
 class Hex2IntExp final : public Brace::SimpleBraceApiBase {
 public:
-    Hex2IntExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    Hex2IntExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -1754,7 +1756,7 @@ protected:
 };
 class Int2StrExp final : public Brace::SimpleBraceApiBase {
 public:
-    Int2StrExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    Int2StrExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -1788,7 +1790,7 @@ protected:
 };
 class Str2IntExp final : public Brace::SimpleBraceApiBase {
 public:
-    Str2IntExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    Str2IntExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -1822,7 +1824,7 @@ protected:
 };
 class Float2StrExp final : public Brace::SimpleBraceApiBase {
 public:
-    Float2StrExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    Float2StrExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -1864,7 +1866,7 @@ protected:
 };
 class Str2FloatExp final : public Brace::SimpleBraceApiBase {
 public:
-    Str2FloatExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    Str2FloatExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -1898,7 +1900,7 @@ protected:
 };
 class StrConcatExp final : public Brace::SimpleBraceApiBase {
 public:
-    StrConcatExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    StrConcatExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -1925,7 +1927,7 @@ protected:
 };
 class StrContainsOneExp final : public Brace::SimpleBraceApiBase {
 public:
-    StrContainsOneExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    StrContainsOneExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -1969,7 +1971,7 @@ protected:
 };
 class StrContainsAllExp final : public Brace::SimpleBraceApiBase {
 public:
-    StrContainsAllExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    StrContainsAllExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -2013,7 +2015,7 @@ protected:
 };
 class StrIndexOfExp final : public Brace::SimpleBraceApiBase {
 public:
-    StrIndexOfExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    StrIndexOfExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -2061,7 +2063,7 @@ protected:
 };
 class StrLastIndexOfExp final : public Brace::SimpleBraceApiBase {
 public:
-    StrLastIndexOfExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    StrLastIndexOfExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -2110,7 +2112,7 @@ protected:
 };
 class StrLenExp final : public Brace::SimpleBraceApiBase {
 public:
-    StrLenExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    StrLenExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -2144,7 +2146,7 @@ protected:
 };
 class SubStrExp final : public Brace::SimpleBraceApiBase {
 public:
-    SubStrExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    SubStrExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -2193,7 +2195,7 @@ protected:
 };
 class StrReplaceExp final : public Brace::SimpleBraceApiBase {
 public:
-    StrReplaceExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    StrReplaceExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -2238,7 +2240,7 @@ protected:
 };
 class StrSplitExp final : public Brace::SimpleBraceApiBase {
 public:
-    StrSplitExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    StrSplitExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -2280,7 +2282,7 @@ protected:
 };
 class StrJoinExp final : public Brace::SimpleBraceApiBase {
 public:
-    StrJoinExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    StrJoinExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -2334,7 +2336,7 @@ protected:
 };
 class CsvEchoExp final : public Brace::SimpleBraceApiBase {
 public:
-    CsvEchoExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    CsvEchoExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -2388,7 +2390,7 @@ protected:
 };
 class CsvConcatExp final : public Brace::SimpleBraceApiBase {
 public:
-    CsvConcatExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    CsvConcatExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -2448,7 +2450,7 @@ protected:
 
 class FileExistsExp final : public Brace::SimpleBraceApiBase {
 public:
-    FileExistsExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    FileExistsExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -2490,7 +2492,7 @@ protected:
 };
 class LoadFileExp final : public Brace::SimpleBraceApiBase {
 public:
-    LoadFileExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    LoadFileExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -2534,7 +2536,7 @@ protected:
 };
 class SaveFileExp final : public Brace::SimpleBraceApiBase {
 public:
-    SaveFileExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    SaveFileExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -2579,7 +2581,7 @@ protected:
 };
 class LoadFileToArrayExp final : public Brace::SimpleBraceApiBase {
 public:
-    LoadFileToArrayExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    LoadFileToArrayExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -2690,7 +2692,7 @@ private:
 };
 class SaveArrayToFileExp final : public Brace::SimpleBraceApiBase {
 public:
-    SaveArrayToFileExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    SaveArrayToFileExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -2771,7 +2773,7 @@ private:
 
 class LoadHashtableExp final : public Brace::SimpleBraceApiBase {
 public:
-    LoadHashtableExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    LoadHashtableExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -2912,7 +2914,7 @@ private:
 };
 class SaveHashtableExp final : public Brace::SimpleBraceApiBase {
 public:
-    SaveHashtableExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    SaveHashtableExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -3008,7 +3010,7 @@ private:
 };
 class CalcNewItemsExp final : public Brace::SimpleBraceApiBase {
 public:
-    CalcNewItemsExp(Brace::BraceScript& interpreter)
+    CalcNewItemsExp(Brace::BraceCodeStructure& interpreter)
         : Brace::SimpleBraceApiBase(interpreter), m_ObjectCategory(INVALID_ID) {}
 
 protected:
@@ -3138,7 +3140,7 @@ private:
 };
 class CalcSameItemsExp final : public Brace::SimpleBraceApiBase {
 public:
-    CalcSameItemsExp(Brace::BraceScript& interpreter)
+    CalcSameItemsExp(Brace::BraceCodeStructure& interpreter)
         : Brace::SimpleBraceApiBase(interpreter), m_ObjectCategory(INVALID_ID) {}
 
 protected:
@@ -3268,7 +3270,7 @@ private:
 };
 class CalcItemsUnionExp final : public Brace::SimpleBraceApiBase {
 public:
-    CalcItemsUnionExp(Brace::BraceScript& interpreter)
+    CalcItemsUnionExp(Brace::BraceCodeStructure& interpreter)
         : Brace::SimpleBraceApiBase(interpreter), m_ObjectCategory(INVALID_ID) {}
 
 protected:
@@ -3402,7 +3404,7 @@ private:
 };
 class ItemsAddExp final : public Brace::SimpleBraceApiBase {
 public:
-    ItemsAddExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    ItemsAddExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -3539,7 +3541,7 @@ private:
 };
 class ItemsSubExp final : public Brace::SimpleBraceApiBase {
 public:
-    ItemsSubExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    ItemsSubExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -3669,7 +3671,7 @@ private:
 };
 class ItemsMulExp final : public Brace::SimpleBraceApiBase {
 public:
-    ItemsMulExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    ItemsMulExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -3798,7 +3800,7 @@ private:
 };
 class ItemsDivExp final : public Brace::SimpleBraceApiBase {
 public:
-    ItemsDivExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    ItemsDivExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -3895,7 +3897,7 @@ private:
 
 class ArrayAddExp final : public Brace::SimpleBraceApiBase {
 public:
-    ArrayAddExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    ArrayAddExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -4011,7 +4013,7 @@ private:
 };
 class ArraySubExp final : public Brace::SimpleBraceApiBase {
 public:
-    ArraySubExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    ArraySubExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -4122,7 +4124,7 @@ private:
 };
 class ArrayMulExp final : public Brace::SimpleBraceApiBase {
 public:
-    ArrayMulExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    ArrayMulExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -4233,7 +4235,7 @@ private:
 };
 class ArrayDivExp final : public Brace::SimpleBraceApiBase {
 public:
-    ArrayDivExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    ArrayDivExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -4319,7 +4321,7 @@ private:
 
 class ArrayModifyExp final : public Brace::AbstractBraceApi {
 public:
-    ArrayModifyExp(Brace::BraceScript& interpreter)
+    ArrayModifyExp(Brace::BraceCodeStructure& interpreter)
         : Brace::AbstractBraceApi(interpreter), m_IteratorIndex(INVALID_INDEX), m_ObjInfo(),
           m_Obj(), m_ExpInfo(), m_Exp(), m_ObjVars() {}
 
@@ -4390,32 +4392,32 @@ protected:
     }
 
 private:
-    int Execute(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars) const {
+    int Execute(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars) const {
         if (!m_Obj.isNull())
-            m_Obj(gvars, lvars);
+            m_Obj(runtime, gvars, lvars);
         auto& objPtr =
             Brace::VarGetObject((m_ObjInfo.IsGlobal ? gvars : lvars), m_ObjInfo.VarIndex);
         int objTypeId = m_ObjInfo.ObjectTypeId;
         switch (objTypeId) {
         case CUSTOM_BRACE_OBJECT_TYPE_STR_ARRAY: {
             using ArrayType = ArrayT<std::string>;
-            DoModify<ArrayType>(gvars, lvars, objPtr);
+            DoModify<ArrayType>(runtime, gvars, lvars, objPtr);
         } break;
         case CUSTOM_BRACE_OBJECT_TYPE_INT_ARRAY: {
             using ArrayType = ArrayT<int64_t>;
-            DoModify<ArrayType>(gvars, lvars, objPtr);
+            DoModify<ArrayType>(runtime, gvars, lvars, objPtr);
         } break;
         case CUSTOM_BRACE_OBJECT_TYPE_FLOAT_ARRAY: {
             using ArrayType = ArrayT<double>;
-            DoModify<ArrayType>(gvars, lvars, objPtr);
+            DoModify<ArrayType>(runtime, gvars, lvars, objPtr);
         } break;
         case CUSTOM_BRACE_OBJECT_TYPE_BOOL_ARRAY: {
             using ArrayType = ArrayT<bool>;
-            DoModify<ArrayType>(gvars, lvars, objPtr);
+            DoModify<ArrayType>(runtime, gvars, lvars, objPtr);
         } break;
         default: {
             using ArrayType = ObjectArray;
-            DoModify<ArrayType>(gvars, lvars, objPtr);
+            DoModify<ArrayType>(runtime, gvars, lvars, objPtr);
         } break;
         }
         return Brace::BRACE_FLOW_CONTROL_NORMAL;
@@ -4423,7 +4425,7 @@ private:
 
 private:
     template <typename ArrayType>
-    inline void DoModify(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars,
+    inline void DoModify(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars,
                          const std::shared_ptr<void>& arrayWrap) const {
         using value_type = typename ArrayType::value_type;
         auto* arrayObj = static_cast<ArrayType*>(arrayWrap.get());
@@ -4432,7 +4434,7 @@ private:
             for (int ix = 0; ix < static_cast<int>(arr.size()); ++ix) {
                 DoSetIter(lvars, m_IteratorIndex, arr[ix]);
                 if (!m_Exp.isNull())
-                    m_Exp(gvars, lvars);
+                    m_Exp(runtime, gvars, lvars);
                 arr[ix] = DoGetVal<value_type>(gvars, lvars);
                 FreeObjVars(lvars, m_ObjVars);
             }
@@ -4495,7 +4497,7 @@ private:
 };
 class HashtableModifyExp final : public Brace::AbstractBraceApi {
 public:
-    HashtableModifyExp(Brace::BraceScript& interpreter)
+    HashtableModifyExp(Brace::BraceCodeStructure& interpreter)
         : Brace::AbstractBraceApi(interpreter), m_ObjectCategory(INVALID_ID),
           m_IteratorIndex(INVALID_INDEX), m_ValIteratorIndex(INVALID_INDEX), m_ObjInfo(), m_Obj(),
           m_ExpInfo(), m_Exp(), m_ObjVars() {}
@@ -4607,54 +4609,54 @@ protected:
     }
 
 private:
-    int Execute(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars) const {
+    int Execute(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars) const {
         if (!m_Obj.isNull())
-            m_Obj(gvars, lvars);
+            m_Obj(runtime, gvars, lvars);
         auto& objPtr =
             Brace::VarGetObject((m_ObjInfo.IsGlobal ? gvars : lvars), m_ObjInfo.VarIndex);
         int objTypeId = m_ObjInfo.ObjectTypeId;
         switch (objTypeId) {
         case CUSTOM_BRACE_OBJECT_TYPE_STR_STR_HASHTABLE: {
             using HashType = HashtableT<std::string, std::string>;
-            DoModify<HashType>(gvars, lvars, objPtr);
+            DoModify<HashType>(runtime, gvars, lvars, objPtr);
         } break;
         case CUSTOM_BRACE_OBJECT_TYPE_STR_INT_HASHTABLE: {
             using HashType = HashtableT<std::string, int64_t>;
-            DoModify<HashType>(gvars, lvars, objPtr);
+            DoModify<HashType>(runtime, gvars, lvars, objPtr);
         } break;
         case CUSTOM_BRACE_OBJECT_TYPE_STR_FLOAT_HASHTABLE: {
             using HashType = HashtableT<std::string, double>;
-            DoModify<HashType>(gvars, lvars, objPtr);
+            DoModify<HashType>(runtime, gvars, lvars, objPtr);
         } break;
         case CUSTOM_BRACE_OBJECT_TYPE_STR_BOOL_HASHTABLE: {
             using HashType = HashtableT<std::string, bool>;
-            DoModify<HashType>(gvars, lvars, objPtr);
+            DoModify<HashType>(runtime, gvars, lvars, objPtr);
         } break;
         case CUSTOM_BRACE_OBJECT_TYPE_INT_STR_HASHTABLE: {
             using HashType = HashtableT<int64_t, std::string>;
-            DoModify<HashType>(gvars, lvars, objPtr);
+            DoModify<HashType>(runtime, gvars, lvars, objPtr);
         } break;
         case CUSTOM_BRACE_OBJECT_TYPE_INT_INT_HASHTABLE: {
             using HashType = HashtableT<int64_t, int64_t>;
-            DoModify<HashType>(gvars, lvars, objPtr);
+            DoModify<HashType>(runtime, gvars, lvars, objPtr);
         } break;
         case CUSTOM_BRACE_OBJECT_TYPE_INT_FLOAT_HASHTABLE: {
             using HashType = HashtableT<int64_t, double>;
-            DoModify<HashType>(gvars, lvars, objPtr);
+            DoModify<HashType>(runtime, gvars, lvars, objPtr);
         } break;
         case CUSTOM_BRACE_OBJECT_TYPE_INT_BOOL_HASHTABLE: {
             using HashType = HashtableT<int64_t, bool>;
-            DoModify<HashType>(gvars, lvars, objPtr);
+            DoModify<HashType>(runtime, gvars, lvars, objPtr);
         } break;
         default:
             switch (m_ObjectCategory) {
             case BRACE_OBJECT_CATEGORY_INT_OBJ_HASHTABLE: {
                 using HashType = IntObjHashtable;
-                DoModify<HashType>(gvars, lvars, objPtr);
+                DoModify<HashType>(runtime, gvars, lvars, objPtr);
             } break;
             case BRACE_OBJECT_CATEGORY_STR_OBJ_HASHTABLE: {
                 using HashType = StrObjHashtable;
-                DoModify<HashType>(gvars, lvars, objPtr);
+                DoModify<HashType>(runtime, gvars, lvars, objPtr);
             } break;
             }
             break;
@@ -4664,7 +4666,7 @@ private:
 
 private:
     template <typename HashType>
-    inline void DoModify(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars,
+    inline void DoModify(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars,
                          const std::shared_ptr<void>& hashWrap) const {
         using key_type = typename HashType::key_type;
         using val_type = typename HashType::mapped_type;
@@ -4676,7 +4678,7 @@ private:
                 SetIter<key_type, val_type>(lvars, it);
                 SetValIter<key_type, val_type>(lvars, it);
                 if (!m_Exp.isNull())
-                    m_Exp(gvars, lvars);
+                    m_Exp(runtime, gvars, lvars);
                 ChangeVal<key_type, val_type>(gvars, lvars, it);
                 FreeObjVars(lvars, m_ObjVars);
             }
@@ -4757,7 +4759,7 @@ private:
 
 class GetExePathExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetExePathExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetExePathExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -4780,7 +4782,7 @@ protected:
 };
 class SetCurDirExp final : public Brace::SimpleBraceApiBase {
 public:
-    SetCurDirExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    SetCurDirExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -4819,7 +4821,7 @@ protected:
 };
 class GetCurDirExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetCurDirExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetCurDirExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -4843,7 +4845,7 @@ protected:
 };
 class ShowUiExp final : public Brace::SimpleBraceApiBase {
 public:
-    ShowUiExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    ShowUiExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -4876,7 +4878,7 @@ protected:
 };
 class GetScriptInputExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetScriptInputExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetScriptInputExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -4899,7 +4901,7 @@ protected:
 };
 class SetScriptInputLabelExp final : public Brace::SimpleBraceApiBase {
 public:
-    SetScriptInputLabelExp(Brace::BraceScript& interpreter)
+    SetScriptInputLabelExp(Brace::BraceCodeStructure& interpreter)
         : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
@@ -4927,7 +4929,7 @@ protected:
 };
 class SetScriptBtnCaptionExp final : public Brace::SimpleBraceApiBase {
 public:
-    SetScriptBtnCaptionExp(Brace::BraceScript& interpreter)
+    SetScriptBtnCaptionExp(Brace::BraceCodeStructure& interpreter)
         : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
@@ -4960,7 +4962,7 @@ protected:
 };
 class GetPixelExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetPixelExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetPixelExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -4998,7 +5000,7 @@ protected:
 };
 class GetCursorXExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetCursorXExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetCursorXExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5021,7 +5023,7 @@ protected:
 };
 class GetCursorYExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetCursorYExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetCursorYExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5044,7 +5046,7 @@ protected:
 };
 class GetScreenWidthExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetScreenWidthExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetScreenWidthExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5067,7 +5069,7 @@ protected:
 };
 class GetScreenHeightExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetScreenHeightExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetScreenHeightExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5090,7 +5092,7 @@ protected:
 };
 class ReadButtonParamExp final : public Brace::SimpleBraceApiBase {
 public:
-    ReadButtonParamExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    ReadButtonParamExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5123,7 +5125,7 @@ protected:
 };
 class ReadStickParamExp final : public Brace::SimpleBraceApiBase {
 public:
-    ReadStickParamExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    ReadStickParamExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5156,7 +5158,7 @@ protected:
 };
 class ReadMotionParamExp final : public Brace::SimpleBraceApiBase {
 public:
-    ReadMotionParamExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    ReadMotionParamExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5189,7 +5191,7 @@ protected:
 };
 class ReadParamPackageExp final : public Brace::SimpleBraceApiBase {
 public:
-    ReadParamPackageExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    ReadParamPackageExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5215,7 +5217,7 @@ protected:
 };
 class HasParamExp final : public Brace::SimpleBraceApiBase {
 public:
-    HasParamExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    HasParamExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5247,7 +5249,7 @@ protected:
 };
 class GetIntParamExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetIntParamExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetIntParamExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5284,7 +5286,7 @@ protected:
 };
 class GetFloatParamExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetFloatParamExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetFloatParamExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5321,7 +5323,7 @@ protected:
 };
 class GetStrParamExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetStrParamExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetStrParamExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5357,7 +5359,7 @@ protected:
 };
 class KeyPressExp final : public Brace::SimpleBraceApiBase {
 public:
-    KeyPressExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    KeyPressExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5389,7 +5391,7 @@ protected:
 };
 class KeyReleaseExp final : public Brace::SimpleBraceApiBase {
 public:
-    KeyReleaseExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    KeyReleaseExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5422,7 +5424,7 @@ protected:
 };
 class MousePressExp final : public Brace::SimpleBraceApiBase {
 public:
-    MousePressExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    MousePressExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5460,7 +5462,7 @@ protected:
 };
 class MouseReleaseExp final : public Brace::SimpleBraceApiBase {
 public:
-    MouseReleaseExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    MouseReleaseExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5487,7 +5489,7 @@ protected:
 };
 class MouseMoveExp final : public Brace::SimpleBraceApiBase {
 public:
-    MouseMoveExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    MouseMoveExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5519,7 +5521,7 @@ protected:
 };
 class MouseWheelChangeExp final : public Brace::SimpleBraceApiBase {
 public:
-    MouseWheelChangeExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    MouseWheelChangeExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5551,7 +5553,7 @@ protected:
 };
 class TouchPressExp final : public Brace::SimpleBraceApiBase {
 public:
-    TouchPressExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    TouchPressExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5588,7 +5590,7 @@ protected:
 };
 class TouchUpdateBeginExp final : public Brace::SimpleBraceApiBase {
 public:
-    TouchUpdateBeginExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    TouchUpdateBeginExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5604,7 +5606,7 @@ protected:
 };
 class TouchMoveExp final : public Brace::SimpleBraceApiBase {
 public:
-    TouchMoveExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    TouchMoveExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5641,7 +5643,7 @@ protected:
 };
 class TouchUpdateEndExp final : public Brace::SimpleBraceApiBase {
 public:
-    TouchUpdateEndExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    TouchUpdateEndExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5657,7 +5659,7 @@ protected:
 };
 class TouchEndExp final : public Brace::SimpleBraceApiBase {
 public:
-    TouchEndExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    TouchEndExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5674,7 +5676,7 @@ protected:
 
 class GetButtonStateExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetButtonStateExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetButtonStateExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5707,7 +5709,7 @@ protected:
 };
 class SetButtonStateExp final : public Brace::SimpleBraceApiBase {
 public:
-    SetButtonStateExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    SetButtonStateExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5745,7 +5747,7 @@ protected:
 };
 class SetStickPositionExp final : public Brace::SimpleBraceApiBase {
 public:
-    SetStickPositionExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    SetStickPositionExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5788,7 +5790,7 @@ protected:
 };
 class SetMotionStateExp final : public Brace::SimpleBraceApiBase {
 public:
-    SetMotionStateExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    SetMotionStateExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -5976,7 +5978,7 @@ static bool WriteMemory(Kernel::KProcess& process, uint64_t addr, uint64_t val_s
 
 class GetResultInfoExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetResultInfoExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetResultInfoExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -6008,7 +6010,7 @@ protected:
 };
 class GetLastInfoExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetLastInfoExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetLastInfoExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -6040,7 +6042,7 @@ protected:
 };
 class GetHistoryInfoCountExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetHistoryInfoCountExp(Brace::BraceScript& interpreter)
+    GetHistoryInfoCountExp(Brace::BraceCodeStructure& interpreter)
         : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
@@ -6066,7 +6068,7 @@ protected:
 };
 class GetHistoryInfoExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetHistoryInfoExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetHistoryInfoExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -6118,7 +6120,7 @@ protected:
 };
 class GetRollbackInfoCountExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetRollbackInfoCountExp(Brace::BraceScript& interpreter)
+    GetRollbackInfoCountExp(Brace::BraceCodeStructure& interpreter)
         : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
@@ -6144,7 +6146,7 @@ protected:
 };
 class GetRollbackInfoExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetRollbackInfoExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetRollbackInfoExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -6196,7 +6198,7 @@ protected:
 };
 class SetResultInfoExp final : public Brace::SimpleBraceApiBase {
 public:
-    SetResultInfoExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    SetResultInfoExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -6245,7 +6247,7 @@ protected:
 };
 class NewMemoryModifyInfoExp final : public Brace::SimpleBraceApiBase {
 public:
-    NewMemoryModifyInfoExp(Brace::BraceScript& interpreter)
+    NewMemoryModifyInfoExp(Brace::BraceCodeStructure& interpreter)
         : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
@@ -6270,7 +6272,7 @@ protected:
 };
 class AddToResultExp final : public Brace::SimpleBraceApiBase {
 public:
-    AddToResultExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    AddToResultExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -6375,7 +6377,7 @@ protected:
 };
 class AddToLastExp final : public Brace::SimpleBraceApiBase {
 public:
-    AddToLastExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    AddToLastExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -6482,7 +6484,7 @@ protected:
 
 class GetYuzuPathExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetYuzuPathExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetYuzuPathExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -6509,7 +6511,7 @@ protected:
 };
 class GetLogPathExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetLogPathExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetLogPathExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -6537,7 +6539,7 @@ protected:
 };
 class GetModLoadPathExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetModLoadPathExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetModLoadPathExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -6564,7 +6566,7 @@ protected:
 };
 class GetGameSavePathExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetGameSavePathExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetGameSavePathExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -6603,7 +6605,7 @@ protected:
 };
 class GetTitleIdExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetTitleIdExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetTitleIdExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -6632,7 +6634,7 @@ protected:
 };
 class GetProcessIdExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetProcessIdExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetProcessIdExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -6657,7 +6659,7 @@ protected:
 };
 class GetModuleCountExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetModuleCountExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetModuleCountExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -6682,7 +6684,7 @@ protected:
 };
 class GetModuleBaseExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetModuleBaseExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetModuleBaseExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -6725,7 +6727,7 @@ protected:
 };
 class GetModuleAddrExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetModuleAddrExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetModuleAddrExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -6769,7 +6771,7 @@ protected:
 };
 class GetModuleSizeExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetModuleSizeExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetModuleSizeExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -6813,7 +6815,7 @@ protected:
 };
 class GetModuleIdExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetModuleIdExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetModuleIdExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -6857,7 +6859,7 @@ protected:
 };
 class GetModuleNameExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetModuleNameExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetModuleNameExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -6901,7 +6903,7 @@ protected:
 };
 class GetModuleProgramIdExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetModuleProgramIdExp(Brace::BraceScript& interpreter)
+    GetModuleProgramIdExp(Brace::BraceCodeStructure& interpreter)
         : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
@@ -6946,7 +6948,7 @@ protected:
 };
 class GetModuleProcessIdExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetModuleProcessIdExp(Brace::BraceScript& interpreter)
+    GetModuleProcessIdExp(Brace::BraceCodeStructure& interpreter)
         : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
@@ -6991,7 +6993,7 @@ protected:
 };
 class GetHeapBaseExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetHeapBaseExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetHeapBaseExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -7017,7 +7019,7 @@ protected:
 };
 class GetHeapSizeExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetHeapSizeExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetHeapSizeExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -7043,7 +7045,7 @@ protected:
 };
 class GetStackBaseExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetStackBaseExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetStackBaseExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -7069,7 +7071,7 @@ protected:
 };
 class GetStackSizeExp final : public Brace::SimpleBraceApiBase {
 public:
-    GetStackSizeExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    GetStackSizeExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -7095,7 +7097,7 @@ protected:
 };
 class CmdMarkMemDebugExp final : public Brace::SimpleBraceApiBase {
 public:
-    CmdMarkMemDebugExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    CmdMarkMemDebugExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -7151,7 +7153,7 @@ protected:
 };
 class CmdAddSniffingExp final : public Brace::SimpleBraceApiBase {
 public:
-    CmdAddSniffingExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    CmdAddSniffingExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -7216,7 +7218,7 @@ protected:
 };
 class CmdAddSniffingFromSearchExp final : public Brace::SimpleBraceApiBase {
 public:
-    CmdAddSniffingFromSearchExp(Brace::BraceScript& interpreter)
+    CmdAddSniffingFromSearchExp(Brace::BraceCodeStructure& interpreter)
         : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
@@ -7331,7 +7333,7 @@ protected:
 };
 class CmdShowMemExp final : public Brace::SimpleBraceApiBase {
 public:
-    CmdShowMemExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    CmdShowMemExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -7398,7 +7400,7 @@ protected:
 };
 class CmdFindMemExp final : public Brace::SimpleBraceApiBase {
 public:
-    CmdFindMemExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    CmdFindMemExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -7518,7 +7520,7 @@ protected:
 };
 class CmdSearchMemExp final : public Brace::SimpleBraceApiBase {
 public:
-    CmdSearchMemExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    CmdSearchMemExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -7646,7 +7648,7 @@ protected:
 };
 class FindMemoryExp final : public Brace::SimpleBraceApiBase {
 public:
-    FindMemoryExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    FindMemoryExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -7788,7 +7790,7 @@ protected:
 };
 class SearchMemoryExp final : public Brace::SimpleBraceApiBase {
 public:
-    SearchMemoryExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    SearchMemoryExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -7949,7 +7951,7 @@ protected:
 };
 class ReadMemoryExp final : public Brace::SimpleBraceApiBase {
 public:
-    ReadMemoryExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    ReadMemoryExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -8018,7 +8020,7 @@ protected:
 };
 class WriteMemoryExp final : public Brace::SimpleBraceApiBase {
 public:
-    WriteMemoryExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    WriteMemoryExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -8091,7 +8093,7 @@ protected:
 };
 class DumpMemoryExp final : public Brace::SimpleBraceApiBase {
 public:
-    DumpMemoryExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    DumpMemoryExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -8156,7 +8158,7 @@ protected:
 };
 class LoadMemoryExp final : public Brace::SimpleBraceApiBase {
 public:
-    LoadMemoryExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    LoadMemoryExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -8221,7 +8223,7 @@ protected:
 };
 class ProtectMemoryExp final : public Brace::SimpleBraceApiBase {
 public:
-    ProtectMemoryExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    ProtectMemoryExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -8283,7 +8285,7 @@ protected:
 };
 class MapMemoryExp final : public Brace::SimpleBraceApiBase {
 public:
-    MapMemoryExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    MapMemoryExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -8340,7 +8342,7 @@ protected:
 };
 class UnmapMemoryExp final : public Brace::SimpleBraceApiBase {
 public:
-    UnmapMemoryExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    UnmapMemoryExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -8397,7 +8399,7 @@ protected:
 };
 class FindUnmappedMemoryExp final : public Brace::SimpleBraceApiBase {
 public:
-    FindUnmappedMemoryExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    FindUnmappedMemoryExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -8459,7 +8461,7 @@ protected:
 };
 class IsGameStartedExp final : public Brace::SimpleBraceApiBase {
 public:
-    IsGameStartedExp(Brace::BraceScript& interpreter)
+    IsGameStartedExp(Brace::BraceCodeStructure& interpreter)
         : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
@@ -8488,7 +8490,7 @@ protected:
 };
 class AddLogInstructionExp final : public Brace::SimpleBraceApiBase {
 public:
-    AddLogInstructionExp(Brace::BraceScript& interpreter)
+    AddLogInstructionExp(Brace::BraceCodeStructure& interpreter)
         : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
@@ -8526,7 +8528,7 @@ protected:
 };
 class DbgScpSetExp final : public Brace::SimpleBraceApiBase {
 public:
-    DbgScpSetExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    DbgScpSetExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -8589,7 +8591,7 @@ protected:
 };
 class DbgScpGetExp final : public Brace::SimpleBraceApiBase {
 public:
-    DbgScpGetExp(Brace::BraceScript& interpreter)
+    DbgScpGetExp(Brace::BraceCodeStructure& interpreter)
         : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
@@ -8652,7 +8654,7 @@ protected:
 };
 class ReplaceSourceShaderExp final : public Brace::SimpleBraceApiBase {
 public:
-    ReplaceSourceShaderExp(Brace::BraceScript& interpreter)
+    ReplaceSourceShaderExp(Brace::BraceCodeStructure& interpreter)
         : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
@@ -8704,7 +8706,7 @@ protected:
 };
 class ReplaceSpirvShaderExp final : public Brace::SimpleBraceApiBase {
 public:
-    ReplaceSpirvShaderExp(Brace::BraceScript& interpreter)
+    ReplaceSpirvShaderExp(Brace::BraceCodeStructure& interpreter)
         : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
@@ -8773,7 +8775,7 @@ protected:
 
 class DmntFileExp final : public Brace::AbstractBraceApi {
 public:
-    DmntFileExp(Brace::BraceScript& interpreter)
+    DmntFileExp(Brace::BraceCodeStructure& interpreter)
         : Brace::AbstractBraceApi(interpreter), m_Args(), m_ArgInfos(), m_Statements() {}
 
 protected:
@@ -8880,10 +8882,10 @@ protected:
     }
 
 private:
-    int Execute(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars) const {
+    int Execute(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars) const {
         for (auto&& op : m_Args) {
             if (!op.isNull())
-                op(gvars, lvars);
+                op(runtime, gvars, lvars);
         }
         auto&& argInfo1 = m_ArgInfos[0];
         auto&& argInfo2 = m_ArgInfos[1];
@@ -8946,8 +8948,8 @@ private:
 
         int v = Brace::BRACE_FLOW_CONTROL_NORMAL;
         for (auto&& statement : m_Statements) {
-            v = statement(gvars, lvars);
-            if (IsForceQuit()) {
+            v = statement(runtime, gvars, lvars);
+            if (runtime.IsForceQuit()) {
                 FreeObjVars(lvars, m_ObjVars);
                 break;
             }
@@ -8974,7 +8976,7 @@ private:
 };
 class DmntIfExp final : public Brace::AbstractBraceApi {
 public:
-    DmntIfExp(Brace::BraceScript& interpreter)
+    DmntIfExp(Brace::BraceCodeStructure& interpreter)
         : Brace::AbstractBraceApi(interpreter), m_Clauses() {}
 
 protected:
@@ -9107,7 +9109,7 @@ protected:
     }
 
 private:
-    int Execute(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars) const {
+    int Execute(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars) const {
         auto&& ss = g_DmntData.ss;
 
         int v = Brace::BRACE_FLOW_CONTROL_NORMAL;
@@ -9116,11 +9118,11 @@ private:
             auto& clause = m_Clauses[ix];
             if (!clause.Condition.isNull()) {
                 // gen condition begin
-                clause.Condition(gvars, lvars);
+                clause.Condition(runtime, gvars, lvars);
             }
             for (auto&& statement : clause.Statements) {
-                v = statement(gvars, lvars);
-                if (IsForceQuit())
+                v = statement(runtime, gvars, lvars);
+                if (runtime.IsForceQuit())
                     break;
                 if (v != Brace::BRACE_FLOW_CONTROL_NORMAL) {
                     FreeObjVars(lvars, clause.ObjVars);
@@ -9160,7 +9162,7 @@ private:
 };
 class DmntLoopExp final : public Brace::AbstractBraceApi {
 public:
-    DmntLoopExp(Brace::BraceScript& interpreter)
+    DmntLoopExp(Brace::BraceCodeStructure& interpreter)
         : Brace::AbstractBraceApi(interpreter), m_Args(), m_ArgInfos(), m_Statements() {}
 
 protected:
@@ -9261,10 +9263,10 @@ protected:
     }
 
 private:
-    int Execute(Brace::VariableInfo& gvars, Brace::VariableInfo& lvars) const {
+    int Execute(Brace::BraceRuntime& runtime, Brace::VariableInfo& gvars, Brace::VariableInfo& lvars) const {
         for (auto&& op : m_Args) {
             if (!op.isNull())
-                op(gvars, lvars);
+                op(runtime, gvars, lvars);
         }
         auto&& argInfo1 = m_ArgInfos[0];
         auto&& argInfo2 = m_ArgInfos[1];
@@ -9282,8 +9284,8 @@ private:
 
         int v = Brace::BRACE_FLOW_CONTROL_NORMAL;
         for (auto&& statement : m_Statements) {
-            v = statement(gvars, lvars);
-            if (IsForceQuit()) {
+            v = statement(runtime, gvars, lvars);
+            if (runtime.IsForceQuit()) {
                 FreeObjVars(lvars, m_ObjVars);
                 break;
             }
@@ -9313,7 +9315,7 @@ private:
 
 class DmntKeyExp final : public Brace::AbstractBraceApi {
 public:
-    DmntKeyExp(Brace::BraceScript& interpreter) : Brace::AbstractBraceApi(interpreter) {}
+    DmntKeyExp(Brace::BraceCodeStructure& interpreter) : Brace::AbstractBraceApi(interpreter) {}
 
 protected:
     virtual bool LoadFunction([[maybe_unused]] const Brace::FuncInfo& curFunc,
@@ -9376,7 +9378,7 @@ protected:
 };
 class DmntRegionExp final : public Brace::AbstractBraceApi {
 public:
-    DmntRegionExp(Brace::BraceScript& interpreter) : Brace::AbstractBraceApi(interpreter) {}
+    DmntRegionExp(Brace::BraceCodeStructure& interpreter) : Brace::AbstractBraceApi(interpreter) {}
 
 protected:
     virtual bool LoadFunction([[maybe_unused]] const Brace::FuncInfo& curFunc,
@@ -9432,7 +9434,7 @@ protected:
 };
 class DmntOffsetExp final : public Brace::AbstractBraceApi {
 public:
-    DmntOffsetExp(Brace::BraceScript& interpreter) : Brace::AbstractBraceApi(interpreter) {}
+    DmntOffsetExp(Brace::BraceCodeStructure& interpreter) : Brace::AbstractBraceApi(interpreter) {}
 
 protected:
     virtual bool LoadFunction([[maybe_unused]] const Brace::FuncInfo& curFunc,
@@ -9491,7 +9493,7 @@ protected:
 };
 class DmntOperandExp final : public Brace::AbstractBraceApi {
 public:
-    DmntOperandExp(Brace::BraceScript& interpreter) : Brace::AbstractBraceApi(interpreter) {}
+    DmntOperandExp(Brace::BraceCodeStructure& interpreter) : Brace::AbstractBraceApi(interpreter) {}
 
 protected:
     virtual bool LoadFunction([[maybe_unused]] const Brace::FuncInfo& curFunc,
@@ -9554,7 +9556,7 @@ protected:
 
 class DmntCalcOffsetExp final : public Brace::SimpleBraceApiBase {
 public:
-    DmntCalcOffsetExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    DmntCalcOffsetExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -9621,7 +9623,7 @@ protected:
 };
 class DmntReadMemExp final : public Brace::SimpleBraceApiBase {
 public:
-    DmntReadMemExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    DmntReadMemExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -9696,7 +9698,7 @@ protected:
 };
 class DmntCommentExp final : public Brace::SimpleBraceApiBase {
 public:
-    DmntCommentExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    DmntCommentExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -9724,7 +9726,7 @@ protected:
 };
 class DmntStoreValueToAddrExp final : public Brace::SimpleBraceApiBase {
 public:
-    DmntStoreValueToAddrExp(Brace::BraceScript& interpreter)
+    DmntStoreValueToAddrExp(Brace::BraceCodeStructure& interpreter)
         : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
@@ -9802,7 +9804,7 @@ protected:
 };
 class DmntConditionExp final : public Brace::SimpleBraceApiBase {
 public:
-    DmntConditionExp(Brace::BraceScript& interpreter, const std::string& op)
+    DmntConditionExp(Brace::BraceCodeStructure& interpreter, const std::string& op)
         : Brace::SimpleBraceApiBase(interpreter), m_Operator(op) {}
 
 protected:
@@ -9899,7 +9901,7 @@ private:
 };
 class DmntLoadRegWithValueExp final : public Brace::SimpleBraceApiBase {
 public:
-    DmntLoadRegWithValueExp(Brace::BraceScript& interpreter)
+    DmntLoadRegWithValueExp(Brace::BraceCodeStructure& interpreter)
         : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
@@ -9949,7 +9951,7 @@ protected:
 };
 class DmntLoadRegWithMemoryExp final : public Brace::SimpleBraceApiBase {
 public:
-    DmntLoadRegWithMemoryExp(Brace::BraceScript& interpreter)
+    DmntLoadRegWithMemoryExp(Brace::BraceCodeStructure& interpreter)
         : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
@@ -10049,7 +10051,7 @@ protected:
 };
 class DmntStoreValueToMemoryExp final : public Brace::SimpleBraceApiBase {
 public:
-    DmntStoreValueToMemoryExp(Brace::BraceScript& interpreter)
+    DmntStoreValueToMemoryExp(Brace::BraceCodeStructure& interpreter)
         : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
@@ -10130,7 +10132,7 @@ protected:
 };
 class DmntLegacyArithExp final : public Brace::SimpleBraceApiBase {
 public:
-    DmntLegacyArithExp(Brace::BraceScript& interpreter, const std::string& op)
+    DmntLegacyArithExp(Brace::BraceCodeStructure& interpreter, const std::string& op)
         : Brace::SimpleBraceApiBase(interpreter), m_Operator(op) {}
 
 protected:
@@ -10210,7 +10212,7 @@ private:
 };
 class DmntKeyPressExp final : public Brace::SimpleBraceApiBase {
 public:
-    DmntKeyPressExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    DmntKeyPressExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -10281,7 +10283,7 @@ protected:
 };
 class DmntArithExp final : public Brace::SimpleBraceApiBase {
 public:
-    DmntArithExp(Brace::BraceScript& interpreter, const std::string& op)
+    DmntArithExp(Brace::BraceCodeStructure& interpreter, const std::string& op)
         : Brace::SimpleBraceApiBase(interpreter), m_Operator(op) {}
 
 protected:
@@ -10413,7 +10415,7 @@ private:
 };
 class DmntStoreRegToMemoryExp final : public Brace::SimpleBraceApiBase {
 public:
-    DmntStoreRegToMemoryExp(Brace::BraceScript& interpreter)
+    DmntStoreRegToMemoryExp(Brace::BraceCodeStructure& interpreter)
         : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
@@ -10517,7 +10519,7 @@ protected:
 };
 class DmntRegCondExp final : public Brace::SimpleBraceApiBase {
 public:
-    DmntRegCondExp(Brace::BraceScript& interpreter, const std::string& op)
+    DmntRegCondExp(Brace::BraceCodeStructure& interpreter, const std::string& op)
         : Brace::SimpleBraceApiBase(interpreter), m_Operator(op) {}
 
 protected:
@@ -10668,7 +10670,7 @@ private:
 
 class DmntRegSaveRestoreExp final : public Brace::SimpleBraceApiBase {
 public:
-    DmntRegSaveRestoreExp(Brace::BraceScript& interpreter)
+    DmntRegSaveRestoreExp(Brace::BraceCodeStructure& interpreter)
         : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
@@ -10725,7 +10727,7 @@ protected:
 };
 class DmntRegSaveRestoreWithMaskExp final : public Brace::SimpleBraceApiBase {
 public:
-    DmntRegSaveRestoreWithMaskExp(Brace::BraceScript& interpreter)
+    DmntRegSaveRestoreWithMaskExp(Brace::BraceCodeStructure& interpreter)
         : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
@@ -10774,7 +10776,7 @@ protected:
 };
 class DmntRegReadWriteExp final : public Brace::SimpleBraceApiBase {
 public:
-    DmntRegReadWriteExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    DmntRegReadWriteExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -10816,7 +10818,7 @@ protected:
 };
 class DmntPauseExp final : public Brace::SimpleBraceApiBase {
 public:
-    DmntPauseExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    DmntPauseExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -10843,7 +10845,7 @@ protected:
 };
 class DmntResumeExp final : public Brace::SimpleBraceApiBase {
 public:
-    DmntResumeExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    DmntResumeExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
@@ -10870,7 +10872,7 @@ protected:
 };
 class DmntDebugLogExp final : public Brace::SimpleBraceApiBase {
 public:
-    DmntDebugLogExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
+    DmntDebugLogExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter) {}
 
 protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,

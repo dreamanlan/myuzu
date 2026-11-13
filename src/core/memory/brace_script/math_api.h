@@ -21,7 +21,7 @@ namespace BraceScriptInterpreter
     class SqrtExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        SqrtExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter)
+        SqrtExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter)
         {
         }
 
@@ -60,7 +60,7 @@ namespace BraceScriptInterpreter
     class CbrtExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        CbrtExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter)
+        CbrtExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter)
         {
         }
 
@@ -99,7 +99,7 @@ namespace BraceScriptInterpreter
     class PowExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        PowExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter)
+        PowExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter)
         {
         }
 
@@ -141,7 +141,7 @@ namespace BraceScriptInterpreter
     class HypotExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        HypotExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter)
+        HypotExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter)
         {
         }
 
@@ -203,7 +203,7 @@ namespace BraceScriptInterpreter
     class AbsExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        AbsExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter)
+        AbsExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter)
         {
         }
 
@@ -242,7 +242,7 @@ namespace BraceScriptInterpreter
     class CeilExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        CeilExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter)
+        CeilExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter)
         {
         }
 
@@ -281,7 +281,7 @@ namespace BraceScriptInterpreter
     class FloorExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        FloorExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter)
+        FloorExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter)
         {
         }
 
@@ -320,7 +320,7 @@ namespace BraceScriptInterpreter
     class SinExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        SinExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter)
+        SinExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter)
         {
         }
 
@@ -359,7 +359,7 @@ namespace BraceScriptInterpreter
     class CosExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        CosExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter)
+        CosExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter)
         {
         }
 
@@ -398,7 +398,7 @@ namespace BraceScriptInterpreter
     class TanExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        TanExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter)
+        TanExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter)
         {
         }
 
@@ -437,7 +437,7 @@ namespace BraceScriptInterpreter
     class AsinExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        AsinExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter)
+        AsinExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter)
         {
         }
 
@@ -476,7 +476,7 @@ namespace BraceScriptInterpreter
     class AcosExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        AcosExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter)
+        AcosExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter)
         {
         }
 
@@ -515,7 +515,7 @@ namespace BraceScriptInterpreter
     class AtanExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        AtanExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter)
+        AtanExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter)
         {
         }
 
@@ -554,7 +554,7 @@ namespace BraceScriptInterpreter
     class Atan2Exp final : public Brace::SimpleBraceApiBase
     {
     public:
-        Atan2Exp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter)
+        Atan2Exp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter)
         {
         }
 
@@ -596,7 +596,7 @@ namespace BraceScriptInterpreter
     class Deg2RadExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        Deg2RadExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter)
+        Deg2RadExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter)
         {
         }
 
@@ -635,7 +635,7 @@ namespace BraceScriptInterpreter
     class Rad2DegExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        Rad2DegExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter)
+        Rad2DegExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter)
         {
         }
 
@@ -674,7 +674,7 @@ namespace BraceScriptInterpreter
     class RandIntExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        RandIntExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter)
+        RandIntExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter)
         {
         }
 
@@ -747,7 +747,7 @@ namespace BraceScriptInterpreter
     class RandFloatExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        RandFloatExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter)
+        RandFloatExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter)
         {
         }
 
@@ -820,7 +820,7 @@ namespace BraceScriptInterpreter
     class MaxExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        MaxExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter)
+        MaxExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter)
         {
         }
 
@@ -869,7 +869,7 @@ namespace BraceScriptInterpreter
     class MinExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        MinExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter)
+        MinExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter)
         {
         }
 
@@ -918,7 +918,7 @@ namespace BraceScriptInterpreter
     class SumExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        SumExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter)
+        SumExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter)
         {
         }
 
@@ -959,7 +959,7 @@ namespace BraceScriptInterpreter
     class AvgExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        AvgExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter)
+        AvgExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter)
         {
         }
 
@@ -1003,7 +1003,7 @@ namespace BraceScriptInterpreter
     class DevSqExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        DevSqExp(Brace::BraceScript& interpreter) : Brace::SimpleBraceApiBase(interpreter)
+        DevSqExp(Brace::BraceCodeStructure& interpreter) : Brace::SimpleBraceApiBase(interpreter)
         {
         }
 
@@ -1053,7 +1053,7 @@ namespace BraceScriptInterpreter
     class ArrayMaxExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        ArrayMaxExp(Brace::BraceScript& interpreter) :Brace::SimpleBraceApiBase(interpreter)
+        ArrayMaxExp(Brace::BraceCodeStructure& interpreter) :Brace::SimpleBraceApiBase(interpreter)
         {
         }
     protected:
@@ -1125,7 +1125,7 @@ namespace BraceScriptInterpreter
     class ArrayMinExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        ArrayMinExp(Brace::BraceScript& interpreter) :Brace::SimpleBraceApiBase(interpreter)
+        ArrayMinExp(Brace::BraceCodeStructure& interpreter) :Brace::SimpleBraceApiBase(interpreter)
         {
         }
     protected:
@@ -1197,7 +1197,7 @@ namespace BraceScriptInterpreter
     class ArraySumExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        ArraySumExp(Brace::BraceScript& interpreter) :Brace::SimpleBraceApiBase(interpreter)
+        ArraySumExp(Brace::BraceCodeStructure& interpreter) :Brace::SimpleBraceApiBase(interpreter)
         {
         }
     protected:
@@ -1262,7 +1262,7 @@ namespace BraceScriptInterpreter
     class ArrayAvgExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        ArrayAvgExp(Brace::BraceScript& interpreter) :Brace::SimpleBraceApiBase(interpreter)
+        ArrayAvgExp(Brace::BraceCodeStructure& interpreter) :Brace::SimpleBraceApiBase(interpreter)
         {
         }
     protected:
@@ -1329,7 +1329,7 @@ namespace BraceScriptInterpreter
     class ArrayDevSqExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        ArrayDevSqExp(Brace::BraceScript& interpreter) :Brace::SimpleBraceApiBase(interpreter)
+        ArrayDevSqExp(Brace::BraceCodeStructure& interpreter) :Brace::SimpleBraceApiBase(interpreter)
         {
         }
     protected:
@@ -1402,7 +1402,7 @@ namespace BraceScriptInterpreter
     class HashtableMaxExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        HashtableMaxExp(Brace::BraceScript& interpreter) :Brace::SimpleBraceApiBase(interpreter)
+        HashtableMaxExp(Brace::BraceCodeStructure& interpreter) :Brace::SimpleBraceApiBase(interpreter)
         {
         }
     protected:
@@ -1486,7 +1486,7 @@ namespace BraceScriptInterpreter
     class HashtableMinExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        HashtableMinExp(Brace::BraceScript& interpreter) :Brace::SimpleBraceApiBase(interpreter)
+        HashtableMinExp(Brace::BraceCodeStructure& interpreter) :Brace::SimpleBraceApiBase(interpreter)
         {
         }
     protected:
@@ -1570,7 +1570,7 @@ namespace BraceScriptInterpreter
     class HashtableSumExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        HashtableSumExp(Brace::BraceScript& interpreter) :Brace::SimpleBraceApiBase(interpreter)
+        HashtableSumExp(Brace::BraceCodeStructure& interpreter) :Brace::SimpleBraceApiBase(interpreter)
         {
         }
     protected:
@@ -1645,7 +1645,7 @@ namespace BraceScriptInterpreter
     class HashtableAvgExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        HashtableAvgExp(Brace::BraceScript& interpreter) :Brace::SimpleBraceApiBase(interpreter)
+        HashtableAvgExp(Brace::BraceCodeStructure& interpreter) :Brace::SimpleBraceApiBase(interpreter)
         {
         }
     protected:
@@ -1723,7 +1723,7 @@ namespace BraceScriptInterpreter
     class HashtableDevSqExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        HashtableDevSqExp(Brace::BraceScript& interpreter) :Brace::SimpleBraceApiBase(interpreter)
+        HashtableDevSqExp(Brace::BraceCodeStructure& interpreter) :Brace::SimpleBraceApiBase(interpreter)
         {
         }
     protected:
@@ -1807,7 +1807,7 @@ namespace BraceScriptInterpreter
     class LinearRegressionExp final : public Brace::SimpleBraceApiBase
     {
     public:
-        LinearRegressionExp(Brace::BraceScript& interpreter) :Brace::SimpleBraceApiBase(interpreter)
+        LinearRegressionExp(Brace::BraceCodeStructure& interpreter) :Brace::SimpleBraceApiBase(interpreter)
         {
         }
     protected:
