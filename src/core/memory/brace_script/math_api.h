@@ -576,7 +576,7 @@ namespace BraceScriptInterpreter
                 }
             }
             std::stringstream ss;
-            ss << "expected atan2(y, x) ! line: " << data.GetLine();
+            ss << "expected atan_2(y, x) ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -617,7 +617,7 @@ namespace BraceScriptInterpreter
                 }
             }
             std::stringstream ss;
-            ss << "expected deg2rad(number) ! line: " << data.GetLine();
+            ss << "expected deg_2_rad(number) ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -656,7 +656,7 @@ namespace BraceScriptInterpreter
                 }
             }
             std::stringstream ss;
-            ss << "expected rad2deg(number) ! line: " << data.GetLine();
+            ss << "expected rad_2_deg(number) ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -713,7 +713,7 @@ namespace BraceScriptInterpreter
                 return true;
             }
             std::stringstream ss;
-            ss << "expected randint() or randint(max_num) or randint(min_num, max_num) ! line: " << data.GetLine();
+            ss << "expected rand_int() or rand_int(max_num) or rand_int(min_num, max_num) ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -786,7 +786,7 @@ namespace BraceScriptInterpreter
                 return true;
             }
             std::stringstream ss;
-            ss << "expected randfloat() or randfloat(max_num) or randfloat(min_num, max_num) ! line: " << data.GetLine();
+            ss << "expected rand_float() or rand_float(max_num) or rand_float(min_num, max_num) ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -1074,7 +1074,7 @@ namespace BraceScriptInterpreter
                 }
             }
             std::stringstream ss;
-            ss << "expected arraymax(int_array) or arraymax(float_array) ! line: " << data.GetLine();
+            ss << "expected array_max(int_array) or array_max(float_array) ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -1146,7 +1146,7 @@ namespace BraceScriptInterpreter
                 }
             }
             std::stringstream ss;
-            ss << "expected arraymin(int_array) or arraymin(float_array) ! line: " << data.GetLine();
+            ss << "expected array_min(int_array) or array_min(float_array) ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -1218,7 +1218,7 @@ namespace BraceScriptInterpreter
                 }
             }
             std::stringstream ss;
-            ss << "expected arraysum(int_array) or arraysum(float_array) ! line: " << data.GetLine();
+            ss << "expected array_sum(int_array) or array_sum(float_array) ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -1283,7 +1283,7 @@ namespace BraceScriptInterpreter
                 }
             }
             std::stringstream ss;
-            ss << "expected arrayavg(int_array) or arrayavg(float_array) ! line: " << data.GetLine();
+            ss << "expected array_avg(int_array) or array_avg(float_array) ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -1350,7 +1350,7 @@ namespace BraceScriptInterpreter
                 }
             }
             std::stringstream ss;
-            ss << "expected arraydevsq(int_array) or arraydevsq(float_array) ! line: " << data.GetLine();
+            ss << "expected array_devsq(int_array) or array_devsq(float_array) ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -1427,7 +1427,7 @@ namespace BraceScriptInterpreter
                 }
             }
             std::stringstream ss;
-            ss << "expected hashtablemax(int_int_hash) or hashtablemax(str_int_hash) or hashtablemax(int_float_hash) or hashtablemax(str_float_hash) ! line: " << data.GetLine();
+            ss << "expected hashtable_max(int_int_hash) or hashtable_max(str_int_hash) or hashtable_max(int_float_hash) or hashtable_max(str_float_hash) ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -1511,7 +1511,7 @@ namespace BraceScriptInterpreter
                 }
             }
             std::stringstream ss;
-            ss << "expected hashtablemin(int_int_hash) or hashtablemin(str_int_hash) or hashtablemin(int_float_hash) or hashtablemin(str_float_hash) ! line: " << data.GetLine();
+            ss << "expected hashtable_min(int_int_hash) or hashtable_min(str_int_hash) or hashtable_min(int_float_hash) or hashtable_min(str_float_hash) ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -1595,7 +1595,7 @@ namespace BraceScriptInterpreter
                 }
             }
             std::stringstream ss;
-            ss << "expected hashtablesum(int_int_hash) or hashtablesum(str_int_hash) or hashtablesum(int_float_hash) or hashtablesum(str_float_hash) ! line: " << data.GetLine();
+            ss << "expected hashtable_sum(int_int_hash) or hashtable_sum(str_int_hash) or hashtable_sum(int_float_hash) or hashtable_sum(str_float_hash) ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -1670,7 +1670,7 @@ namespace BraceScriptInterpreter
                 }
             }
             std::stringstream ss;
-            ss << "expected hashtableavg(int_int_hash) or hashtableavg(str_int_hash) or hashtableavg(int_float_hash) or hashtableavg(str_float_hash) ! line: " << data.GetLine();
+            ss << "expected hashtable_avg(int_int_hash) or hashtable_avg(str_int_hash) or hashtable_avg(int_float_hash) or hashtable_avg(str_float_hash) ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -1748,7 +1748,7 @@ namespace BraceScriptInterpreter
                 }
             }
             std::stringstream ss;
-            ss << "expected hashtabledevsq(int_int_hash) or hashtabledevsq(str_int_hash) or hashtabledevsq(int_float_hash) or hashtabledevsq(str_float_hash) ! line: " << data.GetLine();
+            ss << "expected hashtable_devsq(int_int_hash) or hashtable_devsq(str_int_hash) or hashtable_devsq(int_float_hash) or hashtable_devsq(str_float_hash) ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -1841,7 +1841,7 @@ namespace BraceScriptInterpreter
                 }
             }
             std::stringstream ss;
-            ss << "expected linearregression(array<:array<:double:>:>, array<:double:>) or linearregression(array<:array<:double:>:>, array<:double:>, bool_debug) ! line: " << data.GetLine();
+            ss << "expected linear_regression(array<:array<:double:>:>, array<:double:>) or linear_regression(array<:array<:double:>:>, array<:double:>, bool_debug) ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }

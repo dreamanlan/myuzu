@@ -870,7 +870,7 @@ protected:
         } else {
             // error
             std::stringstream ss;
-            ss << "expected oncallback(msg){...};" << funcData.GetId() << " line "
+            ss << "expected on_callback(msg){...};" << funcData.GetId() << " line "
                << funcData.GetLine();
             LogError(ss.str());
             return false;
@@ -935,7 +935,7 @@ protected:
         if (hasError) {
             // error
             std::stringstream ss;
-            ss << "expected oncallback(msg)params($a:int,$b:int,...){...};" << funcData.GetId()
+            ss << "expected on_callback(msg)params($a:int,$b:int,...){...};" << funcData.GetId()
                << " line " << funcData.GetLine();
             LogError(ss.str());
         }
@@ -977,7 +977,7 @@ protected:
         } else {
             // error
             std::stringstream ss;
-            ss << "expected onmessage(msg[, pool_num]){...};" << funcData.GetId() << " line "
+            ss << "expected on_message(msg[, pool_num]){...};" << funcData.GetId() << " line "
                << funcData.GetLine();
             LogError(ss.str());
             return false;
@@ -1046,7 +1046,7 @@ protected:
         if (hasError) {
             // error
             std::stringstream ss;
-            ss << "expected onmessage(msg[, pool_num])params($a:int,$b:int,...){...};"
+            ss << "expected on_message(msg[, pool_num])params($a:int,$b:int,...){...};"
                << funcData.GetId() << " line " << funcData.GetLine();
             LogError(ss.str());
         }
@@ -1628,7 +1628,7 @@ protected:
             }
         }
         std::stringstream ss;
-        ss << "expected int2char(integer) ! line: " << data.GetLine();
+        ss << "expected int_2_char(integer) ! line: " << data.GetLine();
         LogError(ss.str());
         return false;
     }
@@ -1663,7 +1663,7 @@ protected:
             }
         }
         std::stringstream ss;
-        ss << "expected char2int(string) ! line: " << data.GetLine();
+        ss << "expected char_2_int(string) ! line: " << data.GetLine();
         LogError(ss.str());
         return false;
     }
@@ -1700,7 +1700,7 @@ protected:
             }
         }
         std::stringstream ss;
-        ss << "expected int2hex(integer) ! line: " << data.GetLine();
+        ss << "expected int_2_hex(integer) ! line: " << data.GetLine();
         LogError(ss.str());
         return false;
     }
@@ -1736,7 +1736,7 @@ protected:
             }
         }
         std::stringstream ss;
-        ss << "expected hex2int(string) ! line: " << data.GetLine();
+        ss << "expected hex_2_int(string) ! line: " << data.GetLine();
         LogError(ss.str());
         return false;
     }
@@ -1774,7 +1774,7 @@ protected:
             }
         }
         std::stringstream ss;
-        ss << "expected int2str(integer) ! line: " << data.GetLine();
+        ss << "expected int_2_str(integer) ! line: " << data.GetLine();
         LogError(ss.str());
         return false;
     }
@@ -1808,7 +1808,7 @@ protected:
             }
         }
         std::stringstream ss;
-        ss << "expected str2int(string) ! line: " << data.GetLine();
+        ss << "expected str_2_int(string) ! line: " << data.GetLine();
         LogError(ss.str());
         return false;
     }
@@ -1842,7 +1842,7 @@ protected:
             }
         }
         std::stringstream ss;
-        ss << "expected float2str(number) or float2str(number, precise) ! line: " << data.GetLine();
+        ss << "expected float_2_str(number) or float_2_str(number, precise) ! line: " << data.GetLine();
         LogError(ss.str());
         return false;
     }
@@ -1884,7 +1884,7 @@ protected:
             }
         }
         std::stringstream ss;
-        ss << "expected str2float(string) ! line: " << data.GetLine();
+        ss << "expected str_2_float(string) ! line: " << data.GetLine();
         LogError(ss.str());
         return false;
     }
@@ -1945,7 +1945,7 @@ protected:
             }
         }
         std::stringstream ss;
-        ss << "expected strcontainsone(string, string, ...) ! line: " << data.GetLine();
+        ss << "expected str_contains_one(string, string, ...) ! line: " << data.GetLine();
         LogError(ss.str());
         return false;
     }
@@ -1989,7 +1989,7 @@ protected:
             }
         }
         std::stringstream ss;
-        ss << "expected strcontainsall(string, string, ...) ! line: " << data.GetLine();
+        ss << "expected str_contains_all(string, string, ...) ! line: " << data.GetLine();
         LogError(ss.str());
         return false;
     }
@@ -2034,7 +2034,7 @@ protected:
             }
         }
         std::stringstream ss;
-        ss << "expected strindexof(string, string, int) or strindexof(string, string) ! line: "
+        ss << "expected str_index_of(string, string, int) or str_index_of(string, string) ! line: "
            << data.GetLine();
         LogError(ss.str());
         return false;
@@ -2082,7 +2082,7 @@ protected:
             }
         }
         std::stringstream ss;
-        ss << "expected strlastindexof(string, string, int) or strlastindexof(string, string) ! "
+        ss << "expected str_last_index_of(string, string, int) or str_last_index_of(string, string) ! "
               "line: "
            << data.GetLine();
         LogError(ss.str());
@@ -2216,7 +2216,7 @@ protected:
             }
         }
         std::stringstream ss;
-        ss << "expected strreplace(string, string, string) ! line: " << data.GetLine();
+        ss << "expected str_replace(string, string, string) ! line: " << data.GetLine();
         LogError(ss.str());
         return false;
     }
@@ -2259,7 +2259,7 @@ protected:
             }
         }
         std::stringstream ss;
-        ss << "expected strsplit(string, string) ! line: " << data.GetLine();
+        ss << "expected str_split(string, string) ! line: " << data.GetLine();
         LogError(ss.str());
         return false;
     }
@@ -2303,7 +2303,7 @@ protected:
             }
         }
         std::stringstream ss;
-        ss << "expected strjoin(array<:string:>, string) ! line: " << data.GetLine();
+        ss << "expected str_join(array<:string:>, string) ! line: " << data.GetLine();
         LogError(ss.str());
         return false;
     }
@@ -2460,13 +2460,13 @@ protected:
             auto& ai1 = argInfos[0];
             if (!Brace::IsStringType(ai1.Type)) {
                 std::stringstream ss;
-                ss << "expected fileexists(file_path) ! line: " << data.GetLine();
+                ss << "expected file_exists(file_path) ! line: " << data.GetLine();
                 LogError(ss.str());
                 return false;
             }
         } else {
             std::stringstream ss;
-            ss << "fileexists must have a string argument ! line: " << data.GetLine();
+            ss << "file_exists must have a string argument ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -2502,13 +2502,13 @@ protected:
             auto& ai1 = argInfos[0];
             if (!Brace::IsStringType(ai1.Type)) {
                 std::stringstream ss;
-                ss << "expected loadfile(file_path) ! line: " << data.GetLine();
+                ss << "expected load_file(file_path) ! line: " << data.GetLine();
                 LogError(ss.str());
                 return false;
             }
         } else {
             std::stringstream ss;
-            ss << "loadfile must have a string argument ! line: " << data.GetLine();
+            ss << "load_file must have a string argument ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -2547,13 +2547,13 @@ protected:
             auto& ai2 = argInfos[1];
             if (!Brace::IsStringType(ai1.Type) || !Brace::IsStringType(ai2.Type)) {
                 std::stringstream ss;
-                ss << "expected savefile(string, file_path) ! line: " << data.GetLine();
+                ss << "expected save_file(string, file_path) ! line: " << data.GetLine();
                 LogError(ss.str());
                 return false;
             }
         } else {
             std::stringstream ss;
-            ss << "savefile must have two args ! line: " << data.GetLine();
+            ss << "save_file must have two args ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -2592,7 +2592,7 @@ protected:
             auto& ai1 = argInfos[0];
             if (!Brace::IsStringType(ai1.Type)) {
                 std::stringstream ss;
-                ss << "expected loadfiletoarray(file_path) ! line: " << data.GetLine();
+                ss << "expected load_file_to_array(file_path) ! line: " << data.GetLine();
                 LogError(ss.str());
                 return false;
             }
@@ -2607,14 +2607,14 @@ protected:
             }
             if (!Brace::IsStringType(ai1.Type) || !isArray) {
                 std::stringstream ss;
-                ss << "expected loadfiletoarray(file_path, typetag(array_type)) ! line: "
+                ss << "expected load_file_to_array(file_path, type_tag(array_type)) ! line: "
                    << data.GetLine();
                 LogError(ss.str());
                 return false;
             }
         } else {
             std::stringstream ss;
-            ss << "loadfiletoarray must have a string argument ! line: " << data.GetLine();
+            ss << "load_file_to_array must have a string argument ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -2709,13 +2709,13 @@ protected:
             }
             if (!isArray || !Brace::IsStringType(ai2.Type)) {
                 std::stringstream ss;
-                ss << "expected savearraytofile(xxx_array, file_path) ! line: " << data.GetLine();
+                ss << "expected save_array_to_file(xxx_array, file_path) ! line: " << data.GetLine();
                 LogError(ss.str());
                 return false;
             }
         } else {
             std::stringstream ss;
-            ss << "savearraytofile must have two args ! line: " << data.GetLine();
+            ss << "save_array_to_file must have two args ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -2784,7 +2784,7 @@ protected:
             auto& ai1 = argInfos[0];
             if (!Brace::IsStringType(ai1.Type)) {
                 std::stringstream ss;
-                ss << "expected loadhashtable(file_path) ! line: " << data.GetLine();
+                ss << "expected load_hashtable(file_path) ! line: " << data.GetLine();
                 LogError(ss.str());
                 return false;
             }
@@ -2799,14 +2799,14 @@ protected:
             }
             if (!Brace::IsStringType(ai1.Type) || !isHash) {
                 std::stringstream ss;
-                ss << "expected loadhashtable(file_path, typetag(hash_type)) ! line: "
+                ss << "expected load_hashtable(file_path, type_tag(hash_type)) ! line: "
                    << data.GetLine();
                 LogError(ss.str());
                 return false;
             }
         } else {
             std::stringstream ss;
-            ss << "loadhashtable must have a string argument ! line: " << data.GetLine();
+            ss << "load_hashtable must have a string argument ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -2931,7 +2931,7 @@ protected:
             }
             if (!isHash || !Brace::IsStringType(ai2.Type)) {
                 std::stringstream ss;
-                ss << "expected savehashtable(int_xxx_hash, file_path) or "
+                ss << "expected save_hashtable(int_xxx_hash, file_path) or "
                       "savememinfo(str_xxx_hash, file_path) ! line: "
                    << data.GetLine();
                 LogError(ss.str());
@@ -2939,7 +2939,7 @@ protected:
             }
         } else {
             std::stringstream ss;
-            ss << "savehashtable must have two args ! line: " << data.GetLine();
+            ss << "save_hashtable must have two args ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -3038,15 +3038,15 @@ protected:
             if (!Brace::IsObjectType(ai1.Type) || !Brace::IsObjectType(ai2.Type) ||
                 ai1.ObjectTypeId != ai2.ObjectTypeId || !isHash) {
                 std::stringstream ss;
-                ss << "expected calcnewitems(int_xxx_hash, int_xxx_hash) or "
-                      "calcnewitems(str_xxx_hash, str_xxx_hash) ! line: "
+                ss << "expected calc_new_items(int_xxx_hash, int_xxx_hash) or "
+                      "calc_new_items(str_xxx_hash, str_xxx_hash) ! line: "
                    << data.GetLine();
                 LogError(ss.str());
                 return false;
             }
         } else {
             std::stringstream ss;
-            ss << "calcnewitems must have two args ! line: " << data.GetLine();
+            ss << "calc_new_items must have two args ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -3168,15 +3168,15 @@ protected:
             if (!Brace::IsObjectType(ai1.Type) || !Brace::IsObjectType(ai2.Type) ||
                 ai1.ObjectTypeId != ai2.ObjectTypeId || !isHash) {
                 std::stringstream ss;
-                ss << "expected calcsameitems(int_xxx_hash, int_xxx_hash) or "
-                      "calcnewitems(str_xxx_hash, str_xxx_hash) ! line: "
+                ss << "expected calc_same_items(int_xxx_hash, int_xxx_hash) or "
+                      "calc_new_items(str_xxx_hash, str_xxx_hash) ! line: "
                    << data.GetLine();
                 LogError(ss.str());
                 return false;
             }
         } else {
             std::stringstream ss;
-            ss << "calcsameitems must have two args ! line: " << data.GetLine();
+            ss << "calc_same_items must have two args ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -3298,7 +3298,7 @@ protected:
             if (!Brace::IsObjectType(ai1.Type) || !Brace::IsObjectType(ai2.Type) ||
                 ai1.ObjectTypeId != ai2.ObjectTypeId || !isHash) {
                 std::stringstream ss;
-                ss << "expected calcitemsunion(int_xxx_hash, int_xxx_hash) or "
+                ss << "expected calc_items_union(int_xxx_hash, int_xxx_hash) or "
                       "calcsumitems(str_xxx_hash, str_xxx_hash) ! line: "
                    << data.GetLine();
                 LogError(ss.str());
@@ -3306,7 +3306,7 @@ protected:
             }
         } else {
             std::stringstream ss;
-            ss << "calcitemsunion must have two args ! line: " << data.GetLine();
+            ss << "calc_items_union must have two args ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -3423,7 +3423,7 @@ protected:
             if (!Brace::IsObjectType(ai1.Type) || !Brace::IsObjectType(ai2.Type) ||
                 ai1.ObjectTypeId != ai2.ObjectTypeId || !isHash) {
                 std::stringstream ss;
-                ss << "expected itemsadd(int_xxx_hash, int_xxx_hash) or itemsadd(str_xxx_hash, "
+                ss << "expected items_add(int_xxx_hash, int_xxx_hash) or items_add(str_xxx_hash, "
                       "str_xxx_hash) ! line: "
                    << data.GetLine();
                 LogError(ss.str());
@@ -3431,7 +3431,7 @@ protected:
             }
         } else {
             std::stringstream ss;
-            ss << "itemsadd must have two args ! line: " << data.GetLine();
+            ss << "items_add must have two args ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -3560,7 +3560,7 @@ protected:
             if (!Brace::IsObjectType(ai1.Type) || !Brace::IsObjectType(ai2.Type) ||
                 ai1.ObjectTypeId != ai2.ObjectTypeId || !isHash) {
                 std::stringstream ss;
-                ss << "expected itemssub(int_xxx_hash, int_xxx_hash) or itemssub(str_xxx_hash, "
+                ss << "expected items_sub(int_xxx_hash, int_xxx_hash) or items_sub(str_xxx_hash, "
                       "str_xxx_hash) ! line: "
                    << data.GetLine();
                 LogError(ss.str());
@@ -3568,7 +3568,7 @@ protected:
             }
         } else {
             std::stringstream ss;
-            ss << "itemssub must have two args ! line: " << data.GetLine();
+            ss << "items_sub must have two args ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -3690,7 +3690,7 @@ protected:
             if (!Brace::IsObjectType(ai1.Type) || !Brace::IsObjectType(ai2.Type) ||
                 ai1.ObjectTypeId != ai2.ObjectTypeId || !isHash) {
                 std::stringstream ss;
-                ss << "expected itemsmul(int_xxx_hash, int_xxx_hash) or itemsmul(str_xxx_hash, "
+                ss << "expected items_mul(int_xxx_hash, int_xxx_hash) or items_mul(str_xxx_hash, "
                       "str_xxx_hash) ! line: "
                    << data.GetLine();
                 LogError(ss.str());
@@ -3698,7 +3698,7 @@ protected:
             }
         } else {
             std::stringstream ss;
-            ss << "itemsmul must have two args ! line: " << data.GetLine();
+            ss << "items_mul must have two args ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -3819,7 +3819,7 @@ protected:
             if (!Brace::IsObjectType(ai1.Type) || !Brace::IsObjectType(ai2.Type) ||
                 ai1.ObjectTypeId != ai2.ObjectTypeId || !isHash) {
                 std::stringstream ss;
-                ss << "expected itemsdiv(int_xxx_hash, int_xxx_hash) or itemsdiv(str_xxx_hash, "
+                ss << "expected items_div(int_xxx_hash, int_xxx_hash) or items_div(str_xxx_hash, "
                       "str_xxx_hash) ! line: "
                    << data.GetLine();
                 LogError(ss.str());
@@ -3827,7 +3827,7 @@ protected:
             }
         } else {
             std::stringstream ss;
-            ss << "itemsdiv must have two args ! line: " << data.GetLine();
+            ss << "items_div must have two args ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -3916,8 +3916,8 @@ protected:
             if (!Brace::IsObjectType(ai1.Type) || !Brace::IsObjectType(ai2.Type) ||
                 ai1.ObjectTypeId != ai2.ObjectTypeId || !isArray) {
                 std::stringstream ss;
-                ss << "expected arrayadd(int_array, int_array) or arrayadd(float_array, "
-                      "float_array) or arrayadd(bool_array, bool_array) or arrayadd(str_array, "
+                ss << "expected array_add(int_array, int_array) or array_add(float_array, "
+                      "float_array) or array_add(bool_array, bool_array) or array_add(str_array, "
                       "str_array) ! line: "
                    << data.GetLine();
                 LogError(ss.str());
@@ -3925,7 +3925,7 @@ protected:
             }
         } else {
             std::stringstream ss;
-            ss << "arrayadd must have two args ! line: " << data.GetLine();
+            ss << "array_add must have two args ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -4032,15 +4032,15 @@ protected:
             if (!Brace::IsObjectType(ai1.Type) || !Brace::IsObjectType(ai2.Type) ||
                 ai1.ObjectTypeId != ai2.ObjectTypeId || !isArray) {
                 std::stringstream ss;
-                ss << "expected arraysub(int_array, int_array) or arraysub(float_array, "
-                      "float_array) or arraysub(bool_array, bool_array) ! line: "
+                ss << "expected array_sub(int_array, int_array) or array_sub(float_array, "
+                      "float_array) or array_sub(bool_array, bool_array) ! line: "
                    << data.GetLine();
                 LogError(ss.str());
                 return false;
             }
         } else {
             std::stringstream ss;
-            ss << "arraysub must have two args ! line: " << data.GetLine();
+            ss << "array_sub must have two args ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -4143,15 +4143,15 @@ protected:
             if (!Brace::IsObjectType(ai1.Type) || !Brace::IsObjectType(ai2.Type) ||
                 ai1.ObjectTypeId != ai2.ObjectTypeId || !isArray) {
                 std::stringstream ss;
-                ss << "expected arraymul(int_array, int_array) or arraymul(float_array, "
-                      "float_array) or arraymul(bool_array, bool_array) ! line: "
+                ss << "expected array_mul(int_array, int_array) or array_mul(float_array, "
+                      "float_array) or array_mul(bool_array, bool_array) ! line: "
                    << data.GetLine();
                 LogError(ss.str());
                 return false;
             }
         } else {
             std::stringstream ss;
-            ss << "arraymul must have two args ! line: " << data.GetLine();
+            ss << "array_mul must have two args ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -4254,7 +4254,7 @@ protected:
             if (!Brace::IsObjectType(ai1.Type) || !Brace::IsObjectType(ai2.Type) ||
                 ai1.ObjectTypeId != ai2.ObjectTypeId || !isArray) {
                 std::stringstream ss;
-                ss << "expected arraydiv(int_array, int_array) or arraydiv(float_array, "
+                ss << "expected array_div(int_array, int_array) or array_div(float_array, "
                       "float_array) ! line: "
                    << data.GetLine();
                 LogError(ss.str());
@@ -4262,7 +4262,7 @@ protected:
             }
         } else {
             std::stringstream ss;
-            ss << "arraydiv must have two args ! line: " << data.GetLine();
+            ss << "array_div must have two args ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -4329,7 +4329,7 @@ protected:
     virtual bool LoadFunction(const Brace::FuncInfo& func, const DslData::FunctionData& funcData,
                               Brace::OperandLoadtimeInfo& resultInfo,
                               Brace::BraceApiExecutor& executor) override {
-        // arraymodify(array, modify_exp);
+        // array_modify(array, modify_exp);
         int num = funcData.GetParamNum();
         if (num == 2) {
             Brace::OperandLoadtimeInfo objInfo;
@@ -4385,7 +4385,7 @@ protected:
         }
         // error
         std::stringstream ss;
-        ss << "expected arraymodify(array, modify_exp), " << funcData.GetId() << " line "
+        ss << "expected array_modify(array, modify_exp), " << funcData.GetId() << " line "
            << funcData.GetLine();
         LogError(ss.str());
         return false;
@@ -4506,7 +4506,7 @@ protected:
     virtual bool LoadFunction(const Brace::FuncInfo& func, const DslData::FunctionData& funcData,
                               Brace::OperandLoadtimeInfo& resultInfo,
                               Brace::BraceApiExecutor& executor) override {
-        // hashtablemodify(hashtable, modify_exp);
+        // hashtable_modify(hashtable, modify_exp);
         int num = funcData.GetParamNum();
         if (num == 2) {
             Brace::OperandLoadtimeInfo objInfo;
@@ -4602,7 +4602,7 @@ protected:
         }
         // error
         std::stringstream ss;
-        ss << "expected hashtablemodify(hashtable, modify_exp), " << funcData.GetId() << " line "
+        ss << "expected hashtable_modify(hashtable, modify_exp), " << funcData.GetId() << " line "
            << funcData.GetLine();
         LogError(ss.str());
         return false;
@@ -4857,7 +4857,7 @@ protected:
             argInfos[1].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected setscriptbtncaption(index, bit_flags)," << data.GetId() << " line "
+            ss << "expected set_script_btn_caption(index, bit_flags)," << data.GetId() << " line "
                << data.GetLine();
             LogError(ss.str());
             return false;
@@ -4911,7 +4911,7 @@ protected:
         if (argInfos.size() != 1 || argInfos[0].Type != Brace::BRACE_DATA_TYPE_STRING) {
             // error
             std::stringstream ss;
-            ss << "expected setscriptinputlabel(string)," << data.GetId() << " line "
+            ss << "expected set_script_input_label(string)," << data.GetId() << " line "
                << data.GetLine();
             LogError(ss.str());
             return false;
@@ -4941,7 +4941,7 @@ protected:
             argInfos[1].Type != Brace::BRACE_DATA_TYPE_STRING) {
             // error
             std::stringstream ss;
-            ss << "expected setscriptbtncaption(index, string)," << data.GetId() << " line "
+            ss << "expected set_script_btn_caption(index, string)," << data.GetId() << " line "
                << data.GetLine();
             LogError(ss.str());
             return false;
@@ -4974,7 +4974,7 @@ protected:
             argInfos[1].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected getpixel(x, y)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected get_pixel(x, y)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -5102,7 +5102,7 @@ protected:
             argInfos[0].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected readbuttonparam(index)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected read_button_param(index)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -5135,7 +5135,7 @@ protected:
             argInfos[0].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected readstickparam(index)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected read_stick_param(index)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -5168,7 +5168,7 @@ protected:
             argInfos[0].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected readmotionparam(index)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected read_motion_param(index)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -5200,7 +5200,7 @@ protected:
         if (argInfos.size() != 1 || argInfos[0].Type != Brace::BRACE_DATA_TYPE_STRING) {
             // error
             std::stringstream ss;
-            ss << "expected readparampackage(str)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected read_param_package(str)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -5226,7 +5226,7 @@ protected:
         if (argInfos.size() != 1 || argInfos[0].Type != Brace::BRACE_DATA_TYPE_STRING) {
             // error
             std::stringstream ss;
-            ss << "expected hasparam(key)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected has_param(key)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -5260,7 +5260,7 @@ protected:
             argInfos[1].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected getintparam(key, def)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected get_int_param(key, def)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -5297,7 +5297,7 @@ protected:
             argInfos[1].Type > Brace::BRACE_DATA_TYPE_DOUBLE) {
             // error
             std::stringstream ss;
-            ss << "expected getfloatparam(key, def)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected get_float_param(key, def)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -5333,7 +5333,7 @@ protected:
             argInfos[1].Type != Brace::BRACE_DATA_TYPE_STRING) {
             // error
             std::stringstream ss;
-            ss << "expected getstrparam(key, def)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected get_str_param(key, def)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -5371,7 +5371,7 @@ protected:
             argInfos[1].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected keypress(modifier, key)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected key_press(modifier, key)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -5403,7 +5403,7 @@ protected:
             argInfos[1].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected keyrelease(modifier, key)," << data.GetId() << " line "
+            ss << "expected key_release(modifier, key)," << data.GetId() << " line "
                << data.GetLine();
             LogError(ss.str());
             return false;
@@ -5438,7 +5438,7 @@ protected:
             argInfos[2].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected mousepress(x, y, button)," << data.GetId() << " line "
+            ss << "expected mouse_press(x, y, button)," << data.GetId() << " line "
                << data.GetLine();
             LogError(ss.str());
             return false;
@@ -5472,7 +5472,7 @@ protected:
             argInfos[0].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected mouserelease(button)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected mouse_release(button)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -5501,7 +5501,7 @@ protected:
             argInfos[1].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected mousemove(x, y)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected mouse_move(x, y)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -5533,7 +5533,7 @@ protected:
             argInfos[1].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected mousewheelchange(x, y)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected mouse_wheel_change(x, y)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -5567,7 +5567,7 @@ protected:
             argInfos[2].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected touchpress(x, y, id)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected touch_press(x, y, id)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -5620,7 +5620,7 @@ protected:
             argInfos[2].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected touchmove(x, y, id)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected touch_move(x, y, id)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -5686,7 +5686,7 @@ protected:
             argInfos[0].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected getbuttonstate(id)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected get_button_state(id)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -5723,7 +5723,7 @@ protected:
             argInfos[2].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected setbuttonstate(uint_player_index, int_button_id, bool_value),"
+            ss << "expected set_button_state(uint_player_index, int_button_id, bool_value),"
                << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
@@ -5763,7 +5763,7 @@ protected:
             argInfos[3].Type > Brace::BRACE_DATA_TYPE_DOUBLE) {
             // error
             std::stringstream ss;
-            ss << "expected setstickpos(uint_player_index, int_axis_id, float_x, float_y),"
+            ss << "expected set_stick_position(uint_player_index, int_axis_id, float_x, float_y),"
                << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
@@ -5814,7 +5814,7 @@ protected:
             argInfos[7].Type > Brace::BRACE_DATA_TYPE_DOUBLE) {
             // error
             std::stringstream ss;
-            ss << "expected setmotionstate(uint_player_index, uint64_delta_time, float_gyro_x, "
+            ss << "expected set_motion_state(uint_player_index, uint64_delta_time, float_gyro_x, "
                   "float_gyro_y, float_gyro_z, float_accel_x, float_accel_y, float_accel_z),"
                << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
@@ -6078,7 +6078,7 @@ protected:
             argInfos[0].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected gethistoryinfo(index)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected get_history_info(index)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -6156,7 +6156,7 @@ protected:
             argInfos[0].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected getrollbackinfo(index)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected get_rollback_info(index)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -6209,7 +6209,7 @@ protected:
             argInfos[0].ObjectTypeId != objTypeId) {
             // error
             std::stringstream ss;
-            ss << "expected setresultinfo(hashtable<:int64,MemoryModifyInfo:>)," << data.GetId()
+            ss << "expected set_result_info(hashtable<:int64,MemoryModifyInfo:>)," << data.GetId()
                << " line " << data.GetLine();
             LogError(ss.str());
             return false;
@@ -6287,7 +6287,7 @@ protected:
                                       argInfos[2].Type > Brace::BRACE_DATA_TYPE_UINT64))) {
             // error
             std::stringstream ss;
-            ss << "expected addtoresult(addr[, val_size, pid]), all type is integer,"
+            ss << "expected add_to_result(addr[, val_size, pid]), all type is integer,"
                << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
@@ -6392,7 +6392,7 @@ protected:
                                       argInfos[2].Type > Brace::BRACE_DATA_TYPE_UINT64))) {
             // error
             std::stringstream ss;
-            ss << "expected addtolast(addr[, val_size, pid]), all type is integer,"
+            ss << "expected add_to_last(addr[, val_size, pid]), all type is integer,"
                << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
@@ -6576,7 +6576,7 @@ protected:
             argInfos[0].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected getgamesavepath([index])," << data.GetId() << " line " << data.GetLine();
+            ss << "expected get_game_save_path([index])," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -6694,7 +6694,7 @@ protected:
             argInfos[0].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected getmodulebase(index)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected get_module_base(index)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -6737,7 +6737,7 @@ protected:
             argInfos[0].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected getmoduleaddr(index)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected get_module_addr(index)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -6781,7 +6781,7 @@ protected:
             argInfos[0].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected getmodulesize(index)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected get_module_size(index)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -6825,7 +6825,7 @@ protected:
             argInfos[0].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected getmoduleid(index)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected get_module_id(index)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -6869,7 +6869,7 @@ protected:
             argInfos[0].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected getmodulename(index)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected get_module_name(index)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -6914,7 +6914,7 @@ protected:
             argInfos[0].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected getmoduleprogid(index)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected get_module_program_id(index)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -6959,7 +6959,7 @@ protected:
             argInfos[0].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected getmodulepid(index)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected get_module_process_id(index)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -7114,7 +7114,7 @@ protected:
                                       argInfos[3].Type > Brace::BRACE_DATA_TYPE_UINT64))) {
             // error
             std::stringstream ss;
-            ss << "expected markmemdebug(uint64 addr, uint64 size[, bool debug[, uint64 pid]]),"
+            ss << "expected mark_mem_debug(uint64 addr, uint64 size[, bool debug[, uint64 pid]]),"
                << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
@@ -7172,7 +7172,7 @@ protected:
                                       argInfos[4].Type > Brace::BRACE_DATA_TYPE_UINT64))) {
             // error
             std::stringstream ss;
-            ss << "expected addsniffing(uint64 addr, uint64 size[, uint64 step, uint64 val, uint64 "
+            ss << "expected add_sniffing(uint64 addr, uint64 size[, uint64 step, uint64 val, uint64 "
                   "pid]),"
                << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
@@ -7230,7 +7230,7 @@ protected:
             argInfos[0].ObjectTypeId != CUSTOM_BRACE_OBJECT_TYPE_INT_ARRAY) {
             // error
             std::stringstream ss;
-            ss << "expected addsniffingfromsearch(find_vals)," << data.GetId() << " line "
+            ss << "expected add_sniffing_from_search(find_vals)," << data.GetId() << " line "
                << data.GetLine();
             LogError(ss.str());
             return false;
@@ -7350,7 +7350,7 @@ protected:
                                       argInfos[3].Type > Brace::BRACE_DATA_TYPE_UINT64))) {
             // error
             std::stringstream ss;
-            ss << "expected showmem(uint64 addr, uint64 size[, uint64 step, uint64 pid]),"
+            ss << "expected show_mem(uint64 addr, uint64 size[, uint64 step, uint64 pid]),"
                << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
@@ -7410,7 +7410,7 @@ protected:
             argInfos[0].ObjectTypeId != CUSTOM_BRACE_OBJECT_TYPE_INT_ARRAY) {
             // error
             std::stringstream ss;
-            ss << "expected findmem(find_vals)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected find_mem(find_vals)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -7530,7 +7530,7 @@ protected:
             argInfos[0].ObjectTypeId != CUSTOM_BRACE_OBJECT_TYPE_INT_ARRAY) {
             // error
             std::stringstream ss;
-            ss << "expected searchmem(find_vals)," << data.GetId() << " line " << data.GetLine();
+            ss << "expected search_mem(find_vals)," << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -7671,7 +7671,7 @@ protected:
                                       argInfos[6].Type > Brace::BRACE_DATA_TYPE_UINT64))) {
             // error
             std::stringstream ss;
-            ss << "expected findmemory(start, size, step, range, find_vals[, val_size, pid]), all type "
+            ss << "expected find_memory(start, size, step, range, find_vals[, val_size, pid]), all type "
                   "is integer,"
                << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
@@ -7815,7 +7815,7 @@ protected:
                                       argInfos[7].Type > Brace::BRACE_DATA_TYPE_UINT64))) {
             // error
             std::stringstream ss;
-            ss << "expected searchmemory(start, size, step, range, find_vals[, val_size, "
+            ss << "expected search_memory(start, size, step, range, find_vals[, val_size, "
                   "max_count, pid]), all type is integer,"
                << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
@@ -7966,7 +7966,7 @@ protected:
                                       argInfos[2].Type > Brace::BRACE_DATA_TYPE_UINT64))) {
             // error
             std::stringstream ss;
-            ss << "expected readmemory(addr[, val_size, pid]), all type is integer," << data.GetId()
+            ss << "expected read_memory(addr[, val_size, pid]), all type is integer," << data.GetId()
                << " line " << data.GetLine();
             LogError(ss.str());
             return false;
@@ -8037,7 +8037,7 @@ protected:
                                       argInfos[3].Type > Brace::BRACE_DATA_TYPE_UINT64))) {
             // error
             std::stringstream ss;
-            ss << "expected writememory(addr, val[, val_size, pid]), all type is integer,"
+            ss << "expected write_memory(addr, val[, val_size, pid]), all type is integer,"
                << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
@@ -8109,7 +8109,7 @@ protected:
                                       argInfos[3].Type > Brace::BRACE_DATA_TYPE_UINT64))) {
             // error
             std::stringstream ss;
-            ss << "expected dumpmemory(uint64 addr, uint64 size, string file_path[, pid])," << data.GetId()
+            ss << "expected dump_memory(uint64 addr, uint64 size, string file_path[, pid])," << data.GetId()
                << " line " << data.GetLine();
             LogError(ss.str());
             return false;
@@ -8174,7 +8174,7 @@ protected:
                                       argInfos[3].Type > Brace::BRACE_DATA_TYPE_UINT64))) {
             // error
             std::stringstream ss;
-            ss << "expected loadmemory(uint64 addr, uint64 size, string file_path[, pid]),"
+            ss << "expected load_memory(uint64 addr, uint64 size, string file_path[, pid]),"
                << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
@@ -8240,7 +8240,7 @@ protected:
                                       argInfos[3].Type > Brace::BRACE_DATA_TYPE_UINT64))) {
             // error
             std::stringstream ss;
-            ss << "expected protectmemory(uint64 addr, uint64 size, uint32_t flag[, pid]),"
+            ss << "expected protect_memory(uint64 addr, uint64 size, uint32_t flag[, pid]),"
                << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
@@ -8300,7 +8300,7 @@ protected:
                                       argInfos[2].Type > Brace::BRACE_DATA_TYPE_UINT64))) {
             // error
             std::stringstream ss;
-            ss << "expected mapmemory(uint64 addr, uint64 size[, pid]),"
+            ss << "expected map_memory(uint64 addr, uint64 size[, pid]),"
                << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
@@ -8357,7 +8357,7 @@ protected:
                                       argInfos[2].Type > Brace::BRACE_DATA_TYPE_UINT64))) {
             // error
             std::stringstream ss;
-            ss << "expected unmapmemory(uint64 addr, uint64 size[, pid]),"
+            ss << "expected unmap_memory(uint64 addr, uint64 size[, pid]),"
                << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
@@ -8416,7 +8416,7 @@ protected:
                                       argInfos[3].Type > Brace::BRACE_DATA_TYPE_UINT64))) {
             // error
             std::stringstream ss;
-            ss << "expected findunmappedmemory(uint64 addr, uint64 size, uint64_t expect_size[, pid]),"
+            ss << "expected find_unmapped_memory(uint64 addr, uint64 size, uint64_t expect_size[, pid]),"
                << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
@@ -8503,7 +8503,7 @@ protected:
             argInfos[1].Type > Brace::BRACE_DATA_TYPE_UINT64) {
             // error
             std::stringstream ss;
-            ss << "expected addloginst(mask, value), all type is integer," << data.GetId()
+            ss << "expected add_log_instruction(mask, value), all type is integer," << data.GetId()
                << " line " << data.GetLine();
             LogError(ss.str());
             return false;
@@ -8545,7 +8545,7 @@ protected:
                                       argInfos[3].Type > Brace::BRACE_DATA_TYPE_UINT64))) {
             // error
             std::stringstream ss;
-            ss << "expected dbgscpset([int32 cmd, int32 a, double b, string c])," << data.GetId()
+            ss << "expected dbgscp_set([int32 cmd, int32 a, double b, string c])," << data.GetId()
                << " line " << data.GetLine();
             LogError(ss.str());
             return false;
@@ -8609,7 +8609,7 @@ protected:
                                       argInfos[3].Type > Brace::BRACE_DATA_TYPE_UINT64))) {
             // error
             std::stringstream ss;
-            ss << "expected dbgscpget([int32 cmd, int32 a, double b, string c]),"
+            ss << "expected dbgscp_get([int32 cmd, int32 a, double b, string c]),"
                << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
@@ -8668,7 +8668,7 @@ protected:
             argInfos[2].Type != Brace::BRACE_DATA_TYPE_STRING) {
             // error
             std::stringstream ss;
-            ss << "expected replacesourceshader(uint64 shader_hash, int stage, string file_path),"
+            ss << "expected replace_source_shader(uint64 shader_hash, int stage, string file_path),"
                << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
@@ -8720,7 +8720,7 @@ protected:
             argInfos[2].Type != Brace::BRACE_DATA_TYPE_STRING) {
             // error
             std::stringstream ss;
-            ss << "expected replacespirvshader(uint64 shader_hash, int stage, string file_path),"
+            ss << "expected replace_spirv_shader(uint64 shader_hash, int stage, string file_path),"
                << data.GetId() << " line " << data.GetLine();
             LogError(ss.str());
             return false;
@@ -10218,13 +10218,13 @@ protected:
     virtual bool TypeInference(const Brace::FuncInfo& func, const DslData::FunctionData& data,
                                const std::vector<Brace::OperandLoadtimeInfo>& argInfos,
                                Brace::OperandLoadtimeInfo& resultInfo) override {
-        // dmnt_keypress(key1,key2,...);
+        // dmnt_key_press(key1,key2,...);
         for (auto&& argInfo : argInfos) {
             if (argInfo.Type < Brace::BRACE_DATA_TYPE_INT8 ||
                 argInfo.Type > Brace::BRACE_DATA_TYPE_UINT64) {
                 // error
                 std::stringstream ss;
-                ss << "expected dmnt_keypress(key1,key2,...); all type is integer, key can get by "
+                ss << "expected dmnt_key_press(key1,key2,...); all type is integer, key can get by "
                       "dmnt_key(const),"
                    << data.GetId() << " line " << data.GetLine();
                 LogError(ss.str());
@@ -11438,17 +11438,17 @@ inline void BraceScriptManager::InitBraceScript(Brace::BraceScript*& pBraceScrip
 
     /// This is a specific implementation for yuzu, not a general language feature
     /// missing language features
-    pBraceScript->RegisterApi("membercall", "object member call",
+    pBraceScript->RegisterApi("member_call", "object member call",
                               new Brace::BraceApiFactory<MemberCallExp>());
-    pBraceScript->RegisterApi("memberset", "object property set",
+    pBraceScript->RegisterApi("member_set", "object property set",
                               new Brace::BraceApiFactory<MemberSetExp>());
-    pBraceScript->RegisterApi("memberget", "object property get",
+    pBraceScript->RegisterApi("member_get", "object property get",
                               new Brace::BraceApiFactory<MemberGetExp>());
-    pBraceScript->RegisterApi("collectioncall", "collection member call",
+    pBraceScript->RegisterApi("collection_call", "collection member call",
                               new Brace::BraceApiFactory<CollectionCallExp>());
-    pBraceScript->RegisterApi("collectionset", "collection property set",
+    pBraceScript->RegisterApi("collection_set", "collection property set",
                               new Brace::BraceApiFactory<CollectionSetExp>());
-    pBraceScript->RegisterApi("collectionget", "collection property get",
+    pBraceScript->RegisterApi("collection_get", "collection property get",
                               new Brace::BraceApiFactory<CollectionGetExp>());
     pBraceScript->RegisterApi(
         "linq",
@@ -11473,43 +11473,43 @@ inline void BraceScriptManager::InitBraceScript(Brace::BraceScript*& pBraceScrip
         "hashtable<:key_type,val_type:>(k1:v1,k2:v2,...) object",
         new Brace::BraceApiFactory<HashtableExp>());
     pBraceScript->RegisterApi(
-        "looplist", "looplist(list)func(args); or looplist(list){...}; statement, iterator is $$",
+        "loop_list", "loop_list(list)func(args); or loop_list(list){...}; statement, iterator is $$",
         new Brace::BraceApiFactory<LoopListExp>());
     pBraceScript->RegisterApi("cast", "cast(exp,type) api", new Brace::BraceApiFactory<CastExp>());
-    pBraceScript->RegisterApi("typetag", "typetag(type) or typetag(exp) api",
+    pBraceScript->RegisterApi("type_tag", "type_tag(type) or type_tag(exp) api",
                               new Brace::BraceApiFactory<TypeTagExp>());
     pBraceScript->RegisterApi("typeid", "typeid(type) or typeid(exp) api",
                               new Brace::BraceApiFactory<TypeIdExp>());
-    pBraceScript->RegisterApi("objtypeid", "objtypeid(type) or objtypeid(exp) api",
+    pBraceScript->RegisterApi("obj_type_id", "obj_type_id(type) or obj_type_id(exp) api",
                               new Brace::BraceApiFactory<ObjTypeIdExp>());
-    pBraceScript->RegisterApi("getobjtypename", "getobjtypename(objtypeid) api",
+    pBraceScript->RegisterApi("get_obj_type_name", "get_obj_type_name(obj_type_id) api",
                               new Brace::BraceApiFactory<GetObjTypeNameExp>());
-    pBraceScript->RegisterApi("getobjcategory", "getobjcategory(objtypeid) api",
+    pBraceScript->RegisterApi("get_obj_category", "get_obj_category(obj_type_id) api",
                               new Brace::BraceApiFactory<GetObjCategoryExp>());
-    pBraceScript->RegisterApi("gettypeparamcount", "gettypeparamcount(objtypeid) api",
+    pBraceScript->RegisterApi("get_type_param_count", "get_type_param_count(obj_type_id) api",
                               new Brace::BraceApiFactory<GetTypeParamCountExp>());
-    pBraceScript->RegisterApi("gettypeparamtype", "gettypeparamtype(objtypeid,index) api",
+    pBraceScript->RegisterApi("get_type_param_type", "get_type_param_type(obj_type_id,index) api",
                               new Brace::BraceApiFactory<GetTypeParamTypeExp>());
-    pBraceScript->RegisterApi("gettypeparamobjtypeid", "gettypeparamobjtypeid(objtypeid,index) api",
+    pBraceScript->RegisterApi("get_type_param_obj_type_id", "get_type_param_obj_type_id(obj_type_id,index) api",
                               new Brace::BraceApiFactory<GetTypeParamObjTypeIdExp>());
     pBraceScript->RegisterApi("swap", "swap(var1,var2) api", new Brace::BraceApiFactory<SwapExp>());
     pBraceScript->RegisterApi("struct", "struct(name){a:int32;b:int32;...}, define struct",
                               new Brace::BraceApiFactory<StructExp>());
-    pBraceScript->RegisterApi("newstruct", "newstruct(struct_type) api",
+    pBraceScript->RegisterApi("new_struct", "new_struct(struct_type) api",
                               new Brace::BraceApiFactory<NewStructExp>());
-    pBraceScript->RegisterApi("reinterpretas", "reinterpret_cast(uint,struct_type) api",
+    pBraceScript->RegisterApi("reinterpret_as", "reinterpret_cast(uint,struct_type) api",
                               new Brace::BraceApiFactory<ReInterpretAsExp>());
 
     /// register api
     if (isCallback) {
-        pBraceScript->RegisterApi("oncallback",
-                                  "oncallback(msg)params($a:int,$b:int,...){...}; statement are executed immediately in the separate script. this statement defines a function and should be used in the global scope",
+        pBraceScript->RegisterApi("on_callback",
+                                  "on_callback(msg)params($a:int,$b:int,...){...}; statement are executed immediately in the separate script. this statement defines a function and should be used in the global scope",
                                   new Brace::BraceApiFactory<CallbackHandlerExp>());
     } else {
         pBraceScript->RegisterApi(
-            "onmessage", "onmessage(msg[,pool_num])params($a:int,$b:int,...){...}; statement are executed within a coroutine of the same script (wait must be called periodically). this statement defines a function and should be used in the global scope",
+            "on_message", "on_message(msg[,pool_num])params($a:int,$b:int,...){...}; statement are executed within a coroutine of the same script (wait must be called periodically). this statement defines a function and should be used in the global scope",
             new Brace::BraceApiFactory<MessageHandlerExp>());
-        pBraceScript->RegisterApi("clearmessages", "clearmessages() api",
+        pBraceScript->RegisterApi("clear_messages", "clear_messages() api",
                                   new Brace::BraceApiFactory<ClearMessagesExp>());
     }
     pBraceScript->RegisterApi("qcmd", "qcmd(str,...) api", new Brace::BraceApiFactory<QCmdExp>());
@@ -11520,7 +11520,7 @@ inline void BraceScriptManager::InitBraceScript(Brace::BraceScript*& pBraceScrip
     } else {
         pBraceScript->RegisterApi("wait", "wait(ms,...) api",
                                   new Brace::BraceApiFactoryWithArgs<WaitExp, bool>(false));
-        pBraceScript->RegisterApi("waituntilquit", "waituntilquit() api",
+        pBraceScript->RegisterApi("wait_until_quit", "wait_until_quit() api",
                                   new Brace::BraceApiFactory<WaitUntilQuitExp>());
     }
     pBraceScript->RegisterApi("time", "time() api", new Brace::BraceApiFactory<TimeExp>());
@@ -11565,89 +11565,89 @@ inline void BraceScriptManager::InitBraceScript(Brace::BraceScript*& pBraceScrip
     pBraceScript->RegisterApi("dtol", "dtol(val) api", new Brace::BraceApiFactory<DtolExp>());
     pBraceScript->RegisterApi("utod", "utod(val) api", new Brace::BraceApiFactory<UtodExp>());
     pBraceScript->RegisterApi("dtou", "dtou(val) api", new Brace::BraceApiFactory<DtouExp>());
-    pBraceScript->RegisterApi("int2char", "int2char(val) api",
+    pBraceScript->RegisterApi("int_2_char", "int_2_char(val) api",
                               new Brace::BraceApiFactory<Int2CharExp>());
-    pBraceScript->RegisterApi("char2int", "char2int(str) api",
+    pBraceScript->RegisterApi("char_2_int", "char_2_int(str) api",
                               new Brace::BraceApiFactory<Char2IntExp>());
-    pBraceScript->RegisterApi("int2hex", "int2hex(val) api",
+    pBraceScript->RegisterApi("int_2_hex", "int_2_hex(val) api",
                               new Brace::BraceApiFactory<Int2HexExp>());
-    pBraceScript->RegisterApi("hex2int", "hex2int(str) api",
+    pBraceScript->RegisterApi("hex_2_int", "hex_2_int(str) api",
                               new Brace::BraceApiFactory<Hex2IntExp>());
-    pBraceScript->RegisterApi("int2str", "int2str(val) api",
+    pBraceScript->RegisterApi("int_2_str", "int_2_str(val) api",
                               new Brace::BraceApiFactory<Int2StrExp>());
-    pBraceScript->RegisterApi("str2int", "str2int(str) api",
+    pBraceScript->RegisterApi("str_2_int", "str_2_int(str) api",
                               new Brace::BraceApiFactory<Str2IntExp>());
-    pBraceScript->RegisterApi("float2str", "float2str(num[,precise]) api",
+    pBraceScript->RegisterApi("float_2_str", "float_2_str(num[,precise]) api",
                               new Brace::BraceApiFactory<Float2StrExp>());
-    pBraceScript->RegisterApi("str2float", "str2float(str) api",
+    pBraceScript->RegisterApi("str_2_float", "str_2_float(str) api",
                               new Brace::BraceApiFactory<Str2FloatExp>());
-    pBraceScript->RegisterApi("strconcat", "strconcat(str,str,...) api",
+    pBraceScript->RegisterApi("str_concat", "str_concat(str,str,...) api",
                               new Brace::BraceApiFactory<StrConcatExp>());
-    pBraceScript->RegisterApi("strcontainsone", "strcontainsone(str,str,...) api",
+    pBraceScript->RegisterApi("str_contains_one", "str_contains_one(str,str,...) api",
                               new Brace::BraceApiFactory<StrContainsOneExp>());
-    pBraceScript->RegisterApi("strcontainsall", "strcontainsall(str,str,...) api",
+    pBraceScript->RegisterApi("str_contains_all", "str_contains_all(str,str,...) api",
                               new Brace::BraceApiFactory<StrContainsAllExp>());
-    pBraceScript->RegisterApi("strindexof", "strindexof(str,str[,index]) api",
+    pBraceScript->RegisterApi("str_index_of", "str_index_of(str,str[,index]) api",
                               new Brace::BraceApiFactory<StrIndexOfExp>());
-    pBraceScript->RegisterApi("strlastindexof", "strlastindexof(str,str[,index]) api",
+    pBraceScript->RegisterApi("str_last_index_of", "str_last_index_of(str,str[,index]) api",
                               new Brace::BraceApiFactory<StrLastIndexOfExp>());
     pBraceScript->RegisterApi("strlen", "strlen(str) api", new Brace::BraceApiFactory<StrLenExp>());
     pBraceScript->RegisterApi("substr", "substr(str,pos[,count]) api",
                               new Brace::BraceApiFactory<SubStrExp>());
-    pBraceScript->RegisterApi("strreplace", "strreplace(str,str,str) api",
+    pBraceScript->RegisterApi("str_replace", "str_replace(str,str,str) api",
                               new Brace::BraceApiFactory<StrReplaceExp>());
-    pBraceScript->RegisterApi("strsplit", "strsplit(str,str) api",
+    pBraceScript->RegisterApi("str_split", "str_split(str,str) api",
                               new Brace::BraceApiFactory<StrSplitExp>());
-    pBraceScript->RegisterApi("strjoin", "strjoin(array<:string:>,str) api",
+    pBraceScript->RegisterApi("str_join", "str_join(array<:string:>,str) api",
                               new Brace::BraceApiFactory<StrJoinExp>());
-    pBraceScript->RegisterApi("csvecho", "csvecho(args) api",
+    pBraceScript->RegisterApi("csv_echo", "csv_echo(args) api",
                               new Brace::BraceApiFactory<CsvEchoExp>());
-    pBraceScript->RegisterApi("csvconcat", "csvconcat(args) api",
+    pBraceScript->RegisterApi("csv_concat", "csv_concat(args) api",
                               new Brace::BraceApiFactory<CsvConcatExp>());
 
-    pBraceScript->RegisterApi("fileexists", "fileexists(file) api",
+    pBraceScript->RegisterApi("file_exists", "file_exists(file) api",
                               new Brace::BraceApiFactory<FileExistsExp>());
-    pBraceScript->RegisterApi("loadfile", "loadfile(file) api",
+    pBraceScript->RegisterApi("load_file", "load_file(file) api",
                               new Brace::BraceApiFactory<LoadFileExp>());
-    pBraceScript->RegisterApi("savefile", "savefile(str,file) api",
+    pBraceScript->RegisterApi("save_file", "save_file(str,file) api",
                               new Brace::BraceApiFactory<SaveFileExp>());
-    pBraceScript->RegisterApi("loadfiletoarray", "loadfiletoarray(file[,typetag(arr_type)]) api",
+    pBraceScript->RegisterApi("load_file_to_array", "load_file_to_array(file[,type_tag(arr_type)]) api",
                               new Brace::BraceApiFactory<LoadFileToArrayExp>());
-    pBraceScript->RegisterApi("savearraytofile", "savearraytofile(arr,file) api",
+    pBraceScript->RegisterApi("save_array_to_file", "save_array_to_file(arr,file) api",
                               new Brace::BraceApiFactory<SaveArrayToFileExp>());
 
-    pBraceScript->RegisterApi("savehashtable", "savehashtable(hashtable,file) api",
+    pBraceScript->RegisterApi("save_hashtable", "save_hashtable(hashtable,file) api",
                               new Brace::BraceApiFactory<SaveHashtableExp>());
-    pBraceScript->RegisterApi("loadhashtable", "loadhashtable(file[,typetag(hashtable_type)]) api",
+    pBraceScript->RegisterApi("load_hashtable", "load_hashtable(file[,type_tag(hashtable_type)]) api",
                               new Brace::BraceApiFactory<LoadHashtableExp>());
-    pBraceScript->RegisterApi("calcnewitems", "calcnewitems(hashtable1,hashtable2) api",
+    pBraceScript->RegisterApi("calc_new_items", "calc_new_items(hashtable1,hashtable2) api",
                               new Brace::BraceApiFactory<CalcNewItemsExp>());
-    pBraceScript->RegisterApi("calcsameitems", "calcsameitems(hashtable1,hashtable2) api",
+    pBraceScript->RegisterApi("calc_same_items", "calc_same_items(hashtable1,hashtable2) api",
                               new Brace::BraceApiFactory<CalcSameItemsExp>());
-    pBraceScript->RegisterApi("calcitemsunion", "calcitemsunion(hashtable1,hashtable2) api",
+    pBraceScript->RegisterApi("calc_items_union", "calc_items_union(hashtable1,hashtable2) api",
                               new Brace::BraceApiFactory<CalcItemsUnionExp>());
-    pBraceScript->RegisterApi("itemsadd", "itemsadd(hashtable1,hashtable2) api",
+    pBraceScript->RegisterApi("items_add", "items_add(hashtable1,hashtable2) api",
                               new Brace::BraceApiFactory<ItemsAddExp>());
-    pBraceScript->RegisterApi("itemssub", "itemssub(hashtable1,hashtable2) api",
+    pBraceScript->RegisterApi("items_sub", "items_sub(hashtable1,hashtable2) api",
                               new Brace::BraceApiFactory<ItemsSubExp>());
-    pBraceScript->RegisterApi("itemsmul", "itemsmul(hashtable1,hashtable2) api",
+    pBraceScript->RegisterApi("items_mul", "items_mul(hashtable1,hashtable2) api",
                               new Brace::BraceApiFactory<ItemsMulExp>());
-    pBraceScript->RegisterApi("itemsdiv", "itemsdiv(hashtable1,hashtable2) api",
+    pBraceScript->RegisterApi("items_div", "items_div(hashtable1,hashtable2) api",
                               new Brace::BraceApiFactory<ItemsDivExp>());
 
-    pBraceScript->RegisterApi("arrayadd", "arrayadd(arr1,arr2) api",
+    pBraceScript->RegisterApi("array_add", "array_add(arr1,arr2) api",
                               new Brace::BraceApiFactory<ArrayAddExp>());
-    pBraceScript->RegisterApi("arraysub", "arraysub(arr1,arr2) api",
+    pBraceScript->RegisterApi("array_sub", "array_sub(arr1,arr2) api",
                               new Brace::BraceApiFactory<ArraySubExp>());
-    pBraceScript->RegisterApi("arraymul", "arraymul(arr1,arr2) api",
+    pBraceScript->RegisterApi("array_mul", "array_mul(arr1,arr2) api",
                               new Brace::BraceApiFactory<ArrayMulExp>());
-    pBraceScript->RegisterApi("arraydiv", "arraydiv(arr1,arr2) api",
+    pBraceScript->RegisterApi("array_div", "array_div(arr1,arr2) api",
                               new Brace::BraceApiFactory<ArrayDivExp>());
 
-    pBraceScript->RegisterApi("arraymodify", "arraymodify(array,modify_exp) api, iterator is $$",
+    pBraceScript->RegisterApi("array_modify", "array_modify(array,modify_exp) api, iterator is $$",
                               new Brace::BraceApiFactory<ArrayModifyExp>());
-    pBraceScript->RegisterApi("hashtablemodify",
-                              "hashtablemodify(hashtable,modify_exp) api, iterator is $$k and $$v",
+    pBraceScript->RegisterApi("hashtable_modify",
+                              "hashtable_modify(hashtable,modify_exp) api, iterator is $$k and $$v",
                               new Brace::BraceApiFactory<HashtableModifyExp>());
 
     pBraceScript->RegisterApi("sqrt", "sqrt(number) api", new Brace::BraceApiFactory<SqrtExp>());
@@ -11664,16 +11664,16 @@ inline void BraceScriptManager::InitBraceScript(Brace::BraceScript*& pBraceScrip
     pBraceScript->RegisterApi("asin", "asin(number) api", new Brace::BraceApiFactory<AsinExp>());
     pBraceScript->RegisterApi("acos", "acos(number) api", new Brace::BraceApiFactory<AcosExp>());
     pBraceScript->RegisterApi("atan", "atan(number) api", new Brace::BraceApiFactory<AtanExp>());
-    pBraceScript->RegisterApi("atan2", "atan2(y,x) api", new Brace::BraceApiFactory<Atan2Exp>());
-    pBraceScript->RegisterApi("deg2rad", "deg2rad(number) api",
+    pBraceScript->RegisterApi("atan_2", "atan_2(y,x) api", new Brace::BraceApiFactory<Atan2Exp>());
+    pBraceScript->RegisterApi("deg_2_rad", "deg_2_rad(number) api",
                               new Brace::BraceApiFactory<Deg2RadExp>());
-    pBraceScript->RegisterApi("rad2deg", "rad2deg(number) api",
+    pBraceScript->RegisterApi("rad_2_deg", "rad_2_deg(number) api",
                               new Brace::BraceApiFactory<Rad2DegExp>());
-    pBraceScript->RegisterApi("randint",
-                              "randint() or randint(max_num) or randint(min_num,max_num) api",
+    pBraceScript->RegisterApi("rand_int",
+                              "rand_int() or rand_int(max_num) or rand_int(min_num,max_num) api",
                               new Brace::BraceApiFactory<RandIntExp>());
-    pBraceScript->RegisterApi("randfloat",
-                              "randfloat() or randfloat(max_num) or randfloat(min_num,max_num) api",
+    pBraceScript->RegisterApi("rand_float",
+                              "rand_float() or rand_float(max_num) or rand_float(min_num,max_num) api",
                               new Brace::BraceApiFactory<RandFloatExp>());
 
     pBraceScript->RegisterApi("max", "max(number,...) api", new Brace::BraceApiFactory<MaxExp>());
@@ -11683,237 +11683,237 @@ inline void BraceScriptManager::InitBraceScript(Brace::BraceScript*& pBraceScrip
     pBraceScript->RegisterApi("devsq", "devsq(number,...) api",
                               new Brace::BraceApiFactory<DevSqExp>());
 
-    pBraceScript->RegisterApi("arraymax", "arraymax(int_array) or arraymax(float_array) api",
+    pBraceScript->RegisterApi("array_max", "array_max(int_array) or array_max(float_array) api",
                               new Brace::BraceApiFactory<ArrayMaxExp>());
-    pBraceScript->RegisterApi("arraymin", "arraymin(int_array) or arraymin(float_array) api",
+    pBraceScript->RegisterApi("array_min", "array_min(int_array) or array_min(float_array) api",
                               new Brace::BraceApiFactory<ArrayMinExp>());
-    pBraceScript->RegisterApi("arraysum", "arraysum(int_array) or arraysum(float_array) api",
+    pBraceScript->RegisterApi("array_sum", "array_sum(int_array) or array_sum(float_array) api",
                               new Brace::BraceApiFactory<ArraySumExp>());
-    pBraceScript->RegisterApi("arrayavg", "arrayavg(int_array) or arrayavg(float_array) api",
+    pBraceScript->RegisterApi("array_avg", "array_avg(int_array) or array_avg(float_array) api",
                               new Brace::BraceApiFactory<ArrayAvgExp>());
-    pBraceScript->RegisterApi("arraydevsq", "arraydevsq(int_array) or arraydevsq(float_array) api",
+    pBraceScript->RegisterApi("array_devsq", "array_devsq(int_array) or array_devsq(float_array) api",
                               new Brace::BraceApiFactory<ArrayDevSqExp>());
 
-    pBraceScript->RegisterApi("hashtablemax",
-                              "hashtablemax(int_int_hash) or hashtablemax(str_int_hash) or "
-                              "hashtablemax(int_float_hash) or hashtablemax(str_float_hash) api",
+    pBraceScript->RegisterApi("hashtable_max",
+                              "hashtable_max(int_int_hash) or hashtable_max(str_int_hash) or "
+                              "hashtable_max(int_float_hash) or hashtable_max(str_float_hash) api",
                               new Brace::BraceApiFactory<HashtableMaxExp>());
-    pBraceScript->RegisterApi("hashtablemin",
-                              "hashtablemin(int_int_hash) or hashtablemin(str_int_hash) or "
-                              "hashtablemin(int_float_hash) or hashtablemin(str_float_hash) api",
+    pBraceScript->RegisterApi("hashtable_min",
+                              "hashtable_min(int_int_hash) or hashtable_min(str_int_hash) or "
+                              "hashtable_min(int_float_hash) or hashtable_min(str_float_hash) api",
                               new Brace::BraceApiFactory<HashtableMinExp>());
-    pBraceScript->RegisterApi("hashtablesum",
-                              "hashtablesum(int_int_hash) or hashtablesum(str_int_hash) or "
-                              "hashtablesum(int_float_hash) or hashtablesum(str_float_hash) api",
+    pBraceScript->RegisterApi("hashtable_sum",
+                              "hashtable_sum(int_int_hash) or hashtable_sum(str_int_hash) or "
+                              "hashtable_sum(int_float_hash) or hashtable_sum(str_float_hash) api",
                               new Brace::BraceApiFactory<HashtableSumExp>());
-    pBraceScript->RegisterApi("hashtableavg",
-                              "hashtableavg(int_int_hash) or hashtableavg(str_int_hash) or "
-                              "hashtableavg(int_float_hash) or hashtableavg(str_float_hash) api",
+    pBraceScript->RegisterApi("hashtable_avg",
+                              "hashtable_avg(int_int_hash) or hashtable_avg(str_int_hash) or "
+                              "hashtable_avg(int_float_hash) or hashtable_avg(str_float_hash) api",
                               new Brace::BraceApiFactory<HashtableAvgExp>());
     pBraceScript->RegisterApi(
-        "hashtabledevsq",
-        "hashtabledevsq(int_int_hash) or hashtabledevsq(str_int_hash) or "
-        "hashtabledevsq(int_float_hash) or hashtabledevsq(str_float_hash) api",
+        "hashtable_devsq",
+        "hashtable_devsq(int_int_hash) or hashtable_devsq(str_int_hash) or "
+        "hashtable_devsq(int_float_hash) or hashtable_devsq(str_float_hash) api",
         new Brace::BraceApiFactory<HashtableDevSqExp>());
 
     pBraceScript->RegisterApi(
-        "linearregression",
-        "linearregression(array<:array<:double:>:>,array<:double:>) or "
-        "linearregression(array<:array<:double:>:>,array<:double:>,bool_debug) api",
+        "linear_regression",
+        "linear_regression(array<:array<:double:>:>,array<:double:>) or "
+        "linear_regression(array<:array<:double:>:>,array<:double:>,bool_debug) api",
         new Brace::BraceApiFactory<LinearRegressionExp>());
 
     //
-    pBraceScript->RegisterApi("getexepath", "getexepath() api",
+    pBraceScript->RegisterApi("get_exe_path", "get_exe_path() api",
                               new Brace::BraceApiFactory<GetExePathExp>());
     pBraceScript->RegisterApi("cd", "cd(dir) api", new Brace::BraceApiFactory<SetCurDirExp>());
     pBraceScript->RegisterApi("pwd", "pwd() api", new Brace::BraceApiFactory<GetCurDirExp>());
-    pBraceScript->RegisterApi("showui", "showui(index,bit_flags) api",
+    pBraceScript->RegisterApi("show_ui", "show_ui(index,bit_flags) api",
                               new Brace::BraceApiFactory<ShowUiExp>());
-    pBraceScript->RegisterApi("getscriptinput", "getscriptinput() api",
+    pBraceScript->RegisterApi("get_script_input", "get_script_input() api",
                               new Brace::BraceApiFactory<GetScriptInputExp>());
-    pBraceScript->RegisterApi("setscriptinputlabel", "setscriptinputlabel(str) api",
+    pBraceScript->RegisterApi("set_script_input_label", "set_script_input_label(str) api",
                               new Brace::BraceApiFactory<SetScriptInputLabelExp>());
-    pBraceScript->RegisterApi("setscriptbtncaption", "setscriptbtncaption(index,str) api",
+    pBraceScript->RegisterApi("set_script_btn_caption", "set_script_btn_caption(index,str) api",
                               new Brace::BraceApiFactory<SetScriptBtnCaptionExp>());
 
-    pBraceScript->RegisterApi("getpixel", "getpixel(x,y) api",
+    pBraceScript->RegisterApi("get_pixel", "get_pixel(x,y) api",
                               new Brace::BraceApiFactory<GetPixelExp>());
-    pBraceScript->RegisterApi("getcursorx", "getcursorx() api",
+    pBraceScript->RegisterApi("get_cursor_x", "get_cursor_x() api",
                               new Brace::BraceApiFactory<GetCursorXExp>());
-    pBraceScript->RegisterApi("getcursory", "getcursory() api",
+    pBraceScript->RegisterApi("get_cursor_y", "get_cursor_y() api",
                               new Brace::BraceApiFactory<GetCursorYExp>());
-    pBraceScript->RegisterApi("getscreenwidth", "getscreenwidth() api",
+    pBraceScript->RegisterApi("get_screen_width", "get_screen_width() api",
                               new Brace::BraceApiFactory<GetScreenWidthExp>());
-    pBraceScript->RegisterApi("getscreenheight", "getscreenheight() api",
+    pBraceScript->RegisterApi("get_screen_height", "get_screen_height() api",
                               new Brace::BraceApiFactory<GetScreenHeightExp>());
-    pBraceScript->RegisterApi("readbuttonparam", "readbuttonparam(index) api",
+    pBraceScript->RegisterApi("read_button_param", "read_button_param(index) api",
                               new Brace::BraceApiFactory<ReadButtonParamExp>());
-    pBraceScript->RegisterApi("readstickparam", "readstickparam(index) api",
+    pBraceScript->RegisterApi("read_stick_param", "read_stick_param(index) api",
                               new Brace::BraceApiFactory<ReadStickParamExp>());
-    pBraceScript->RegisterApi("readmotionparam", "readmotionparam(index) api",
+    pBraceScript->RegisterApi("read_motion_param", "read_motion_param(index) api",
                               new Brace::BraceApiFactory<ReadMotionParamExp>());
-    pBraceScript->RegisterApi("readparampackage", "readparampackage(str) api",
+    pBraceScript->RegisterApi("read_param_package", "read_param_package(str) api",
                               new Brace::BraceApiFactory<ReadParamPackageExp>());
-    pBraceScript->RegisterApi("hasparam", "hasparam(key) api",
+    pBraceScript->RegisterApi("has_param", "has_param(key) api",
                               new Brace::BraceApiFactory<HasParamExp>());
-    pBraceScript->RegisterApi("getintparam", "getintparam(key,def) api",
+    pBraceScript->RegisterApi("get_int_param", "get_int_param(key,def) api",
                               new Brace::BraceApiFactory<GetIntParamExp>());
-    pBraceScript->RegisterApi("getfloatparam", "getfloatparam(key,def) api",
+    pBraceScript->RegisterApi("get_float_param", "get_float_param(key,def) api",
                               new Brace::BraceApiFactory<GetFloatParamExp>());
-    pBraceScript->RegisterApi("getstrparam", "getstrparam(key,def) api",
+    pBraceScript->RegisterApi("get_str_param", "get_str_param(key,def) api",
                               new Brace::BraceApiFactory<GetStrParamExp>());
-    pBraceScript->RegisterApi("keypress", "keypress(modifier,key) api",
+    pBraceScript->RegisterApi("key_press", "key_press(modifier,key) api",
                               new Brace::BraceApiFactory<KeyPressExp>());
-    pBraceScript->RegisterApi("keyrelease", "keyrelease(modifier,key) api",
+    pBraceScript->RegisterApi("key_release", "key_release(modifier,key) api",
                               new Brace::BraceApiFactory<KeyReleaseExp>());
-    pBraceScript->RegisterApi("mousepress", "mousepress(x,y,button) api",
+    pBraceScript->RegisterApi("mouse_press", "mouse_press(x,y,button) api",
                               new Brace::BraceApiFactory<MousePressExp>());
-    pBraceScript->RegisterApi("mouserelease", "mouserelease(button) api",
+    pBraceScript->RegisterApi("mouse_release", "mouse_release(button) api",
                               new Brace::BraceApiFactory<MouseReleaseExp>());
-    pBraceScript->RegisterApi("mousemove", "mousemove(x,y) api",
+    pBraceScript->RegisterApi("mouse_move", "mouse_move(x,y) api",
                               new Brace::BraceApiFactory<MouseMoveExp>());
-    pBraceScript->RegisterApi("mousewheelchange", "mousewheelchange(x,y) api",
+    pBraceScript->RegisterApi("mouse_wheel_change", "mouse_wheel_change(x,y) api",
                               new Brace::BraceApiFactory<MouseWheelChangeExp>());
-    pBraceScript->RegisterApi("touchpress", "touchpress(x,y,id) api",
+    pBraceScript->RegisterApi("touch_press", "touch_press(x,y,id) api",
                               new Brace::BraceApiFactory<TouchPressExp>());
-    pBraceScript->RegisterApi("touchupdatebegin", "touchupdatebegin() api",
+    pBraceScript->RegisterApi("touch_update_begin", "touch_update_begin() api",
                               new Brace::BraceApiFactory<TouchUpdateBeginExp>());
-    pBraceScript->RegisterApi("touchmove", "touchmove(x,y,id) api",
+    pBraceScript->RegisterApi("touch_move", "touch_move(x,y,id) api",
                               new Brace::BraceApiFactory<TouchMoveExp>());
-    pBraceScript->RegisterApi("touchupdateend", "touchupdateend() api",
+    pBraceScript->RegisterApi("touch_update_end", "touch_update_end() api",
                               new Brace::BraceApiFactory<TouchUpdateEndExp>());
-    pBraceScript->RegisterApi("touchend", "touchend() api",
+    pBraceScript->RegisterApi("touch_end", "touch_end() api",
                               new Brace::BraceApiFactory<TouchEndExp>());
 
-    pBraceScript->RegisterApi("getbuttonstate", "getbuttonstate(id) api",
+    pBraceScript->RegisterApi("get_button_state", "get_button_state(id) api",
                               new Brace::BraceApiFactory<GetButtonStateExp>());
-    pBraceScript->RegisterApi("setbuttonstate",
-                              "setbuttonstate(uint_player_index,int_button_id,bool_value) api",
+    pBraceScript->RegisterApi("set_button_state",
+                              "set_button_state(uint_player_index,int_button_id,bool_value) api",
                               new Brace::BraceApiFactory<SetButtonStateExp>());
-    pBraceScript->RegisterApi("setstickpos",
-                              "setstickpos(uint_player_index,int_axis_id,float_x,float_y) api",
+    pBraceScript->RegisterApi("set_stick_position",
+                              "set_stick_position(uint_player_index,int_axis_id,float_x,float_y) api",
                               new Brace::BraceApiFactory<SetStickPositionExp>());
     pBraceScript->RegisterApi(
-        "setmotionstate",
-        "setmotionstate(uint_player_index,uint64_delta_time,float_gyro_x,float_gyro_y,float_gyro_z,"
+        "set_motion_state",
+        "set_motion_state(uint_player_index,uint64_delta_time,float_gyro_x,float_gyro_y,float_gyro_z,"
         "float_accel_x,float_accel_y,float_accel_z) api",
         new Brace::BraceApiFactory<SetMotionStateExp>());
 
-    pBraceScript->RegisterApi("getresultinfo", "getresultinfo() api",
+    pBraceScript->RegisterApi("get_result_info", "get_result_info() api",
                               new Brace::BraceApiFactory<GetResultInfoExp>());
-    pBraceScript->RegisterApi("getlastinfo", "getlastinfo() api",
+    pBraceScript->RegisterApi("get_last_info", "get_last_info() api",
                               new Brace::BraceApiFactory<GetLastInfoExp>());
-    pBraceScript->RegisterApi("gethistoryinfocount", "gethistoryinfocount() api",
+    pBraceScript->RegisterApi("get_history_info_count", "get_history_info_count() api",
                               new Brace::BraceApiFactory<GetHistoryInfoCountExp>());
-    pBraceScript->RegisterApi("gethistoryinfo", "gethistoryinfo(index) api",
+    pBraceScript->RegisterApi("get_history_info", "get_history_info(index) api",
                               new Brace::BraceApiFactory<GetHistoryInfoExp>());
-    pBraceScript->RegisterApi("getrollbackinfocount", "getrollbackinfocount() api",
+    pBraceScript->RegisterApi("get_rollback_info_count", "get_rollback_info_count() api",
                               new Brace::BraceApiFactory<GetRollbackInfoCountExp>());
-    pBraceScript->RegisterApi("getrollbackinfo", "getrollbackinfo(index) api",
+    pBraceScript->RegisterApi("get_rollback_info", "get_rollback_info(index) api",
                               new Brace::BraceApiFactory<GetRollbackInfoExp>());
-    pBraceScript->RegisterApi("setresultinfo",
-                              "setresultinfo(hashtable<:int64,MemoryModifyInfo:>) api",
+    pBraceScript->RegisterApi("set_result_info",
+                              "set_result_info(hashtable<:int64,MemoryModifyInfo:>) api",
                               new Brace::BraceApiFactory<SetResultInfoExp>());
 
-    pBraceScript->RegisterApi("newmemorymodifyinfo", "newmemorymodifyinfo() api",
+    pBraceScript->RegisterApi("new_memory_modify_info", "new_memory_modify_info() api",
                               new Brace::BraceApiFactory<NewMemoryModifyInfoExp>());
-    pBraceScript->RegisterApi("addtoresult", "addtoresult(addr[,val_size,pid]) api",
+    pBraceScript->RegisterApi("add_to_result", "add_to_result(addr[,val_size,pid]) api",
                               new Brace::BraceApiFactory<AddToResultExp>());
-    pBraceScript->RegisterApi("addtolast", "addtolast(addr[,val_size,pid]) api",
+    pBraceScript->RegisterApi("add_to_last", "add_to_last(addr[,val_size,pid]) api",
                               new Brace::BraceApiFactory<AddToLastExp>());
 
-    pBraceScript->RegisterApi("getyuzupath", "getyuzupath() api",
+    pBraceScript->RegisterApi("get_yuzu_path", "get_yuzu_path() api",
                               new Brace::BraceApiFactory<GetYuzuPathExp>());
-    pBraceScript->RegisterApi("getlogpath", "getlogpath() api",
+    pBraceScript->RegisterApi("get_log_path", "get_log_path() api",
                               new Brace::BraceApiFactory<GetLogPathExp>());
-    pBraceScript->RegisterApi("getmodloadpath", "getmodloadpath() api",
+    pBraceScript->RegisterApi("get_mod_load_path", "get_mod_load_path() api",
                               new Brace::BraceApiFactory<GetModLoadPathExp>());
-    pBraceScript->RegisterApi("getgamesavepath", "getgamesavepath([user_index]) api",
+    pBraceScript->RegisterApi("get_game_save_path", "get_game_save_path([user_index]) api",
                               new Brace::BraceApiFactory<GetGameSavePathExp>());
-    pBraceScript->RegisterApi("gettitleid", "gettitleid() api",
+    pBraceScript->RegisterApi("get_title_id", "get_title_id() api",
                               new Brace::BraceApiFactory<GetTitleIdExp>());
-    pBraceScript->RegisterApi("getpid", "getpid() api",
+    pBraceScript->RegisterApi("get_process_id", "get_process_id() api",
                               new Brace::BraceApiFactory<GetProcessIdExp>());
-    pBraceScript->RegisterApi("getmodulecount", "getmodulecount() api",
+    pBraceScript->RegisterApi("get_module_count", "get_module_count() api",
                               new Brace::BraceApiFactory<GetModuleCountExp>());
-    pBraceScript->RegisterApi("getmodulebase", "getmodulebase(index) api",
+    pBraceScript->RegisterApi("get_module_base", "get_module_base(index) api",
                               new Brace::BraceApiFactory<GetModuleBaseExp>());
-    pBraceScript->RegisterApi("getmoduleaddr", "getmoduleaddr(index) api",
+    pBraceScript->RegisterApi("get_module_addr", "get_module_addr(index) api",
                               new Brace::BraceApiFactory<GetModuleAddrExp>());
-    pBraceScript->RegisterApi("getmodulesize", "getmodulesize(index) api",
+    pBraceScript->RegisterApi("get_module_size", "get_module_size(index) api",
                               new Brace::BraceApiFactory<GetModuleSizeExp>());
-    pBraceScript->RegisterApi("getmoduleid", "getmoduleid(index) api",
+    pBraceScript->RegisterApi("get_module_id", "get_module_id(index) api",
                               new Brace::BraceApiFactory<GetModuleIdExp>());
-    pBraceScript->RegisterApi("getmodulename", "getmodulename(index) api",
+    pBraceScript->RegisterApi("get_module_name", "get_module_name(index) api",
                               new Brace::BraceApiFactory<GetModuleNameExp>());
-    pBraceScript->RegisterApi("getmoduleprogid", "getmoduleprogid(index) api",
+    pBraceScript->RegisterApi("get_module_program_id", "get_module_program_id(index) api",
                               new Brace::BraceApiFactory<GetModuleProgramIdExp>());
-    pBraceScript->RegisterApi("getmodulepid", "getmodulepid(index) api",
+    pBraceScript->RegisterApi("get_module_process_id", "get_module_process_id(index) api",
                               new Brace::BraceApiFactory<GetModuleProcessIdExp>());
-    pBraceScript->RegisterApi("getheapbase", "getheapbase() api",
+    pBraceScript->RegisterApi("get_heap_base", "get_heap_base() api",
                               new Brace::BraceApiFactory<GetHeapBaseExp>());
-    pBraceScript->RegisterApi("getheapsize", "getheapsize() api",
+    pBraceScript->RegisterApi("get_heap_size", "get_heap_size() api",
                               new Brace::BraceApiFactory<GetHeapSizeExp>());
-    pBraceScript->RegisterApi("getstackbase", "getstackbase() api",
+    pBraceScript->RegisterApi("get_stack_base", "get_stack_base() api",
                               new Brace::BraceApiFactory<GetStackBaseExp>());
-    pBraceScript->RegisterApi("getstacksize", "getstacksize() api",
+    pBraceScript->RegisterApi("get_stack_size", "get_stack_size() api",
                               new Brace::BraceApiFactory<GetStackSizeExp>());
 
-    pBraceScript->RegisterApi("markmemdebug", "markmemdebug(addr,size[,debug,pid])",
+    pBraceScript->RegisterApi("mark_mem_debug", "mark_mem_debug(addr,size[,debug,pid])",
                               new Brace::BraceApiFactory<CmdMarkMemDebugExp>());
-    pBraceScript->RegisterApi("addsniffing", "addsniffing(addr,size[,step,val,pid])",
+    pBraceScript->RegisterApi("add_sniffing", "add_sniffing(addr,size[,step,val,pid])",
                               new Brace::BraceApiFactory<CmdAddSniffingExp>());
-    pBraceScript->RegisterApi("addsniffingfromsearch", "addsniffingfromsearch(find_vals)",
+    pBraceScript->RegisterApi("add_sniffing_from_search", "add_sniffing_from_search(find_vals)",
                               new Brace::BraceApiFactory<CmdAddSniffingFromSearchExp>());
-    pBraceScript->RegisterApi("showmem", "showmem(addr,size[,step,pid])",
+    pBraceScript->RegisterApi("show_mem", "show_mem(addr,size[,step,pid])",
                               new Brace::BraceApiFactory<CmdShowMemExp>());
-    pBraceScript->RegisterApi("findmem", "findmem(find_vals), results show on ui",
+    pBraceScript->RegisterApi("find_mem", "find_mem(find_vals), results show on ui",
                               new Brace::BraceApiFactory<CmdFindMemExp>());
-    pBraceScript->RegisterApi("searchmem", "searchmem(find_vals), results show on ui",
+    pBraceScript->RegisterApi("search_mem", "search_mem(find_vals), results show on ui",
                               new Brace::BraceApiFactory<CmdSearchMemExp>());
 
-    pBraceScript->RegisterApi("findmemory",
-                              "findmemory(start,size,step,range,find_vals[,val_size,pid])",
+    pBraceScript->RegisterApi("find_memory",
+                              "find_memory(start,size,step,range,find_vals[,val_size,pid])",
                               new Brace::BraceApiFactory<FindMemoryExp>());
-    pBraceScript->RegisterApi("searchmemory",
-                              "searchmemory(start,size,step,range,find_vals[,val_size,max_count,pid])",
+    pBraceScript->RegisterApi("search_memory",
+                              "search_memory(start,size,step,range,find_vals[,val_size,max_count,pid])",
                               new Brace::BraceApiFactory<SearchMemoryExp>());
-    pBraceScript->RegisterApi("readmemory", "readmemory(addr[,val_size,pid])",
+    pBraceScript->RegisterApi("read_memory", "read_memory(addr[,val_size,pid])",
                               new Brace::BraceApiFactory<ReadMemoryExp>());
-    pBraceScript->RegisterApi("writememory", "writememory(addr,val[,val_size,pid])",
+    pBraceScript->RegisterApi("write_memory", "write_memory(addr,val[,val_size,pid])",
                               new Brace::BraceApiFactory<WriteMemoryExp>());
-    pBraceScript->RegisterApi("dumpmemory", "dumpmemory(addr,size,file_path[,pid])",
+    pBraceScript->RegisterApi("dump_memory", "dump_memory(addr,size,file_path[,pid])",
                               new Brace::BraceApiFactory<DumpMemoryExp>());
-    pBraceScript->RegisterApi("loadmemory", "loadmemory(addr,size,file_path[,pid])",
+    pBraceScript->RegisterApi("load_memory", "load_memory(addr,size,file_path[,pid])",
                               new Brace::BraceApiFactory<LoadMemoryExp>());
     pBraceScript->RegisterApi(
-        "protectmemory",
-        "protectmemory(addr,size,flag[,pid]),flag:1-read 2-write 3-readwrite 4-execute",
+        "protect_memory",
+        "protect_memory(addr,size,flag[,pid]),flag:1-read 2-write 3-readwrite 4-execute",
         new Brace::BraceApiFactory<ProtectMemoryExp>());
-    pBraceScript->RegisterApi("mapmemory", "mapmemory(addr,size[,pid])",
+    pBraceScript->RegisterApi("map_memory", "map_memory(addr,size[,pid])",
                               new Brace::BraceApiFactory<MapMemoryExp>());
-    pBraceScript->RegisterApi("unmapmemory", "unmapmemory(addr,size[,pid])",
+    pBraceScript->RegisterApi("unmap_memory", "unmap_memory(addr,size[,pid])",
                               new Brace::BraceApiFactory<UnmapMemoryExp>());
-    pBraceScript->RegisterApi("findunmappedmemory", "findunmappedmemory(addr,size,expect_size[,pid])",
+    pBraceScript->RegisterApi("find_unmapped_memory", "find_unmapped_memory(addr,size,expect_size[,pid])",
                               new Brace::BraceApiFactory<FindUnmappedMemoryExp>());
-    pBraceScript->RegisterApi("isgamestarted", "isgamestarted(), check if game is started",
+    pBraceScript->RegisterApi("is_game_started", "is_game_started(), check if game is started",
                               new Brace::BraceApiFactory<IsGameStartedExp>());
 
-    pBraceScript->RegisterApi("addloginst", "addloginst(mask,value), all type is int32",
+    pBraceScript->RegisterApi("add_log_instruction", "add_log_instruction(mask,value), all type is int32",
                               new Brace::BraceApiFactory<AddLogInstructionExp>());
 
-    pBraceScript->RegisterApi("dbgscpset", "dbgscpset([int_cmd,int_a,dbl_b,str_c]), communicate with debug script",
+    pBraceScript->RegisterApi("dbgscp_set", "dbgscp_set([int_cmd,int_a,dbl_b,str_c]), communicate with debug script",
                               new Brace::BraceApiFactory<DbgScpSetExp>());
 
-    pBraceScript->RegisterApi("dbgscpget", "dbgscpget([int_cmd,int_a,dbl_b,str_c]), return int, communicate with debug script",
+    pBraceScript->RegisterApi("dbgscp_get", "dbgscp_get([int_cmd,int_a,dbl_b,str_c]), return int, communicate with debug script",
                               new Brace::BraceApiFactory<DbgScpGetExp>());
 
-    pBraceScript->RegisterApi("replacesourceshader",
-                              "replacesourceshader(hash,shader_type,shader_src_file), "
+    pBraceScript->RegisterApi("replace_source_shader",
+                              "replace_source_shader(hash,shader_type,shader_src_file), "
                               "shader_type:0--vertex 3--geometry 4--fragment 5--compute",
                               new Brace::BraceApiFactory<ReplaceSourceShaderExp>());
-    pBraceScript->RegisterApi("replacespirvshader",
-                              "replacespirvshader(hash,shader_type,shader_spriv_file), "
+    pBraceScript->RegisterApi("replace_spirv_shader",
+                              "replace_spirv_shader(hash,shader_type,shader_spriv_file), "
                               "shader_type:0--vertex 3--geometry 4--fragment 5--compute",
                               new Brace::BraceApiFactory<ReplaceSpirvShaderExp>());
 
@@ -12022,8 +12022,8 @@ inline void BraceScriptManager::InitBraceScript(Brace::BraceScript*& pBraceScrip
             "xxx:add|sub|mul|lshift|rshift",
             new Brace::BraceApiFactoryWithArgs<DmntLegacyArithExp, const std::string&>(">>"));
         pBraceScript->RegisterApi(
-            "dmnt_keypress",
-            "dmnt_keypress(key1,key2,...); all type is integer, key can get by dmnt_key(const)",
+            "dmnt_key_press",
+            "dmnt_key_press(key1,key2,...); all type is integer, key can get by dmnt_key(const)",
             new Brace::BraceApiFactory<DmntKeyPressExp>());
         pBraceScript->RegisterApi(
             "dmnt_add",

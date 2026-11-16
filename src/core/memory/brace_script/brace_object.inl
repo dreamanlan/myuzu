@@ -79,7 +79,7 @@ namespace BraceScriptInterpreter
             //typetag(type) or typetag(exp)
             if (data.GetParamNum() != 1) {
                 std::stringstream ss;
-                ss << "expected typetag(type) or typetag(exp), line: " << data.GetLine();
+                ss << "expected type_tag(type) or type_tag(exp), line: " << data.GetLine();
                 LogError(ss.str());
                 return false;
             }
@@ -163,7 +163,7 @@ namespace BraceScriptInterpreter
             //objtypeid(type) or objtypeid(exp)
             if (data.GetParamNum() != 1) {
                 std::stringstream ss;
-                ss << "expected objtypeid(type) or objtypeid(exp), line: " << data.GetLine();
+                ss << "expected obj_type_id(type) or obj_type_id(exp), line: " << data.GetLine();
                 LogError(ss.str());
                 return false;
             }
@@ -221,7 +221,7 @@ namespace BraceScriptInterpreter
                 }
             }
             std::stringstream ss;
-            ss << "expected getobjtypename(objtypeid), line: " << data.GetLine();
+            ss << "expected get_obj_type_name(obj_type_id), line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -253,7 +253,7 @@ namespace BraceScriptInterpreter
                 }
             }
             std::stringstream ss;
-            ss << "expected getobjcategory(objtypeid), line: " << data.GetLine();
+            ss << "expected get_obj_category(obj_type_id), line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -285,7 +285,7 @@ namespace BraceScriptInterpreter
                 }
             }
             std::stringstream ss;
-            ss << "expected gettypeparamcount(objtypeid), line: " << data.GetLine();
+            ss << "expected get_type_param_count(obj_type_id), line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -318,7 +318,7 @@ namespace BraceScriptInterpreter
                 }
             }
             std::stringstream ss;
-            ss << "expected gettypeparamtype(objtypeid, index), line: " << data.GetLine();
+            ss << "expected get_type_param_type(obj_type_id, index), line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -353,7 +353,7 @@ namespace BraceScriptInterpreter
                 }
             }
             std::stringstream ss;
-            ss << "expected gettypeparamobjtypeid(objtypeid, index), line: " << data.GetLine();
+            ss << "expected get_type_param_obj_type_id(obj_type_id, index), line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }
@@ -4987,7 +4987,7 @@ namespace BraceScriptInterpreter
                     }
                 }
                 else {
-                    //same as csvecho
+                    //same as csv_echo
                     auto& arr = *pNewArr;
                     for (auto&& optr : arr) {
                         Brace::VarSetObject(lvars, m_SelectIteratorIndex, optr);
@@ -7081,7 +7081,7 @@ namespace BraceScriptInterpreter
         }
         virtual bool LoadStatement(const Brace::FuncInfo& func, const DslData::StatementData& statementData, Brace::OperandLoadtimeInfo& resultInfo, Brace::BraceApiExecutor& executor) override
         {
-            //looplist(exp) func(args);
+            //loop_list(exp) func(args);
             if (statementData.GetFunctionNum() == 2) {
                 auto* first = statementData.GetFirst()->AsFunction();
                 //const std::string& firstId = first->GetId();

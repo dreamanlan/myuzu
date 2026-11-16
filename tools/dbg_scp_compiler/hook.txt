@@ -49,7 +49,7 @@ hook(CompileTest)
 		$d = $c < 1 ? 2 : 3;
 		$e[0] = $d ?? 1;
 		$f : int = struct($d, ptr(ptr(TestStru3.ptest2).ptest).size);
-		$g : int = dumpcascadeptr(addr($e), 0x08, 0x08);
+		$g : int = dump_cascade_ptr(addr($e), 0x08, 0x08);
 		$h1 : int = offset(TestStru3.ptest2[3].size);
 		$h2 : int = size(TestStru3);
 		ffi(proto(void,noparams,[int,int],[],[]),0x1234,121,121);
@@ -98,7 +98,7 @@ hook(TestMacro3)
 
 		if(platform()==0){
 			//test code on windows
-			dumpcascadeptr(argv(2),0);
+			dump_cascade_ptr(argv(2),0);
 			if($a==123){
 				ptrset(argv(0),4,1);
 			}
@@ -120,10 +120,10 @@ hook(TestMacro3)
 			printf(">>> %f\n", inc($j, 2.0));
 			printf(">>> %f\n", inc($j, 3.0));
 			printf("%d %d %d\n", stkix(), hookid(), hookver());
-			printf("str contains %d %d\n", stringcontains("test","es","te"), stringnotcontains("test","es","fg"));
-			printf("str contains any %d %d\n", stringcontainsany("test","es","te"), stringnotcontainsany("test","es","fg"));
-			printf("str find %d %d\n", stringfind("test","es"), stringrfind("test","es"));
-			printf("str find2 %d %d\n", stringfind("test","es",1), stringrfind("test","es",0));
+			printf("str contains %d %d\n", string_contains("test","es","te"), string_not_contains("test","es","fg"));
+			printf("str contains any %d %d\n", string_contains_any("test","es","te"), string_not_contains_any("test","es","fg"));
+			printf("str find %d %d\n", string_find("test","es"), string_right_find("test","es"));
+			printf("str find2 %d %d\n", string_find("test","es",1), string_right_find("test","es",0));
 			$addr:int = 0x800010004003;
 			printf("%llx\n", $addr & (~0x03));
 		};
@@ -225,7 +225,7 @@ hook("RasterizerVulkan::PrepareDraw")
 
 		if($vshash==0x86d7c683e2589201 && $pshash==0xf9af955d3cbfadeb){
 			//printf("RasterizerVulkan::PrepareDraw enter time:%lld this:%lld indirect:%d indexed:%d vshash:%llx gshash:%llx pshash:%llx\n",time(),$this,$indirect,$indexed,$vshash,$geohash,$pshash);
-			//dumpstack("RasterizerVulkan::PrepareDraw");
+			//dump_stack("RasterizerVulkan::PrepareDraw");
 			//assert(0);
 		};
 	};
@@ -363,7 +363,7 @@ hook("ArmInterface::MatchingWatchpoint")
 		$eaddr:int = ptrget(argv(7),8);
 
 		printf("ArmInterface::MatchingWatchpoint addr:0x%llx size:0x%llx sp:0x%llx pc:0x%llx type:%d saddr:0x%llx eaddr:0x%llx", $addr, $size, $sp, $pc, $type, $saddr, $eaddr);
-		//dumpstack("ArmInterface::MatchingWatchpoint");
+		//dump_stack("ArmInterface::MatchingWatchpoint");
 		//assert(0);
 	};
 };
@@ -389,7 +389,7 @@ hook("dbgscpHookOnFastmemCallback")
 
 		if ($failType > 0) {
 			printf("dbgscpHookOnFastmemCallback fastcall addr:%llx this:%llx host pc:%llx fail type:%d", $fcAddr, $thisAddr, $hostPC, $failType);
-			dumpstack("dbgscpHookOnFastmemCallback");
+			dump_stack("dbgscpHookOnFastmemCallback");
 			ptrset(argv(0),1,1);
 			assert(0);
 		};
@@ -721,7 +721,7 @@ hook("Vulkan::DebugUtilCallback")
 		$user_data:int = ptrget(argv(7),8);
 
 		printf("Vulkan::DebugUtilCallback %d %d %s %s %d %llx %llx", $severity, $type, $pMessage, $pMessageIdName, $messageIdNumber, $data, $user_data);
-		if (stringcontains($pMessage, "disabling primitive restart")) {
+		if (string_contains($pMessage, "disabling primitive restart")) {
 			//assert(0);
 		};
 
@@ -738,7 +738,7 @@ hook("ServiceContext::CreateEvent")
 		$name:string = ptrget(argv(4),8);
 
 		//printf("ServiceContext::CreateEvent %llx %lld %s", $event, $id, $name);
-		//dumpstack("ServiceContext::CreateEvent");
+		//dump_stack("ServiceContext::CreateEvent");
 	};
 };
 hook("ServiceContext::CloseEvent")
@@ -749,6 +749,6 @@ hook("ServiceContext::CloseEvent")
 		$id:int = ptrget(argv(2),8);
 
 		//printf("ServiceContext::CloseEvent %llx %lld", $event, $id);
-		//dumpstack("ServiceContext::CloseEvent");
+		//dump_stack("ServiceContext::CloseEvent");
 	};
 };

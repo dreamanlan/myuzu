@@ -1328,12 +1328,12 @@ void DataAnalystWidget::RefreshMemoryArgs() {
         });
     }
     new QListWidgetItem(tr("[set sniffing scope]:setsniffingscope section_id_or_name"), listWidget);
-    new QListWidgetItem(tr("use findmem([val1,val2,...]) command to get a smaller memory range"), listWidget);
+    new QListWidgetItem(tr("use find_mem([val1,val2,...]) command to get a smaller memory range"), listWidget);
     new QListWidgetItem(tr("or"), listWidget);
-    new QListWidgetItem(tr("use searchmem([val1,val2,...]) command to get a smaller memory range"), listWidget);
+    new QListWidgetItem(tr("use search_mem([val1,val2,...]) command to get a smaller memory range"), listWidget);
     new QListWidgetItem(tr("[mem search scope commands]:clearmemscope, setmemscope main, setmemscopebegin 0x80004000, setmemscopeend 0x87000000, setmempid 0x51"), listWidget);
-    new QListWidgetItem(tr("[mem search arg commands]:setmemstep 4, setmemsize 4, setmemrange 256, setmemcount 10, showmem(0x21593f0000, 200)"), listWidget);
-    new QListWidgetItem(tr("[mem read/write commands]:echo(readmemory(0x21593f0000, 4)), writememory(0x21593f0000, 127[, 1|2|4|8])"), listWidget);
+    new QListWidgetItem(tr("[mem search arg commands]:setmemstep 4, setmemsize 4, setmemrange 256, setmemcount 10, show_mem(0x21593f0000, 200)"), listWidget);
+    new QListWidgetItem(tr("[mem read/write commands]:echo(read_memory(0x21593f0000, 4)), write_memory(0x21593f0000, 127[, 1|2|4|8])"), listWidget);
     new QListWidgetItem(tr("[help command]:help filter, search commands or apis"), listWidget);
 }
 

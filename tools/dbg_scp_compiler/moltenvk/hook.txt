@@ -49,7 +49,7 @@ hook(CompileTest)
 		$d = $c < 1 ? 2 : 3;
 		$e[0] = $d ?? 1;
 		$f : int = struct($d, ptr(ptr(TestStru3.ptest2).ptest).size);
-		$g : int = dumpcascadeptr(addr($e), 0x08, 0x08);
+		$g : int = dump_cascade_ptr(addr($e), 0x08, 0x08);
 		$h1 : int = offset(TestStru3.ptest2[3].size);
 		$h2 : int = size(TestStru3);
 		ffi(proto(void,noparams,[int,int],[],[]),0x1234,121,121);
@@ -98,7 +98,7 @@ hook(TestMacro3)
 		
 		if(platform()==0){
 			//test code on windows
-			dumpcascadeptr(argv(2),0);
+			dump_cascade_ptr(argv(2),0);
 			if($a==123){
 				ptrset(argv(0),4,1);
 			}
@@ -120,10 +120,10 @@ hook(TestMacro3)
 			printf(">>> %f\n", inc($j, 2.0));
 			printf(">>> %f\n", inc($j, 3.0));
 			printf("%d %d %d\n", stkix(), hookid(), hookver());
-			printf("str contains %d %d\n", stringcontains("test","es","te"), stringnotcontains("test","es","fg"));
-			printf("str contains any %d %d\n", stringcontainsany("test","es","te"), stringnotcontainsany("test","es","fg"));
-			printf("str find %d %d\n", stringfind("test","es"), stringrfind("test","es"));
-			printf("str find2 %d %d\n", stringfind("test","es",1), stringrfind("test","es",0));
+			printf("str contains %d %d\n", string_contains("test","es","te"), string_not_contains("test","es","fg"));
+			printf("str contains any %d %d\n", string_contains_any("test","es","te"), string_not_contains_any("test","es","fg"));
+			printf("str find %d %d\n", string_find("test","es"), string_right_find("test","es"));
+			printf("str find2 %d %d\n", string_find("test","es",1), string_right_find("test","es",0));
 			$addr:int = 0x800010004003;
 			printf("%llx\n", $addr & (~0x03));
 		};
@@ -235,7 +235,7 @@ hook("dbgscpHookOnNewTextureViewWithPixelFormat")
 
 		if ($viewPixFmt!=$texPixFmt) {
 			printf("dbgscpHookOnNewTextureViewWithPixelFormat pixel_format:%d texture_format:%d tid:%d\n",$viewPixFmt,$texPixFmt,GetTID());
-			//dumpstack("dbgscpHookOnNewTextureViewWithPixelFormat");
+			//dump_stack("dbgscpHookOnNewTextureViewWithPixelFormat");
 		};
 	};
 };
@@ -251,7 +251,7 @@ hook("dbgscpHookOnConvertToMSL")
 		$debug_name:string = ptrget(argv(6),8);
 		$rep_msl_path:int = ptrget(argv(7),8);
 
-		if (stringcontains($debug_name, "327b52089f1a6094")) {
+		if (string_contains($debug_name, "327b52089f1a6094")) {
 			memset($rep_msl_path,32,1024);
 			ptrset($rep_msl_path+1024,1,0);
 
