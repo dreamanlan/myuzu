@@ -576,7 +576,7 @@ namespace BraceScriptInterpreter
                 }
             }
             std::stringstream ss;
-            ss << "expected atan_2(y, x) ! line: " << data.GetLine();
+            ss << "expected atan2(y, x) ! line: " << data.GetLine();
             LogError(ss.str());
             return false;
         }

@@ -977,7 +977,7 @@ protected:
         } else {
             // error
             std::stringstream ss;
-            ss << "expected on_message(msg[, pool_num]){...};" << funcData.GetId() << " line "
+            ss << "expected onmessage(msg[, pool_num]){...};" << funcData.GetId() << " line "
                << funcData.GetLine();
             LogError(ss.str());
             return false;
@@ -1046,7 +1046,7 @@ protected:
         if (hasError) {
             // error
             std::stringstream ss;
-            ss << "expected on_message(msg[, pool_num])params($a:int,$b:int,...){...};"
+            ss << "expected onmessage(msg[, pool_num])params($a:int,$b:int,...){...};"
                << funcData.GetId() << " line " << funcData.GetLine();
             LogError(ss.str());
         }
@@ -11507,7 +11507,7 @@ inline void BraceScriptManager::InitBraceScript(Brace::BraceScript*& pBraceScrip
                                   new Brace::BraceApiFactory<CallbackHandlerExp>());
     } else {
         pBraceScript->RegisterApi(
-            "on_message", "on_message(msg[,pool_num])params($a:int,$b:int,...){...}; statement are executed within a coroutine of the same script (wait must be called periodically). this statement defines a function and should be used in the global scope",
+            "onmessage", "onmessage(msg[,pool_num])params($a:int,$b:int,...){...}; statement are executed within a coroutine of the same script (wait must be called periodically). this statement defines a function and should be used in the global scope",
             new Brace::BraceApiFactory<MessageHandlerExp>());
         pBraceScript->RegisterApi("clear_messages", "clear_messages() api",
                                   new Brace::BraceApiFactory<ClearMessagesExp>());
@@ -11664,7 +11664,7 @@ inline void BraceScriptManager::InitBraceScript(Brace::BraceScript*& pBraceScrip
     pBraceScript->RegisterApi("asin", "asin(number) api", new Brace::BraceApiFactory<AsinExp>());
     pBraceScript->RegisterApi("acos", "acos(number) api", new Brace::BraceApiFactory<AcosExp>());
     pBraceScript->RegisterApi("atan", "atan(number) api", new Brace::BraceApiFactory<AtanExp>());
-    pBraceScript->RegisterApi("atan_2", "atan_2(y,x) api", new Brace::BraceApiFactory<Atan2Exp>());
+    pBraceScript->RegisterApi("atan2", "atan2(y,x) api", new Brace::BraceApiFactory<Atan2Exp>());
     pBraceScript->RegisterApi("deg_2_rad", "deg_2_rad(number) api",
                               new Brace::BraceApiFactory<Deg2RadExp>());
     pBraceScript->RegisterApi("rad_2_deg", "rad_2_deg(number) api",
